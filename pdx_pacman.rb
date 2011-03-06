@@ -5,7 +5,8 @@ Bundler.require
 
 class PdxPacman < Sinatra::Base
   
-  GEOLOQI_OAUTH_TOKEN = 'ba1-138a8e75c1359c5d651120ca760ba8cce20b5f1d'
+  GEOLOQI_OAUTH_TOKEN = 'ba1-138a8e75c1359c5d651120ca760ba8cce20b5f1d'  
+  set :public, File.dirname(__FILE__) + '/public'
   
   get '/?' do
     erb :'index'
