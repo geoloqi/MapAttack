@@ -1,0 +1,74 @@
+<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script src="http://s.phono.com/releases/0.1/jquery.phono.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<div id='xmpp_id'>Hello</div>
+<div id="map" style="width: 100%; height: 400px;"></div>
+<script>
+var people = [];
+Phono.registerPlugin("audio", {
+    create: function(phono, config, callback) {callback({}); return {};}
+});
+var myOptions = {
+		zoom: 14,
+		center: new google.maps.LatLng(45.51, -122.64),
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		mapTypeControl: false
+	};
+
+	// Create the main map
+	map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+    marker = new google.maps.Marker({
+    	position: map.getCenter(),
+    	map: map
+    });
+    
+var phono = $.phono({
+	apiKey: "http://phono.com/",
+	onReady:function()
+	{
+		//console.log(this);
+		console.log(this.sessionId);
+		//alert(this.sessionId);
+		$('#xmpp_id').html(this.sessionId);
+	},
+	messaging:{
+		onMessage: function(event){
+			var serverMessage = JSON.parse(event.message.body);
+			console.log(serverMessage);
+			var type = serverMessage.type;
+			console.log(type);
+			
+			var id = serverMessage.id;
+			var latitude = serverMessage.latitude;
+			var longitude = serverMessage.longitude;
+			var myLatLng = new google.maps.LatLng(latitude, longitude);
+			var exists;
+			for(i=0;i<people.length;i++){
+				var person = people[i];
+				if(person.id != id){
+					
+				}
+					
+				else{
+					exists = 1;
+					console.log("moving existing user");
+					
+					person.marker.setPosition(myLatLng);
+				}
+			}
+			if(!exists){
+				console.log("creating user");
+				var marker = new google.maps.Marker({
+					position: myLatLng,
+					map: map
+				});
+				serverMessage.marker = marker;
+				people.push(serverMessage);
+			}
+		}
+	}
+});
+		
+	
+</script>
