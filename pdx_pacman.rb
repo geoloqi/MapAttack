@@ -32,10 +32,10 @@ class PdxPacman < Sinatra::Base
   get '/scores.json' do
     content_type 'application/json'
     players = Player.all.collect{|player| {:geoloqi_id => player.id, :score => player.points_cache, :name => player.name, :profile_image => player.profile_image}}
-    players.each do |player|
-      player_info = get_player_info 
-    end
+    players.to_json
   end
+  
+  
   
   post '/register' do
     
