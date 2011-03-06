@@ -12,3 +12,4 @@ gem 'dm-migrations'
 gem 'dm-sqlite-adapter'
 #gem 'dm-types'
 gem 'ruby-debug', :require => nil
+gem 'xmpp4r-simple'

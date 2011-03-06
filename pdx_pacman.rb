@@ -28,8 +28,8 @@ class PdxPacman < Sinatra::Base
     @player.add_points json['place']['extra']['points'] if json['place']['extra']['points']
 
     Browsers.all.each do |browser|
-      # send to jabber_id:
-      {:type => 'pellet', :id => json['place']['place_id']}.to_json
+      im = Jabber::Simple.new "pacmap@jabber.org", "l1ghtbulb"
+      im.deliver browser.jabber_id, {:type => 'pellet', :id => json['place']['place_id']}.to_json
     end
     ''
   end

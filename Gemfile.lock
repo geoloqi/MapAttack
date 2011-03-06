@@ -45,6 +45,9 @@ GEM
     typhoeus (0.2.4)
       mime-types
       mime-types
+    xmpp4r (0.5)
+    xmpp4r-simple (0.8.8)
+      xmpp4r (>= 0.3.2)
     yajl-ruby (0.8.1)
 
 PLATFORMS
@@ -61,4 +64,5 @@ DEPENDENCIES
   sinatra
   thin
   typhoeus
+  xmpp4r-simple
   yajl-ruby
