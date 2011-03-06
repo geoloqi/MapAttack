@@ -1,4 +1,5 @@
 GEM
+  remote: http://gems.rubyforge.org/
   specs:
     daemons (1.1.0)
     eventmachine (0.12.10)
