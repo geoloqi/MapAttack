@@ -10,6 +10,7 @@ gem 'dm-timestamps'
 gem 'dm-migrations'
 #gem 'dm-aggregates'
 gem 'dm-sqlite-adapter'
+gem 'dm-postgres-adapter'
 #gem 'dm-types'
 gem 'ruby-debug', :require => nil
 gem 'xmpp4r-simple'
