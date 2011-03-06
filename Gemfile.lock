@@ -14,11 +14,16 @@ GEM
       dm-core (~> 1.0.2)
     dm-migrations (1.0.2)
       dm-core (~> 1.0.2)
+    dm-postgres-adapter (1.0.2)
+      dm-do-adapter (~> 1.0.2)
+      do_postgres (~> 0.10.2)
     dm-sqlite-adapter (1.0.2)
       dm-do-adapter (~> 1.0.2)
       do_sqlite3 (~> 0.10.2)
     dm-timestamps (1.0.2)
       dm-core (~> 1.0.2)
+    do_postgres (0.10.2)
+      data_objects (= 0.10.2)
     do_sqlite3 (0.10.2)
       data_objects (= 0.10.2)
     eventmachine (0.12.10)
@@ -45,6 +50,9 @@ GEM
     typhoeus (0.2.4)
       mime-types
       mime-types
+    xmpp4r (0.5)
+    xmpp4r-simple (0.8.8)
+      xmpp4r (>= 0.3.2)
     yajl-ruby (0.8.1)
 
 PLATFORMS
@@ -53,6 +61,7 @@ PLATFORMS
 DEPENDENCIES
   dm-core
   dm-migrations
+  dm-postgres-adapter
   dm-sqlite-adapter
   dm-timestamps
   json
@@ -61,4 +70,5 @@ DEPENDENCIES
   sinatra
   thin
   typhoeus
+  xmpp4r-simple
   yajl-ruby
