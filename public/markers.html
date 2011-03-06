@@ -4,7 +4,7 @@
 <div id='xmpp_id'>Hello</div>
 <div id="map" style="width: 100%; height: 400px;"></div>
 <script>
-var people = [];
+var people = [], pellets = [], map;
 Phono.registerPlugin("audio", {
     create: function(phono, config, callback) {callback({}); return {};}
 });
@@ -22,6 +22,45 @@ var myOptions = {
     	position: map.getCenter(),
     	map: map
     });
+    // 
+    // $.ajax({ 
+    //     url: "http://donpdonpees", 
+    //     dataType: 'jsonp', 
+    //     success: showPellets
+    //   });
+    showPellets();
+    
+    function showPellets() {
+      var mockpellets = [
+      	{
+      		"id": "Rh9",
+      		"latitude": 45.524164, 
+      		"longitude": -122.67881
+      	},
+      	{
+      		"id": "Rha",
+      		"latitude": 45.52431,
+      		"longitude": -122.67722
+      	}
+      ]
+      
+      $(mockpellets).each(function(i, pellet) {
+        pellets.push({
+          id: pellet.id, 
+          marker: new google.maps.Marker({
+                  	position:  new google.maps.LatLng(pellet.latitude, pellet.longitude),
+                  	map: map,
+                  	icon: "http://i.imgur.com/4wEfc.gif"
+                  })
+        })
+    })
+  }
+    
+    function deletePellet(id) {
+      $(pellets).each(function(i, pellet) {
+        if (pellet.id === id) pellet.marker.setMap(null);
+      })
+    }
     
 var phono = $.phono({
 	apiKey: "http://phono.com/",
@@ -39,33 +78,30 @@ var phono = $.phono({
 			var type = serverMessage.type;
 			console.log(type);
 			
-			var id = serverMessage.id;
-			var latitude = serverMessage.latitude;
-			var longitude = serverMessage.longitude;
-			var myLatLng = new google.maps.LatLng(latitude, longitude);
-			var exists;
-			for(i=0;i<people.length;i++){
-				var person = people[i];
-				if(person.id != id){
-					
-				}
-					
-				else{
-					exists = 1;
-					console.log("moving existing user");
-					
-					person.marker.setPosition(myLatLng);
-				}
-			}
-			if(!exists){
-				console.log("creating user");
-				var marker = new google.maps.Marker({
-					position: myLatLng,
-					map: map
-				});
-				serverMessage.marker = marker;
-				people.push(serverMessage);
-			}
+			if (type == "player") {
+		  	var id = serverMessage.id;
+  			var latitude = serverMessage.latitude;
+  			var longitude = serverMessage.longitude;
+  			var myLatLng = new google.maps.LatLng(latitude, longitude);
+  			var exists;
+  			$(people).each(function(i, people) {
+  				var person = people[i];
+  				if(person.id === id){
+  					exists = 1;
+  					person.marker.setPosition(myLatLng);
+  				}
+  			})
+  			if(!exists) {
+  				var marker = new google.maps.Marker({
+  					position: myLatLng,
+  					map: map
+  				});
+  				serverMessage.marker = marker;
+  				people.push(serverMessage);
+  			}
+  		} else {
+  		  deletePellet(serverMessage.id);
+  		}
 		}
 	}
 });
