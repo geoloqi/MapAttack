@@ -11,3 +11,4 @@ gem 'dm-migrations'
 #gem 'dm-aggregates'
 gem 'dm-sqlite-adapter'
 #gem 'dm-types'
+gem 'ruby-debug', :require => nil

@@ -2,6 +2,7 @@ GEM
   remote: http://gems.rubyforge.org/
   specs:
     addressable (2.2.4)
+    columnize (0.3.2)
     daemons (1.1.0)
     data_objects (0.10.2)
       addressable (~> 2.1)
@@ -23,8 +24,14 @@ GEM
     eventmachine (0.12.10)
     extlib (0.9.15)
     json (1.5.1)
+    linecache (0.43)
     mime-types (1.16)
     rack (1.2.1)
+    ruby-debug (0.10.4)
+      columnize (>= 0.1)
+      ruby-debug-base (~> 0.10.4.0)
+    ruby-debug-base (0.10.4)
+      linecache (>= 0.3)
     shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.1.2)
@@ -49,6 +56,7 @@ DEPENDENCIES
   dm-sqlite-adapter
   dm-timestamps
   json
+  ruby-debug
   shotgun
   sinatra
   thin

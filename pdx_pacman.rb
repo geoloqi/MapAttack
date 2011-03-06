@@ -35,18 +35,49 @@ class PdxPacman < Sinatra::Base
     players.to_json
   end
   
-  
+  get '/setup.json' do
+    # var mockpellets  [ {id latitude longitude} ]
+    
+    pellets_raw = get_pellets
+    
+    json = JSON.parse get_pellets
+    
+    places = []
+    
+    json['places'].each do |place|
+      unless place['extra']['active'] == '0'
+        # latitude longitude place_id
+        places << {:place_id => place['place_id'], :latitude => place['latitude'], :longitude => place['longitude']}
+      end
+    end
+    places.to_json
+  end
   
   post '/register' do
     
   end
   
   private
+  # 
+  def get_pellets
+    request = Typhoeus::Request.new("https://api.geoloqi.com/1/place/list",
+                          :body          => 'layer_id=10S',
+                          :method        => :post,
+                          :headers       => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}"})
+    hydra = Typhoeus::Hydra.new
+    hydra.queue request
+    hydra.run
+    request.response.body
+  end
   
   def eat_dot(place_id)
-    Typhoeus::Request.new "https://api.geoloqi.com/1/place/update/#{place_id}",
+    Typhoeus::Request.new("https://api.geoloqi.com/1/place/update/#{place_id}",
                           :body          => {:extra => {:active => 0}}.to_json,
                           :method        => :post,  
-                          :headers       => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}", 'Content-Type' => 'application/json'}
+                          :headers       => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}", 'Content-Type' => 'application/json'})
+    hydra = Typhoeus::Hydra.new
+    hydra.queue request
+    hydra.run
+    request.response.body
   end
 end
