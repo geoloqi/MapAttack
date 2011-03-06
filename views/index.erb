@@ -1,0 +1,191 @@
+<html>
+<head>
+	<title>PacMap</title>
+	<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+	<script src="http://s.phono.com/releases/0.1/jquery.phono.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<style type="text/css">
+	body {
+		background-color: #53504e;
+		font-family: Helvetica, sans-serif;
+	}
+	table {
+		background-color: #3c3c39;
+		margin-top: 7px;
+	}
+	a {
+		color: #f16d3e;
+	}
+	.player {
+		background-color: #7f7f79;
+		padding: 3px;
+	}
+	.player .pic {
+		float: left;
+		margin-right: 5px;
+	}
+	.player .name {
+		font-size: 12pt;
+		color: #333; 
+		font-weight: bold;
+	}
+	.player .score {
+		color: #fffa48;
+		font-size: 16pt;
+	}
+	.player .end {
+		clear: both;
+	}
+</style>
+<script type="text/javascript">
+
+$(function(){
+	var people = [];
+	var pellets = [];
+	
+	Phono.registerPlugin("audio", {
+	    create: function(phono, config, callback) {callback({}); return {};}
+	});
+	var myOptions = {
+		zoom: 16,
+		center: new google.maps.LatLng(45.524164, -122.67881),
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		mapTypeControl: false
+	};
+
+	// Create the main map
+	map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+    marker = new google.maps.Marker({
+		position: map.getCenter(),
+		map: map
+    });
+    
+    // Load the initial game state and place the pins on the map. Sample data in pellets.json
+
+	$.ajax({ 
+		url: "/setup.json",
+		dataType: 'jsonp', 
+		success: showPellets
+	});
+
+	updateScoreBoard();
+	setInterval(updateScoreBoard, 5000);
+
+	function updateScoreBoard() {
+		$.ajax({
+			url: "/scores.json",
+			dataType: 'json',
+			success: function(data) {
+				data = [{profile_image:"http://a2.twimg.com/profile_images/553711946/aaronpk-bw_normal.jpg", name:"aaronpk", score:100}];
+				$("#scoreboard").html("");
+				$(data).each(function(i, player){
+					$("#scoreboard").append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
+				});
+			}
+		});
+	}
+
+    function showPellets(data) {
+		$(data).each(function(i, pellet) {
+			pellets.push({
+				id: pellet.place_id, 
+				marker: new google.maps.Marker({
+					position:  new google.maps.LatLng(pellet.latitude, pellet.longitude),
+					map: map,
+					icon: "http://i.imgur.com/4wEfc.gif"
+				})
+			});
+		});
+    }
+
+    function deletePellet(id) {
+		$(pellets).each(function(i, pellet) {
+			if(pellet.id === id) {
+        		pellet.marker.setMap(null);
+        	}
+		});
+    }
+    
+	var phono = $.phono({
+		apiKey: "http://phono.com/",
+		onReady:function() {
+			$('#xmpp_id').html(this.sessionId);
+		},
+		messaging:{
+			onMessage: function(event){
+				var serverMessage = JSON.parse(event.message.body);
+				//console.log(serverMessage);
+				var type = serverMessage.type;
+				//console.log(type);
+				
+				if(type == "player") {
+					var id = serverMessage.id;
+					var latitude = serverMessage.latitude;
+					var longitude = serverMessage.longitude;
+					var myLatLng = new google.maps.LatLng(latitude, longitude);
+					var exists;
+					for(i=0;i<people.length;i++){
+						var person = people[i];
+						if(person.id != id){
+						
+						}else{
+							exists = 1;
+							console.log("moving existing user");
+							person.marker.setPosition(myLatLng);
+						}
+					}
+					if(!exists){
+						//console.log("creating user");
+						var marker = new google.maps.Marker({
+							position: myLatLng,
+							map: map
+						});
+						serverMessage.marker = marker;
+						people.push(serverMessage);
+					}
+				} else if(type == "pellet") {
+					// Remove the pellet
+					deletePellet(serverMessage.id);
+				}
+			}
+		}
+	});
+});
+
+</script>
+</head>
+<body>
+
+<table width="900">
+<tr>
+	<td colspan="2"><img src="/img/Pac-Map-PDX-Header.png" /></td>
+</tr>
+</table>
+
+<table width="900">
+<tr>
+	<td width="600">
+		<div id="map" style="width: 100%; height: 300px;"></div>
+	</td>
+
+	<td valign="top">
+		Leaderboard
+		
+		<div id="scoreboard">
+		
+		</div>
+	</td>
+</tr>
+</table>
+
+<table width="900">
+<tr>
+	<td colspan="2">
+		<span style="float: right;"><a href="http://aaronparecki.com">Aaron Parecki</a> // <a href="http://caseorganic.com">Amber Case</a> // <a href="http://kyledrake.net">Kyle Drake</a> // <a href="http://www.pdxbrain.com/">Tyler Gillies</a> // <a href="http://maxogden.com">Max Ogden</a></span>
+	</td>
+</tr>
+</table>
+
+</body>
+</html>
