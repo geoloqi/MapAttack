@@ -47,7 +47,7 @@ $(function(){
 	    create: function(phono, config, callback) {callback({}); return {};}
 	});
 	var myOptions = {
-		zoom: 16,
+		zoom: 17,
 		center: new google.maps.LatLng(45.524164, -122.67881),
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		mapTypeControl: false
@@ -65,12 +65,15 @@ $(function(){
 
 	$.ajax({ 
 		url: "/setup.json",
-		dataType: 'jsonp', 
+		dataType: 'json', 
 		success: showPellets
 	});
 
 	updateScoreBoard();
 	setInterval(updateScoreBoard, 5000);
+
+	updateLocations();
+	setInterval(updateLocations, 5000);
 
 	function updateScoreBoard() {
 		$.ajax({
@@ -86,6 +89,19 @@ $(function(){
 		});
 	}
 
+	function updateLocations() {
+		// aaronpk o54E612
+		// caseorganic rivQX0e
+		var tokens = ["o54E612", "rivQX0e"];
+		$.ajax({
+			url: "https://api.geoloqi.com/1/share/last?geoloqi_token=" + tokens.join(","),
+			dataType: "jsonp",
+			success: function(data) {
+				
+			}
+		});
+	}
+
     function showPellets(data) {
 		$(data).each(function(i, pellet) {
 			pellets.push({
@@ -93,7 +109,7 @@ $(function(){
 				marker: new google.maps.Marker({
 					position:  new google.maps.LatLng(pellet.latitude, pellet.longitude),
 					map: map,
-					icon: "http://i.imgur.com/4wEfc.gif"
+					icon: "http://loqi.me/pdx-pacmap/dot-sprite.png",
 				})
 			});
 		});
@@ -110,7 +126,10 @@ $(function(){
 	var phono = $.phono({
 		apiKey: "http://phono.com/",
 		onReady:function() {
-			$('#xmpp_id').html(this.sessionId);
+			// $('#xmpp_id').html(this.sessionId);
+			$.post("/register.json", {
+				jabber_id: this.sessionId
+			});
 		},
 		messaging:{
 			onMessage: function(event){
@@ -118,6 +137,8 @@ $(function(){
 				//console.log(serverMessage);
 				var type = serverMessage.type;
 				//console.log(type);
+				
+				// ({"type": "pellet", "id": "rrr"})
 				
 				if(type == "player") {
 					var id = serverMessage.id;
@@ -166,11 +187,11 @@ $(function(){
 <table width="900">
 <tr>
 	<td width="600">
-		<div id="map" style="width: 100%; height: 300px;"></div>
+		<div id="map" style="width: 100%; height: 500px;"></div>
 	</td>
 
 	<td valign="top">
-		Leaderboard
+		<div style="margin-bottom: 5px;"><img src="/img/leaderboard-text.png" /></div>
 		
 		<div id="scoreboard">
 		
