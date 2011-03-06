@@ -157,7 +157,7 @@ $(function(){
 		apiKey: "http://phono.com/",
 		onReady:function() {
 			// $('#xmpp_id').html(this.sessionId);
-			$.post("/register.json", {
+			$.post("/register", {
 				jabber_id: this.sessionId
 			});
 		},
