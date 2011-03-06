@@ -5,6 +5,9 @@ class Player
   property :created_at, DateTime
   property :updated_at, DateTime
   property :points_cache, Integer, :default => 0
+  property :profile_image, String, :length => 255
+  property :name, String, :length => 255
+  property :token, String, :length => 255
   
   has n, :scores
   

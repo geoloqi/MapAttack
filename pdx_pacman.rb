@@ -21,9 +21,20 @@ class PdxPacman < Sinatra::Base
   post '/trigger' do
     json = JSON.parse request.body
     @player = Player.first_or_create :geoloqi_id => json['user']['user_id']
+    @player.profile_image = json['user']['profile_image']
+    @player.name = json['user']['name']
+    @player.save
     eat_dot json['place']['place_id']
     @player.add_points json['place']['extra']['points'] if json['place']['extra']['points']
     ''
+  end
+  
+  get '/scores.json' do
+    content_type 'application/json'
+    players = Player.all.collect{|player| {:geoloqi_id => player.id, :score => player.points_cache}}
+    players.each do |player|
+      player_info = get_player_info 
+    end
   end
   
   post '/register' do
@@ -31,6 +42,13 @@ class PdxPacman < Sinatra::Base
   end
   
   private
+  # name profile_image
+  def get_player_info(geoloqi_id)
+    Typhoeus::Request.new "https://api.geoloqi.com/1/place/update/#{place_id}",
+                          :body          => {:extra => {:active => 0}}.to_json,
+                          :method        => :post,  
+                          :headers       => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}", 'Content-Type' => 'application/json'}
+  end
   
   def eat_dot(place_id)
     Typhoeus::Request.new "https://api.geoloqi.com/1/place/update/#{place_id}",
