@@ -80,7 +80,7 @@ $(function(){
 			url: "/scores.json",
 			dataType: 'json',
 			success: function(data) {
-				data = [{profile_image:"http://a2.twimg.com/profile_images/553711946/aaronpk-bw_normal.jpg", name:"aaronpk", score:100}];
+				//data = [{profile_image:"http://a2.twimg.com/profile_images/553711946/aaronpk-bw_normal.jpg", name:"aaronpk", score:100}];
 				$("#scoreboard").html("");
 				$(data).each(function(i, player){
 					$("#scoreboard").append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
