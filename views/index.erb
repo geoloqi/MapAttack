@@ -97,7 +97,10 @@ $(function(){
 			url: "https://api.geoloqi.com/1/share/last?geoloqi_token=" + tokens.join(","),
 			dataType: "jsonp",
 			success: function(data) {
-				
+				console.debug(data);
+				$(data).each(function(i, p){
+					receivePlayerData({id: p.username, latitude:p.location.position.latitude, longitude:p.location.position.longitude});
+				});
 			}
 		});
 	}
@@ -123,6 +126,33 @@ $(function(){
 		});
     }
     
+    function receivePlayerData(serverMessage) {
+		var id = serverMessage.id;
+		var latitude = serverMessage.latitude;
+		var longitude = serverMessage.longitude;
+		var myLatLng = new google.maps.LatLng(latitude, longitude);
+		var exists;
+		for(i=0;i<people.length;i++){
+			var person = people[i];
+			if(person.id != id){
+			
+			}else{
+				exists = 1;
+				console.log("moving existing user");
+				person.marker.setPosition(myLatLng);
+			}
+		}
+		if(!exists){
+			//console.log("creating user");
+			var marker = new google.maps.Marker({
+				position: myLatLng,
+				map: map
+			});
+			serverMessage.marker = marker;
+			people.push(serverMessage);
+		}
+    }
+    
 	var phono = $.phono({
 		apiKey: "http://phono.com/",
 		onReady:function() {
@@ -141,30 +171,7 @@ $(function(){
 				// ({"type": "pellet", "id": "rrr"})
 				
 				if(type == "player") {
-					var id = serverMessage.id;
-					var latitude = serverMessage.latitude;
-					var longitude = serverMessage.longitude;
-					var myLatLng = new google.maps.LatLng(latitude, longitude);
-					var exists;
-					for(i=0;i<people.length;i++){
-						var person = people[i];
-						if(person.id != id){
-						
-						}else{
-							exists = 1;
-							console.log("moving existing user");
-							person.marker.setPosition(myLatLng);
-						}
-					}
-					if(!exists){
-						//console.log("creating user");
-						var marker = new google.maps.Marker({
-							position: myLatLng,
-							map: map
-						});
-						serverMessage.marker = marker;
-						people.push(serverMessage);
-					}
+					receivePlayerData(serverMessage);
 				} else if(type == "pellet") {
 					// Remove the pellet
 					deletePellet(serverMessage.id);
