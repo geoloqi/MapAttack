@@ -35,16 +35,12 @@ class PdxPacman < Sinatra::Base
   end
 
   get '/setup.json' do
-    # var mockpellets  [ {id latitude longitude} ]
-
     pellets_raw = get_pellets
     json = JSON.parse get_pellets
     places = []
 
     json['places'].each do |place|
-      puts "@@@@@@@@@@@@@@@#{place.inspect}"
-        # latitude longitude place_id
-        places << {:place_id => place['place_id'], :latitude => place['latitude'], :longitude => place['longitude'], :active => place['extra']['active']}
+      places << {:place_id => place['place_id'], :latitude => place['latitude'], :longitude => place['longitude'], :active => place['extra']['active']}
     end
     places.to_json
   end
@@ -64,7 +60,7 @@ class PdxPacman < Sinatra::Base
     hydra = Typhoeus::Hydra.new
     hydra.queue request
     hydra.run
-    puts "@@@@@@@@ EAT_DOT RESPONSE: #{request.response.body.inspect}"
+    puts "@@@@@@@@ SEND_MESSAGE RESPONSE: #{request.response.body.inspect}"
     request.response.body
   end
 
