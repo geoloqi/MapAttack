@@ -14,13 +14,17 @@ class PdxPacman < Sinatra::Base
     @player.profile_image = json['user']['profile_image']
     @player.name = json['user']['name']
     @player.save
-    eat_dot json['place']['place_id']
-    @player.add_points json['place']['extra']['points'] if json['place']['extra']['points']
     
-    Browser.all.each do |browser|
-      im = Jabber::Simple.new "pacmap@jabber.org", "l1ghtbulb"
-      im.deliver browser.jabber_id, {:type => 'pellet', :id => json['place']['place_id']}.to_json
+    if json['place']['extra']['active'] == 1
+      eat_dot json['place']['place_id']
+      @player.add_points json['place']['extra']['points'] if json['place']['extra']['points']
+      send_message @player.geoloqi_id, "#{json['place']['name']}: You ate a dot! #{json['place']['extra']['points']} points"
     end
+    
+#    Browser.all.each do |browser|
+#      im = Jabber::Simple.new "pacmap@jabber.org", "l1ghtbulb"
+#      im.deliver browser.jabber_id, {:type => 'pellet', :id => json['place']['place_id']}.to_json
+#    end
     ''
   end
 
@@ -50,6 +54,19 @@ class PdxPacman < Sinatra::Base
   end
 
   private
+
+  def send_message(user_id, text)
+    request = Typhoeus::Request.new("https://api.geoloqi.com/1/message/send",
+                                    :body    => {:user_id => user_id, :text => text}.to_json,
+                                    :method  => :post,
+                                    :headers => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}", 
+                                                 'Content-Type' => 'application/json'})
+    hydra = Typhoeus::Hydra.new
+    hydra.queue request
+    hydra.run
+    puts "@@@@@@@@ EAT_DOT RESPONSE: #{request.response.body.inspect}"
+    request.response.body
+  end
 
   def get_pellets
     # FIXME set layer_id dynamically  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
