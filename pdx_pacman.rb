@@ -38,6 +38,7 @@ class PdxPacman < Sinatra::Base
     places = []
 
     json['places'].each do |place|
+#      puts "@@@@@@@@@@@@@@@#{place.inspect}"
       unless place['extra']['active'] == '0'
         # latitude longitude place_id
         places << {:place_id => place['place_id'], :latitude => place['latitude'], :longitude => place['longitude']}
@@ -53,8 +54,9 @@ class PdxPacman < Sinatra::Base
   private
 
   def get_pellets
+    # FIXME set layer_id dynamically  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     request = Typhoeus::Request.new("https://api.geoloqi.com/1/place/list",
-                          :body          => 'layer_id=10S',
+                          :body          => 'layer_id=1L6',
                           :method        => :post,
                           :headers       => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}"})
     hydra = Typhoeus::Hydra.new
