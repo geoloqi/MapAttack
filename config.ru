@@ -1,2 +1,2 @@
-require File.join('.', 'pdx_pacman.rb')
+require File.join('.', 'environment.rb')
 run PdxPacman

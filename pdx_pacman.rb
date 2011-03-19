@@ -1,14 +1,3 @@
-require "rubygems"
-require "bundler"
-Bundler.setup
-Bundler.require
-
-Sinatra::Base.root = File.join File.expand_path(File.join(File.dirname(__FILE__)))
-Dir.glob(File.join(Sinatra::Base.root, 'models', '**/*.rb')).each { |f| require f }
-
-DataMapper.setup :default, ENV['DATABASE_URL'] || 'sqlite3://pdx_pacman.db'
-DataMapper.auto_upgrade!
-
 class PdxPacman < Sinatra::Base
   GEOLOQI_OAUTH_TOKEN = 'ba1-138a8e75c1359c5d651120ca760ba8cce20b5f1d'
   set :public, File.join(Sinatra::Base.root, 'public')
