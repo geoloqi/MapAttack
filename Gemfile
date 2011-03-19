@@ -6,6 +6,7 @@ gem 'dm-core',       '1.1.0'
 gem 'dm-timestamps', '1.1.0'
 gem 'dm-migrations', '1.1.0'
 gem 'xmpp4r-simple', '0.8.8'
+#gem 'rest-client'
 
 group :development do
   gem 'dm-sqlite-adapter', '1.1.0'

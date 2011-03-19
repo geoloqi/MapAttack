@@ -66,10 +66,10 @@ class PdxPacman < Sinatra::Base
   end
 
   def eat_dot(place_id)
-    Typhoeus::Request.new("https://api.geoloqi.com/1/place/update/#{place_id}",
-                          :body          => {:extra => {:active => 0}}.to_json,
-                          :method        => :post,
-                          :headers       => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}", 'Content-Type' => 'application/json'})
+    request = Typhoeus::Request.new("https://api.geoloqi.com/1/place/update/#{place_id}",
+                                    :body    => {:extra => {:active => 0}}.to_json,
+                                    :method  => :post,
+                                    :headers => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}", 'Content-Type' => 'application/json'})
     hydra = Typhoeus::Hydra.new
     hydra.queue request
     hydra.run
