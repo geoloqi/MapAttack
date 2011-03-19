@@ -4,7 +4,6 @@ raise 'Forget it.' if ENV['RACK_ENV'] == 'production'
 require File.join(File.expand_path(File.dirname(__FILE__)), '..', 'environment.rb')
 require 'test/unit'
 Bundler.require :test
-require File.join(File.expand_path(File.dirname(__FILE__)), 'fixtures.rb')
 
 class Test::Unit::TestCase
   include Rack::Test::Methods
