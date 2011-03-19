@@ -48,32 +48,62 @@ $(function(){
 	});
 	var myOptions = {
 		zoom: 17,
-		center: new google.maps.LatLng(45.524164, -122.67881),
+		center: new google.maps.LatLng(45.512, -122.643),
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		mapTypeControl: false
 	};
 
+	var markerIconActive = new google.maps.MarkerImage("http://loqi.me/pdx-pacmap/dot.png");
+	markerIconActive.anchor = new google.maps.Point(6, 6);
+
+	var markerIconInactive = new google.maps.MarkerImage("http://loqi.me/pdx-pacmap/dot-grey.png");
+	markerIconInactive.anchor = new google.maps.Point(6, 6);
+
 	// Create the main map
 	map = new google.maps.Map(document.getElementById("map"), myOptions);
 
-    marker = new google.maps.Marker({
-		position: map.getCenter(),
-		map: map
-    });
-    
     // Load the initial game state and place the pins on the map. Sample data in pellets.json
 
-	$.ajax({ 
-		url: "/setup.json",
-		dataType: 'json', 
-		success: showPellets
-	});
+	updatePellets();
+	setInterval(updatePellets, 5000);
 
 	updateScoreBoard();
 	setInterval(updateScoreBoard, 5000);
 
 	updateLocations();
 	setInterval(updateLocations, 5000);
+
+	function updatePellets() {
+		$.ajax({ 
+			url: "/setup.json",
+			dataType: 'json', 
+			success: function(data) {
+				// Remove all current pellets
+				$(pellets).each(function(i, pellet) {
+					pellet.marker.setMap(null);
+				});
+				pellets = [];
+				
+				// Add the new pellets
+				$(data).each(function(i, pellet) {
+					if(pellet.active == 0) {
+						markerIcon = markerIconInactive;
+					} else {
+						markerIcon = markerIconActive;
+					}
+
+					pellets.push({
+						id: pellet.place_id, 
+						marker: new google.maps.Marker({
+							position:  new google.maps.LatLng(pellet.latitude, pellet.longitude),
+							map: map,
+							icon: markerIcon,
+						})
+					});
+				});
+		    }
+		});
+	}
 
 	function updateScoreBoard() {
 		$.ajax({
@@ -104,19 +134,6 @@ $(function(){
 			}
 		});
 	}
-
-    function showPellets(data) {
-		$(data).each(function(i, pellet) {
-			pellets.push({
-				id: pellet.place_id, 
-				marker: new google.maps.Marker({
-					position:  new google.maps.LatLng(pellet.latitude, pellet.longitude),
-					map: map,
-					icon: "http://loqi.me/pdx-pacmap/dot-sprite.png",
-				})
-			});
-		});
-    }
 
     function deletePellet(id) {
 		$(pellets).each(function(i, pellet) {
@@ -154,6 +171,7 @@ $(function(){
 		}
     }
     
+/*
 	var phono = $.phono({
 		apiKey: "b7a8cfece6ddff5d5fefbbc0adaa3851",
 		onReady:function() {
@@ -181,6 +199,7 @@ $(function(){
 			}
 		}
 	});
+*/
 });
 
 </script>

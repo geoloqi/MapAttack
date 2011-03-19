@@ -39,10 +39,8 @@ class PdxPacman < Sinatra::Base
 
     json['places'].each do |place|
       puts "@@@@@@@@@@@@@@@#{place.inspect}"
-      unless place['extra']['active'] == 0
         # latitude longitude place_id
-        places << {:place_id => place['place_id'], :latitude => place['latitude'], :longitude => place['longitude']}
-      end
+        places << {:place_id => place['place_id'], :latitude => place['latitude'], :longitude => place['longitude'], :active => place['extra']['active']}
     end
     places.to_json
   end
