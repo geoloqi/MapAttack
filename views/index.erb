@@ -120,7 +120,7 @@ $(function(){
 
     function deletePellet(id) {
 		$(pellets).each(function(i, pellet) {
-			if(pellet.id === id) {
+			if(pellet.id == id) {
         		pellet.marker.setMap(null);
         	}
 		});
@@ -154,7 +154,7 @@ $(function(){
     }
     
 	var phono = $.phono({
-		apiKey: "http://phono.com/",
+		apiKey: "b7a8cfece6ddff5d5fefbbc0adaa3851",
 		onReady:function() {
 			// $('#xmpp_id').html(this.sessionId);
 			$.post("/register", {
