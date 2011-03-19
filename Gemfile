@@ -1,16 +1,19 @@
 source 'http://gems.rubyforge.org'
 gem 'sinatra', :require => 'sinatra/base'
-gem 'json'
+gem 'yajl-ruby', :require => 'yajl/json_gem'
 gem 'thin'
-gem 'shotgun'
 gem 'typhoeus'
-gem 'yajl-ruby', :require => 'yajl'
 gem 'dm-core'
 gem 'dm-timestamps'
 gem 'dm-migrations'
-#gem 'dm-aggregates'
-gem 'dm-sqlite-adapter'
-gem 'dm-postgres-adapter'
-#gem 'dm-types'
-gem 'ruby-debug', :require => nil
 gem 'xmpp4r-simple'
+
+group :development do
+  gem 'dm-sqlite-adapter'
+  gem 'ruby-debug', :require => nil
+  gem 'shotgun'
+end
+
+group :production do
+  gem 'dm-postgres-adapter'
+end
