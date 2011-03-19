@@ -18,7 +18,9 @@ class PdxPacman < Sinatra::Base
   end
 
   post '/trigger' do
+    puts "@@@@@@@@@@@@@ ENTERING TRIGGER"
     json = JSON.parse request.body
+    puts "@@@@@@@@@@@@@ JSON: #{json.inspect}"
     @player = Player.first_or_create :geoloqi_id => json['user']['user_id']
     @player.profile_image = json['user']['profile_image']
     @player.name = json['user']['name']
@@ -80,6 +82,7 @@ class PdxPacman < Sinatra::Base
     hydra = Typhoeus::Hydra.new
     hydra.queue request
     hydra.run
+    puts "@@@@@@@@ EAT_DOT RESPONSE: #{request.response.body.inspect}"
     request.response.body
   end
 end
