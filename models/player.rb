@@ -13,7 +13,7 @@ class Player
   
   def add_points(points)
     scores.create :points => points
-    update :points_cache => (self.points_cache + points)
+    update :points_cache => (self.points_cache + points.to_i)
     reload
   end
 end
