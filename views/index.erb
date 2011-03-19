@@ -121,6 +121,7 @@ $(function(){
     function deletePellet(id) {
 		$(pellets).each(function(i, pellet) {
 			if(pellet.id == id) {
+			      console.log("Pellet id removal");
         		pellet.marker.setMap(null);
         	}
 		});
@@ -164,9 +165,9 @@ $(function(){
 		messaging:{
 			onMessage: function(event){
 				var serverMessage = JSON.parse(event.message.body);
-				//console.log(serverMessage);
+				console.log(serverMessage);
 				var type = serverMessage.type;
-				//console.log(type);
+				console.log(type);
 				
 				// ({"type": "pellet", "id": "rrr"})
 				
@@ -174,6 +175,7 @@ $(function(){
 					receivePlayerData(serverMessage);
 				} else if(type == "pellet") {
 					// Remove the pellet
+					console.log('Removing pellet');
 					deletePellet(serverMessage.id);
 				}
 			}
