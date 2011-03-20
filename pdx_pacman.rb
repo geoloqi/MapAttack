@@ -18,7 +18,7 @@ class PdxPacman < Sinatra::Base
     if json['place']['extra']['active'] == '1'
       eat_dot json['place']['place_id']
       @player.add_points json['place']['extra']['points'] if json['place']['extra']['points']
-      send_message @player.geoloqi_id, "#{json['place']['name']}: You ate a dot! #{json['place']['extra']['points']} points"
+      send_message @player.geoloqi_id, "You ate a dot! #{json['place']['extra']['points']} points"
     end
     
 #    Browser.all.each do |browser|
