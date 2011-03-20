@@ -1,8 +1,9 @@
-class Score
+class Team
   include DataMapper::Resource
   property :id, Serial
-  property :points, Integer
+  property :name, String, :length => 255
   property :created_at, DateTime
   property :updated_at, DateTime
-  belongs_to :player
+  belongs_to :game
+  has n, :players
 end

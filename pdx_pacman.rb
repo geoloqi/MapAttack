@@ -1,6 +1,21 @@
+# ULTRA STEP: MAKE MULTIPLE LAYER SUPPORT = MULTIPLE GAME BOARDS
+
 class PdxPacman < Sinatra::Base
-  GEOLOQI_OAUTH_TOKEN = 'ba1-138a8e75c1359c5d651120ca760ba8cce20b5f1d'
-  set :public, File.join(Sinatra::Base.root, 'public')
+
+  get '/games/:layer_id/join' do
+    erb :join
+  end
+
+  post '/games/:layer_id/join.json' do
+    content_type 'application/json'
+
+    #  params[:layer_id] comes from JOIN button
+    # Also: params[:access_token]
+    #  generate shared_token
+    #  subscribe the player to the layer
+    #  pick a team and record
+    #  send message to user indicating team
+  end
 
   get '/?' do
     erb :'index'
@@ -14,17 +29,12 @@ class PdxPacman < Sinatra::Base
     @player.profile_image = json['user']['profile_image']
     @player.name = json['user']['name']
     @player.save
-    
+
     if json['place']['extra']['active'] == '1'
       eat_dot json['place']['place_id']
       @player.add_points json['place']['extra']['points'] if json['place']['extra']['points']
       send_message @player.geoloqi_id, "You ate a dot! #{json['place']['extra']['points']} points"
     end
-    
-#    Browser.all.each do |browser|
-#      im = Jabber::Simple.new "pacmap@jabber.org", "l1ghtbulb"
-#      im.deliver browser.jabber_id, {:type => 'pellet', :id => json['place']['place_id']}.to_json
-#    end
     ''
   end
 
@@ -55,7 +65,7 @@ class PdxPacman < Sinatra::Base
     request = Typhoeus::Request.new("https://api.geoloqi.com/1/message/send",
                                     :body    => {:user_id => user_id, :text => text}.to_json,
                                     :method  => :post,
-                                    :headers => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}", 
+                                    :headers => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}",
                                                  'Content-Type' => 'application/json'})
     hydra = Typhoeus::Hydra.new
     hydra.queue request
@@ -77,6 +87,10 @@ class PdxPacman < Sinatra::Base
   end
 
   def eat_dot(place_id)
+    # TODO: ADD IN TEAM AND PLAYER TO EXTRA JSON
+    # team_id  and user_id
+    # two teams only for now
+
     request = Typhoeus::Request.new("https://api.geoloqi.com/1/place/update/#{place_id}",
                                     :body    => {:extra => {:active => 0}}.to_json,
                                     :method  => :post,

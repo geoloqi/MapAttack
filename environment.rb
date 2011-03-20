@@ -10,10 +10,13 @@ Bundler.require
 class Sinatra::Base
   configure do
     set :root, File.join(File.expand_path(File.join(File.dirname(__FILE__))))
+    set :public, File.join(root, 'public')
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
+    DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || "sqlite3://#{File.join root, 'pdx_pacman.db'}"
     DataMapper.auto_upgrade!
   end
+  GEOLOQI_OAUTH_TOKEN = 'ba1-138a8e75c1359c5d651120ca760ba8cce20b5f1d'
 end
 
 require File.join(Sinatra::Base.root, 'pdx_pacman.rb')

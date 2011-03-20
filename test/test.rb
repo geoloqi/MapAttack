@@ -24,4 +24,10 @@ class ControllerTests < Test::Unit::TestCase
       assert last_response.body.length > 0
     end
   end
+
+  context "the trigger" do
+    
+  end
+
+
 end
