@@ -16,7 +16,7 @@ class Sinatra::Base
     DataMapper.setup :default, ENV['DATABASE_URL'] || "sqlite3://#{File.join root, 'pdx_pacman.db'}"
     DataMapper.auto_upgrade!
   end
-  GEOLOQI_OAUTH_TOKEN = 'ba1-138a8e75c1359c5d651120ca760ba8cce20b5f1d'
+  Geoloqi::OAUTH_TOKEN = 'ba1-138a8e75c1359c5d651120ca760ba8cce20b5f1d'
 end
 
 require File.join(Sinatra::Base.root, 'pdx_pacman.rb')

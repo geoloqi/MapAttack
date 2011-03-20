@@ -3,12 +3,12 @@
 class PdxPacman < Sinatra::Base
 
   get '/games/:layer_id/join' do
+    @game = Game.find_or_create :layer_id => params[:layer_id]
     erb :join
   end
 
   post '/games/:layer_id/join.json' do
     content_type 'application/json'
-
     #  params[:layer_id] comes from JOIN button
     # Also: params[:access_token]
     #  generate shared_token
@@ -33,9 +33,8 @@ class PdxPacman < Sinatra::Base
     if json['place']['extra']['active'] == '1'
       eat_dot json['place']['place_id']
       @player.add_points json['place']['extra']['points'] if json['place']['extra']['points']
-      send_message @player.geoloqi_id, "You ate a dot! #{json['place']['extra']['points']} points"
+      @player.send_message "You ate a dot! #{json['place']['extra']['points']} points"
     end
-    ''
   end
 
   get '/scores.json' do
@@ -62,43 +61,15 @@ class PdxPacman < Sinatra::Base
   private
 
   def send_message(user_id, text)
-    request = Typhoeus::Request.new("https://api.geoloqi.com/1/message/send",
-                                    :body    => {:user_id => user_id, :text => text}.to_json,
-                                    :method  => :post,
-                                    :headers => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}",
-                                                 'Content-Type' => 'application/json'})
-    hydra = Typhoeus::Hydra.new
-    hydra.queue request
-    hydra.run
-    puts "@@@@@@@@ SEND_MESSAGE RESPONSE: #{request.response.body.inspect}"
-    request.response.body
+
   end
 
   def get_pellets
-    # FIXME set layer_id dynamically  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    request = Typhoeus::Request.new("https://api.geoloqi.com/1/place/list",
-                          :body          => 'layer_id=1L6',
-                          :method        => :post,
-                          :headers       => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}"})
-    hydra = Typhoeus::Hydra.new
-    hydra.queue request
-    hydra.run
-    request.response.body
+    # FIXME set layer_id dynamically
+    raise 'go to Geoloqi::Place.list'
   end
 
   def eat_dot(place_id)
-    # TODO: ADD IN TEAM AND PLAYER TO EXTRA JSON
-    # team_id  and user_id
-    # two teams only for now
-
-    request = Typhoeus::Request.new("https://api.geoloqi.com/1/place/update/#{place_id}",
-                                    :body    => {:extra => {:active => 0}}.to_json,
-                                    :method  => :post,
-                                    :headers => {'Authorization' => "OAuth #{GEOLOQI_OAUTH_TOKEN}", 'Content-Type' => 'application/json'})
-    hydra = Typhoeus::Hydra.new
-    hydra.queue request
-    hydra.run
-    puts "@@@@@@@@ EAT_DOT RESPONSE: #{request.response.body.inspect}"
-    request.response.body
+    raise 'place/update'
   end
 end
