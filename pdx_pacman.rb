@@ -13,7 +13,7 @@ class PdxPacman < Sinatra::Base
     # Also: params[:access_token]
     #  generate shared_token
     #  subscribe the player to the layer
-    #  pick a team and record
+    #  pick a team and record: layer/subscription/:layer_id   :body => {:settings => {:team_id => @team.id}}
     #  send message to user indicating team
   end
 
@@ -29,7 +29,7 @@ class PdxPacman < Sinatra::Base
     @player.save
 
     if body.place.extra.active.to_i == 1
-      Geoloqi.post params[:oauth_token], "place/update/#{body.place.place_id}"
+      Geoloqi.post params[:oauth_token], "place/update/#{body.place.place_id}", {:extra => {:active => 0}}
       @player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
       @player.send_message params[:oauth_token], "You ate a dot! #{body.place.extra.points} points"
     end
@@ -37,9 +37,9 @@ class PdxPacman < Sinatra::Base
 
   get '/scores.json' do
     content_type 'application/json'
-    players = Player.all.collect{|player| {:geoloqi_id => player.id, 
-                                           :score => player.points_cache, 
-                                           :name => player.name, 
+    players = Player.all.collect{|player| {:geoloqi_id => player.id,
+                                           :score => player.points_cache,
+                                           :name => player.name,
                                            :profile_image => player.profile_image}}
     players.to_json
   end
