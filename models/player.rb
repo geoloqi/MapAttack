@@ -18,7 +18,7 @@ class Player
   end
   
   def send_message(oauth_token, text)
-    Geoloqi.send oauth_token, 'messages/send', text
+    Geoloqi.post oauth_token, 'messages/send', text
   end
   
 end

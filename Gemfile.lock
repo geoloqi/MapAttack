@@ -53,6 +53,7 @@ GEM
     sinatra (1.2.1)
       rack (~> 1.1)
       tilt (>= 1.2.2, < 2.0)
+    symboltable (1.0.0)
     tilt (1.2.2)
     typhoeus (0.2.4)
       mime-types
@@ -77,6 +78,7 @@ DEPENDENCIES
   ruby-debug19
   shotgun (= 0.9)
   sinatra (= 1.2.1)
+  symboltable (= 1.0.0)
   typhoeus (= 0.2.4)
   xmpp4r-simple (= 0.8.8)
   yajl-ruby (= 0.8.1)

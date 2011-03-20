@@ -22,54 +22,37 @@ class PdxPacman < Sinatra::Base
   end
 
   post '/trigger' do
-    puts "@@@@@@@@@@@@@ ENTERING TRIGGER"
-    json = JSON.parse request.body
-    puts "@@@@@@@@@@@@@ JSON: #{json.inspect}"
-    @player = Player.first_or_create :geoloqi_id => json['user']['user_id']
-    @player.profile_image = json['user']['profile_image']
-    @player.name = json['user']['name']
+    body = SymbolTable.new JSON.parse(request.body)
+    @player = Player.first_or_create :geoloqi_id => body.user.user_id
+    @player.profile_image = body.user.profile_image
+    @player.name = body.user.name
     @player.save
 
-    if json['place']['extra']['active'] == '1'
-      eat_dot json['place']['place_id']
-      @player.add_points json['place']['extra']['points'] if json['place']['extra']['points']
-      @player.send_message "You ate a dot! #{json['place']['extra']['points']} points"
+    if body.place.extra.active.to_i == 1
+      Geoloqi.post params[:oauth_token], "place/update/#{body.place.place_id}"
+      @player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
+      @player.send_message params[:oauth_token], "You ate a dot! #{body.place.extra.points} points"
     end
   end
 
   get '/scores.json' do
     content_type 'application/json'
-    players = Player.all.collect{|player| {:geoloqi_id => player.id, :score => player.points_cache, :name => player.name, :profile_image => player.profile_image}}
+    players = Player.all.collect{|player| {:geoloqi_id => player.id, 
+                                           :score => player.points_cache, 
+                                           :name => player.name, 
+                                           :profile_image => player.profile_image}}
     players.to_json
   end
 
   get '/setup.json' do
-    pellets_raw = get_pellets
-    json = JSON.parse get_pellets
+    response = Geoloqi.post params[:oauth_token], 'place/list', {:layer_id => layer_id}
     places = []
-
-    json['places'].each do |place|
-      places << {:place_id => place['place_id'], :latitude => place['latitude'], :longitude => place['longitude'], :active => place['extra']['active']}
+    response['places'].each do |place|
+      places << {:place_id => place['place_id'],
+                 :latitude => place['latitude'],
+                 :longitude => place['longitude'],
+                 :active => place['extra']['active']}
     end
     places.to_json
-  end
-
-  post '/register' do
-    @browser = Browser.first_or_create :jabber_id => params[:jabber_id]
-  end
-
-  private
-
-  def send_message(user_id, text)
-
-  end
-
-  def get_pellets
-    # FIXME set layer_id dynamically
-    raise 'go to Geoloqi::Place.list'
-  end
-
-  def eat_dot(place_id)
-    raise 'place/update'
   end
 end
