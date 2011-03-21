@@ -114,30 +114,56 @@ $(function(){
 			});
 		} else if(editingMode == "line") {
 			// If editing mode was previously "line", then finish this line and create all the pellets
-//			editingMode = false;
+			editingMode = false;
 		
 			if(lineMarkers.getLength() > 1) {
 				// Traverse each line segment and add evenly-spaced pellets along each
 				var lastMarker = null;
+				var distanceTraveled = 0;
+				var startingOffset = 0;
 				lineMarkers.forEach(function(marker, i){
 					if(i > 0) {
-						// calculate the distance from the last point to this point
-						
-						
+						// calculate heading from the last point to this point
+						var heading = google.maps.geometry.spherical.computeHeading(lastMarker.getPosition(), marker.getPosition());
+					
 						// start at the last marker, traverse 20m and create a new marker
-						
-						
-						
-						console.debug(i);
+						var distanceToTravel = google.maps.geometry.spherical.computeDistanceBetween(lastMarker.getPosition(), marker.getPosition());
+			
+						var j = 0;
+						while(distanceTraveled+startingOffset < distanceToTravel) {
+							// Calculate the new offset
+							var newPoint = google.maps.geometry.spherical.computeOffset(lastMarker.getPosition(), (distanceTraveled+startingOffset), heading);
+
+							var theNewMarker = new google.maps.Marker({
+								map: map,
+								position: newPoint,
+								draggable: true,
+								raiseOnDrag: false,
+								icon: markerIconActive
+							});
+							var circle = new google.maps.Circle({
+								map: map,
+								radius: defaultRadius,
+								strokeColor: "#9b3e82",
+								fillColor: "#ea75ca"
+							});
+							circle.bindTo('center', theNewMarker, 'position');
+
+							distanceTraveled += defaultRadius*2;
+						}
+
+						// Start the next line with the remainder of the previous path
+						startingOffset = distanceTraveled - distanceToTravel;
+						if(startingOffset < 0)
+							startingOffset += defaultRadius*2;
+						distanceTraveled = 0;
 					}
 					lastMarker = marker;
 				});		
 			}			
-/*
 			removeLineAndMarkers();
 			$("#editingCancel").attr({disabled: "disabled"});
 			$("#editingCancel").unbind("click");
-*/
 		}
 	});
 	
