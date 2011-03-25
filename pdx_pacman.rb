@@ -4,29 +4,47 @@ class PdxPacman < Sinatra::Base
 
   get '/games/:layer_id/join' do
     @game = Game.first :layer_id => params[:layer_id]
-#     if @game == nil
-#     	response = Geoloqi.post Geoloqi::OAUTH_TOKEN, 'layer/info', {:layer_id => params[:layer_id]}
-#     	@game.name = response.name
-#     	@game.save
-#     end
-    	response = Geoloqi.get Geoloqi::OAUTH_TOKEN, "layer/info/" + params[:layer_id]
-    	@game.name = response.name
-    	@game.save
+    if @game == nil
+      response = Geoloqi.get Geoloqi::OAUTH_TOKEN, 'layer/info/' + params[:layer_id]
+      @game = Game.create :layer_id => params[:layer_id], :name => response.name
+      @game.teams.create :name => "red"
+      @game.teams.create :name => "blue"
+    end
+    @oauth_token = params[:oauth_token]
     erb :join
   end
 
   post '/games/:layer_id/join.json' do
     content_type 'application/json'
-    @player = Player.first_or_create :geoloqi_id => body.user.user_id, :game => Game.first_or_create(:layer_id => body.layer.layer_id)
-    @player.profile_image = body.user.profile_image
-    @player.name = body.user.name
-    @player.save
-    
+
     #  params[:layer_id] comes from JOIN button
-    # Also: params[:access_token]
-    #  generate shared_token
+    #  params[:oauth_token] comes in via the query string from the iPhone app
+
+	user_profile = Geoloqi.get params[:oauth_token], 'account/profile'
+
+    @game = Game.first :layer_id => params[:layer_id]
+
+    #  generate shared token so we can retrieve their location for the map later
+	shared_token = Geoloqi.post params[:oauth_token], 'link/create', {:description => "Created for "+@game.name}
+
     #  subscribe the player to the layer
-    #  pick a team and record: layer/subscription/:layer_id   :body => {:settings => {:team_id => @team.id}}
+	#Geoloqi.get params[:oauth_token], 'layer/subscribe/' + params[:layer_id]
+
+    @player = Player.first :geoloqi_user_id => user_profile.user_id, :game => @game
+    if @player == nil
+    	@player = Player.new
+	    @player.profile_image = user_profile.profile_image
+	    @player.name = user_profile.name
+	    @player.geoloqi_user_id = user_profile.user_id
+	    @player.token = shared_token.token
+	    @player.game = @game
+	    # assign the player to a team 
+	    # TODO: store the team in the layer subscription?
+	    # layer/subscription/:layer_id   :body => {:settings => {:team_id => @team.id}}
+	    @player.team = @game.pick_team
+	    @player.save
+	end
+
     #  send message to user indicating team
   end
 
@@ -41,7 +59,7 @@ class PdxPacman < Sinatra::Base
     if body.place.extra.active.to_i == 1
       Geoloqi.post Geoloqi::OAUTH_TOKEN, "place/update/#{body.place.place_id}", {:extra => {:active => 0}}
       @player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
-      @player.send_message Geoloqi::OAUTH_TOKEN, "You ate a dot! #{body.place.extra.points} points"
+      @player.send_message "You ate a dot! #{body.place.extra.points} points"
     end
   end
 

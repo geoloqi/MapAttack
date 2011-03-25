@@ -1,0 +1,41 @@
+.btn {
+	background: url(img/button-sprite.png) repeat-x -30px;
+	border: 1px #ccc solid;
+	padding: 0 15px;
+	height: 40px;
+	font-family: "Lucida Grande", verdana, arial, sans-serif;
+	font-size: 15pt;
+	text-shadow: 1px 1px 0 #FFFFFF;
+	color: #333;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.btn.small {
+	padding: 0 12px;
+	height: 26px;
+	font-size: 12pt;
+}
+
+.btn:hover {
+	border: 1px #aaa solid;
+}	
+
+.btn-ok {
+	background: url(img/button-sprite.png) repeat-x;
+	border: 1px #0687ba solid;
+	font-weight: bold;
+	text-shadow: -1px -1px 0 #3399DD;
+	color: #fff;
+}
+
+.btn-ok:hover {
+	border: 1px #000033 solid;
+}	
+
+a.btn  {
+	padding-top: 6px;
+	padding-bottom: 6px;
+}

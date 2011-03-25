@@ -5,16 +5,53 @@
 		body {
 			padding: 0;
 			margin: 0;
+			font: 12pt Helvetica, sans-serif;
+			color: #222;
+			text-shadow: #ddd 0 1px;
+			background: #ccc; 
+		}
+		a img {
+			border: 0;
+		}
+		.game-title {
+			font-size: 15pt;
+			font-weight: bold;
+			text-align: center;
 		}
 	</style>
 	<meta name="viewport" content="initial-scale=1.0"> 
+	<link rel="stylesheet" type="text/css" href="/button.css" />
 	<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#join-btn").click(function(){
+				// $("#join-btn").hide();
+				// $("#join-btn-loader").show();
+				
+				$.post("/games/"+$("#layer_id").val()+"/join.json", {
+					oauth_token: $("#oauth_token").val()
+				}, function(data){
+					
+				}, "json");
+			});
+		});
+	</script>
 </head>
 <body>
 
-<%= @game.name %>
+<div style="padding: 8px;">
 
+	<div style="padding: 8px; margin-bottom: 15px;">
+		There should be some text here explaining how the game works! And also maybe a fun little picture.
+	</div>
+
+	<div style="text-align: center;">
+		<input type="button" class="btn btn-ok" value="Join Game" id="join-btn" />
+		<div style="display: none;" id="join-btn-loader">Waka waka...</div>
+		<input type="hidden" id="layer_id" value="<%= @game.layer_id %>" />
+		<input type="hidden" id="oauth_token" value="<%= @oauth_token %>" />
+	</div>
+</div>
 
 </body>
 </html>
