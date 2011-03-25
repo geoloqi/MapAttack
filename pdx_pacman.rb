@@ -3,7 +3,7 @@
 class PdxPacman < Sinatra::Base
 
   get '/games/:layer_id/join' do
-    @game = Game.find_or_create :layer_id => params[:layer_id]
+    @game = Game.first_or_create :layer_id => params[:layer_id]
     erb :join
   end
 
