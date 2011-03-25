@@ -6,14 +6,36 @@ module Geoloqi
                                      :method  => :post,
                                      :body => body.to_json,
                                      :headers => Geoloqi.headers(oauth_token)
+    obj = JSON.parse(response.body)
     puts response.body
-    SymbolTable.new JSON.parse(response.body)
+
+    if obj.is_a?(Array) == true
+      ret = []
+      obj.each do |el|
+        ret << SymbolTable.new(el)
+      end
+    else
+      ret = SymbolTable.new obj
+    end
+    
+    ret
   end
   def self.get(oauth_token, url)
     response = Typhoeus::Request.run API_URL+url,
                                      :method  => :get,
                                      :headers => Geoloqi.headers(oauth_token)
+    obj = JSON.parse(response.body)
     puts response.body
-    SymbolTable.new JSON.parse(response.body)
+
+    if obj.is_a?(Array) == true
+      ret = []
+      obj.each do |el|
+        ret << SymbolTable.new(el)
+      end
+    else
+      ret = SymbolTable.new obj
+    end
+    
+    ret
   end
 end
