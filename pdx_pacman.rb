@@ -10,6 +10,13 @@ class PdxPacman < Sinatra::Base
       @game.teams.create :name => "blue"
     end
     @oauth_token = params[:oauth_token]
+    
+    response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
+    
+    if response.error == false && response.subscription != false
+    	redirect "/game/" + params[:layer_id] + "/mobile"
+    end
+    
     erb :join
   end
 
@@ -45,6 +52,11 @@ class PdxPacman < Sinatra::Base
 	end
 
     #  send message to user indicating team
+  end
+
+  get '/game/:layer_id/mobile' do
+    @game = Game.first_or_create :layer_id => params[:layer_id]
+    erb :'mobile'
   end
 
   get '/game/:layer_id/?' do
