@@ -37,141 +37,7 @@
     		clear: both;
     	}
     </style>
-  <script type="text/javascript">
-
-  $(function(){
-  	var people = [];
-  	var pellets = [];
-	
-  	Phono.registerPlugin("audio", {
-  	    create: function(phono, config, callback) {callback({}); return {};}
-  	});
-  	var myOptions = {
-  		zoom: 17,
-  		center: new google.maps.LatLng(45.512, -122.643),
-  		mapTypeId: google.maps.MapTypeId.ROADMAP,
-  		mapTypeControl: false
-  	};
-
-  	var markerIconActive = new google.maps.MarkerImage("http://loqi.me/pdx-pacmap/dot.png");
-  	markerIconActive.anchor = new google.maps.Point(6, 6);
-
-  	var markerIconInactive = new google.maps.MarkerImage("http://loqi.me/pdx-pacmap/dot-grey.png");
-  	markerIconInactive.anchor = new google.maps.Point(6, 6);
-
-  	// Create the main map
-  	map = new google.maps.Map(document.getElementById("map"), myOptions);
-
-      // Load the initial game state and place the pins on the map. Sample data in pellets.json
-
-  	updatePellets();
-  	setInterval(updatePellets, 5000);
-
-  	updateScoreBoard();
-  	setInterval(updateScoreBoard, 5000);
-
-  	updateLocations();
-  	setInterval(updateLocations, 5000);
-
-  	function updatePellets() {
-  		$.ajax({ 
-  			url: "/games/<%= @game.layer_id %>/setup.json",
-  			dataType: 'json', 
-  			success: function(data) {
-  				// Remove all current pellets
-  				$(pellets).each(function(i, pellet) {
-  					pellet.marker.setMap(null);
-  				});
-  				pellets = [];
-				
-  				// Add the new pellets
-  				$(data).each(function(i, pellet) {
-  					if(pellet.active == 0) {
-  						markerIcon = markerIconInactive;
-  					} else {
-  						markerIcon = markerIconActive;
-  					}
-
-  					pellets.push({
-  						id: pellet.place_id, 
-  						marker: new google.maps.Marker({
-  							position:  new google.maps.LatLng(pellet.latitude, pellet.longitude),
-  							map: map,
-  							icon: markerIcon,
-  						})
-  					});
-  				});
-  		    }
-  		});
-  	}
-
-  	function updateScoreBoard() {
-  		$.ajax({
-  			url: "/scores.json",
-  			dataType: 'json',
-  			success: function(data) {
-  				//data = [{profile_image:"http://a2.twimg.com/profile_images/553711946/aaronpk-bw_normal.jpg", name:"aaronpk", score:100}];
-  				$("#scoreboard").html("");
-  				$(data).each(function(i, player){
-  					$("#scoreboard").append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
-  				});
-  			}
-  		});
-  	}
-
-  	function updateLocations() {
-  		// aaronpk o54E612
-  		// caseorganic rivQX0e
-  		// tylergillies SGYL8eW
-  		var tokens = ["o54E612", "AuoUt61"];
-  		$.ajax({
-  			url: "https://api.geoloqi.com/1/share/last?geoloqi_token=" + tokens.join(","),
-  			dataType: "jsonp",
-  			success: function(data) {
-  				$(data).each(function(i, p){
-  					receivePlayerData({id: p.username, latitude:p.location.position.latitude, longitude:p.location.position.longitude});
-  				});
-  			}
-  		});
-  	}
-
-    function deletePellet(id) {
-  	  $(pellets).each(function(i, pellet) {
-  		  if(pellet.id == id) {
-  		    console.log("Pellet id removal");
-        	pellet.marker.setMap(null);
-        }
-      });
-    }
-  
-    function receivePlayerData(serverMessage) {
-  		var id = serverMessage.id;
-  		var latitude = serverMessage.latitude;
-  		var longitude = serverMessage.longitude;
-  		var myLatLng = new google.maps.LatLng(latitude, longitude);
-  		var exists;
-  		for(i=0;i<people.length;i++){
-  			var person = people[i];
-  			if(person.id != id){
-			
-  			}else{
-  				exists = 1;
-  				console.log("moving existing user");
-  				person.marker.setPosition(myLatLng);
-  			}
-  		}
-  		if(!exists){
-  			//console.log("creating user");
-  			var marker = new google.maps.Marker({
-  				position: myLatLng,
-  				map: map
-  			});
-  			serverMessage.marker = marker;
-  			people.push(serverMessage);
-  		}
-    }
-  });
-  </script>
+  <script type="text/javascript" src="/game.js"></script>
   </head>
   <body>
     <table width="900">
@@ -200,5 +66,7 @@
     	  </td>
       </tr>
     </table>
+    
+    <input type="hidden" id="layer_id" value="<%=@game.layer_id%>" />
   </body>
 </html>
