@@ -46,12 +46,9 @@ var coins = {
   	updateGame();
   	setInterval(updateGame, 5000);
 
-  	updateLocations();
-  	setInterval(updateLocations, 5000);
-
-  	function updatePellets() {
+  	function updateGame() {
   		$.ajax({ 
-  			url: "/game/"+$("#layer_id").val()+"/setup.json",
+  			url: "/game/"+$("#layer_id").val()+"/status.json",
   			dataType: "json", 
   			success: function(data) {
   				// Add the new pellets
@@ -87,29 +84,13 @@ var coins = {
 	  				}
   				});
   				
-  				// Update the scoreboard
-  				
-  				
-  				
-  				// Move the player markers
-  				$(data.players).each(function(i, p){
-  					receivePlayerData({id: p.username, latitude:p.location.position.latitude, longitude:p.location.position.longitude});
+  				// Move the player markers and update the scoreboard
+  				$("#scoreboard").html("");
+  				$(data.players).each(function(i, player){
+  					$("#scoreboard").append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
+  					receivePlayerData({id: player.username, latitude:player.location.location.position.latitude, longitude:player.location.location.position.longitude});
   				});
   		    }
-  		});
-  	}
-
-  	function updateScoreBoard() {
-  		$.ajax({
-  			url: "/scores.json",
-  			dataType: 'json',
-  			success: function(data) {
-  				//data = [{profile_image:"http://a2.twimg.com/profile_images/553711946/aaronpk-bw_normal.jpg", name:"aaronpk", score:100}];
-  				$("#scoreboard").html("");
-  				$(data).each(function(i, player){
-  					$("#scoreboard").append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
-  				});
-  			}
   		});
   	}
 
