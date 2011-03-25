@@ -9,12 +9,13 @@ module Geoloqi
     obj = JSON.parse(response.body)
     puts response.body
 
-    if obj.is_a?(Array) == true
+    case obj
+    when Array
       ret = []
       obj.each do |el|
         ret << SymbolTable.new(el)
       end
-    else
+    when Hash
       ret = SymbolTable.new obj
     end
     
@@ -27,12 +28,13 @@ module Geoloqi
     obj = JSON.parse(response.body)
     puts response.body
 
-    if obj.is_a?(Array) == true
+    case obj
+    when Array
       ret = []
       obj.each do |el|
         ret << SymbolTable.new(el)
       end
-    else
+    when Hash
       ret = SymbolTable.new obj
     end
     
