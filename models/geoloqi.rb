@@ -7,4 +7,9 @@ module Geoloqi
                                                      :body    => body.to_json,
                                                      :headers => Geoloqi.headers(oauth_token))).body
   end
+  def self.get(oauth_token, url)
+    SymbolTable.new JSON.parse(Typhoeus::Request.run(API_URL+url,
+                                                     :method  => :get,
+                                                     :headers => Geoloqi.headers(oauth_token))).body
+  end
 end
