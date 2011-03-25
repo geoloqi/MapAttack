@@ -75,7 +75,7 @@
 
   	function updatePellets() {
   		$.ajax({ 
-  			url: "/setup.json",
+  			url: "/games/<%= @game.layer_id %>/setup.json",
   			dataType: 'json', 
   			success: function(data) {
   				// Remove all current pellets
