@@ -28,6 +28,6 @@ group :test do
   gem 'contest',   '0.1.2'
 end
 
-#group :production do
-#  gem 'dm-postgres-adapter', '1.1.0'
-#end
+group :production do
+  gem 'dm-postgres-adapter', '1.1.0'
+end
