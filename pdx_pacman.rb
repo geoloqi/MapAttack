@@ -13,11 +13,11 @@ class PdxPacman < Sinatra::Base
     
     response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
     
-    if response.error == false && response.subscription != false
+    if response.subscription.nil? || response.subscription == false
+	    erb :join
+	else
     	redirect "/game/" + params[:layer_id] + "/mobile"
     end
-    
-    erb :join
   end
 
   post '/game/:layer_id/join.json' do
@@ -34,7 +34,7 @@ class PdxPacman < Sinatra::Base
 	shared_token = Geoloqi.post params[:oauth_token], 'link/create', {:description => "Created for "+@game.name}
 
     #  subscribe the player to the layer
-	#Geoloqi.get params[:oauth_token], 'layer/subscribe/' + params[:layer_id]
+	Geoloqi.get params[:oauth_token], 'layer/subscribe/' + params[:layer_id]
 
     @player = Player.first :geoloqi_user_id => user_profile.user_id, :game => @game
     if @player == nil
@@ -103,7 +103,6 @@ class PdxPacman < Sinatra::Base
     @game.player.each do |player|
     	location = {}
     	response.each do |p|
-    	  puts p
     	  if p['username'] == player.name
     	    location = p
     	  end
