@@ -3,7 +3,15 @@
 class PdxPacman < Sinatra::Base
 
   get '/games/:layer_id/join' do
-    @game = Game.first_or_create :layer_id => params[:layer_id]
+    @game = Game.first :layer_id => params[:layer_id]
+#     if @game == nil
+#     	response = Geoloqi.post Geoloqi::OAUTH_TOKEN, 'layer/info', {:layer_id => params[:layer_id]}
+#     	@game.name = response.name
+#     	@game.save
+#     end
+    	response = Geoloqi.get Geoloqi::OAUTH_TOKEN, "layer/info/" + params[:layer_id]
+    	@game.name = response.name
+    	@game.save
     erb :join
   end
 
