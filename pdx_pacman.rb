@@ -31,7 +31,7 @@ class PdxPacman < Sinatra::Base
   end
 
   get '/games/:layer_id/?' do
-    @game = Game.first :layer_id => params[:layer_id]
+    @game = Game.first_or_create :layer_id => params[:layer_id]
     erb :'index'
   end
 
