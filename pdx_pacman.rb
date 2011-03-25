@@ -37,7 +37,9 @@ class PdxPacman < Sinatra::Base
 
   post '/trigger' do
     body = SymbolTable.new JSON.parse(request.body)
-
+    
+    @player = Player.first :game => Game.first(:layer_id => body.layer.layer_id), :geoloqi_user_id => body.user.user_id
+    
     if body.place.extra.active.to_i == 1
       Geoloqi.post Geoloqi::OAUTH_TOKEN, "place/update/#{body.place.place_id}", {:extra => {:active => 0}}
       @player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
