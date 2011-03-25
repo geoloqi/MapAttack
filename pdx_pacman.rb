@@ -9,6 +9,12 @@ class PdxPacman < Sinatra::Base
 
   post '/games/:layer_id/join.json' do
     content_type 'application/json'
+    
+    @player = Player.first_or_create :geoloqi_id => body.user.user_id, :game => Game.first_or_create(:layer_id => body.layer.layer_id)
+    @player.profile_image = body.user.profile_image
+    @player.name = body.user.name
+    @player.save
+    
     #  params[:layer_id] comes from JOIN button
     # Also: params[:access_token]
     #  generate shared_token
@@ -23,15 +29,11 @@ class PdxPacman < Sinatra::Base
 
   post '/trigger' do
     body = SymbolTable.new JSON.parse(request.body)
-    @player = Player.first_or_create :geoloqi_id => body.user.user_id
-    @player.profile_image = body.user.profile_image
-    @player.name = body.user.name
-    @player.save
 
     if body.place.extra.active.to_i == 1
-      Geoloqi.post params[:oauth_token], "place/update/#{body.place.place_id}", {:extra => {:active => 0}}
+      Geoloqi.post Geoloqi::OAUTH_TOKEN, "place/update/#{body.place.place_id}", {:extra => {:active => 0}}
       @player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
-      @player.send_message params[:oauth_token], "You ate a dot! #{body.place.extra.points} points"
+      @player.send_message Geoloqi::OAUTH_TOKEN, "You ate a dot! #{body.place.extra.points} points"
     end
   end
 
@@ -45,7 +47,7 @@ class PdxPacman < Sinatra::Base
   end
 
   get '/setup.json' do
-    response = Geoloqi.post params[:oauth_token], 'place/list', {:layer_id => layer_id}
+    response = Geoloqi.post Geoloqi::OAUTH_TOKEN, 'place/list', {:layer_id => layer_id}
     places = []
     response['places'].each do |place|
       places << {:place_id => place['place_id'],

@@ -9,6 +9,7 @@ class Player
   property :created_at, DateTime
   property :updated_at, DateTime
   belongs_to :team
+  belongs_to :game
   has n, :scores
 
   def add_points(points)

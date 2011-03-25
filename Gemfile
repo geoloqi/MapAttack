@@ -10,7 +10,8 @@ gem 'symboltable',   '1.0.0'
 #gem 'rest-client'
 
 group :development do
-  gem 'dm-sqlite-adapter', '1.1.0'
+  # gem 'dm-sqlite-adapter', '1.1.0'
+  gem 'dm-mysql-adapter'
   gem 'shotgun',           '0.9',    :require => nil
 
   platforms :mri_18 do

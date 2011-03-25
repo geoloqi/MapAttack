@@ -9,14 +9,17 @@ Bundler.require
 
 class Sinatra::Base
   configure do
-    set :root, File.join(File.expand_path(File.join(File.dirname(__FILE__))))
+    set :root, File.expand_path(File.join(File.dirname(__FILE__)))
     set :public, File.join(root, 'public')
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
+    
+    config_hash = YAML.load_file File.join(root, 'config.yml')
+    Geoloqi::OAUTH_TOKEN = config_hash['oauth_token']
+    
     DataMapper.finalize
-    DataMapper.setup :default, ENV['DATABASE_URL'] || "sqlite3://#{File.join root, 'pdx_pacman.db'}"
+    DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     DataMapper.auto_upgrade!
   end
-  Geoloqi::OAUTH_TOKEN = File.read File.join(root, 'oauth_token.txt')
 end
 
 require File.join(Sinatra::Base.root, 'pdx_pacman.rb')
