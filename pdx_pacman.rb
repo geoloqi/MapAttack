@@ -2,7 +2,7 @@
 
 class PdxPacman < Sinatra::Base
 
-  get '/games/:layer_id/join' do
+  get '/game/:layer_id/join' do
     @game = Game.first :layer_id => params[:layer_id]
     if @game == nil
       response = Geoloqi.get Geoloqi::OAUTH_TOKEN, 'layer/info/' + params[:layer_id]
@@ -14,7 +14,7 @@ class PdxPacman < Sinatra::Base
     erb :join
   end
 
-  post '/games/:layer_id/join.json' do
+  post '/game/:layer_id/join.json' do
     content_type 'application/json'
 
     #  params[:layer_id] comes from JOIN button
@@ -48,7 +48,7 @@ class PdxPacman < Sinatra::Base
     #  send message to user indicating team
   end
 
-  get '/games/:layer_id/?' do
+  get '/game/:layer_id/?' do
     @game = Game.first_or_create :layer_id => params[:layer_id]
     erb :'index'
   end
@@ -74,7 +74,7 @@ class PdxPacman < Sinatra::Base
     players.to_json
   end
 
-  get '/games/:layer_id/setup.json' do
+  get '/game/:layer_id/setup.json' do
     response = Geoloqi.post Geoloqi::OAUTH_TOKEN, 'place/list', {:layer_id => params[:layer_id]}
     places = []
     response['places'].each do |place|
