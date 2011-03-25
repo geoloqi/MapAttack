@@ -6,14 +6,14 @@ module Geoloqi
                                      :method  => :post,
                                      :body => body.to_json,
                                      :headers => Geoloqi.headers(oauth_token)
-    puts response.body.inspect
+    puts response.body
     SymbolTable.new JSON.parse(response.body)
   end
   def self.get(oauth_token, url)
     response = Typhoeus::Request.run API_URL+url,
                                      :method  => :get,
                                      :headers => Geoloqi.headers(oauth_token)
-    puts response.body.inspect
+    puts response.body
     SymbolTable.new JSON.parse(response.body)
   end
 end
