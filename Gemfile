@@ -7,11 +7,9 @@ gem 'dm-timestamps', '1.1.0'
 gem 'dm-migrations', '1.1.0'
 gem 'xmpp4r-simple', '0.8.8'
 gem 'symboltable',   '1.0.0'
-#gem 'rest-client'
+gem 'dm-mysql-adapter', '1.1.0'
 
 group :development do
-  # gem 'dm-sqlite-adapter', '1.1.0'
-  gem 'dm-mysql-adapter'
   gem 'shotgun',           '0.9',    :require => nil
 
   platforms :mri_18 do
@@ -26,8 +24,4 @@ end
 group :test do
   gem 'rack-test', '0.5.7', :require => 'rack/test'
   gem 'contest',   '0.1.2'
-end
-
-group :production do
-  gem 'dm-postgres-adapter', '1.1.0'
 end
