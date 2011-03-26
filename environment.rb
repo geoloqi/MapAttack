@@ -15,7 +15,7 @@ class Sinatra::Base
     
     config_hash = YAML.load_file File.join(root, 'config.yml')
     Geoloqi::OAUTH_TOKEN = config_hash['oauth_token']
-    
+
     DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     DataMapper.auto_upgrade!

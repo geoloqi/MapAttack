@@ -21,6 +21,7 @@ GEM
       dm-core (~> 1.1.0)
     do_mysql (0.10.3)
       data_objects (= 0.10.3)
+    kgio (2.3.3)
     linecache (0.43)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
@@ -28,6 +29,9 @@ GEM
     rack (1.2.2)
     rack-test (0.5.7)
       rack (>= 1.0)
+    rainbows (3.2.0)
+      rack (~> 1.1)
+      unicorn (~> 3.5)
     ruby-debug (0.10.4)
       columnize (>= 0.1)
       ruby-debug-base (~> 0.10.4.0)
@@ -53,6 +57,9 @@ GEM
     typhoeus (0.2.4)
       mime-types
       mime-types
+    unicorn (3.5.0)
+      kgio (~> 2.3)
+      rack
     xmpp4r (0.5)
     xmpp4r-simple (0.8.8)
       xmpp4r (>= 0.3.2)
@@ -68,6 +75,7 @@ DEPENDENCIES
   dm-mysql-adapter (= 1.1.0)
   dm-timestamps (= 1.1.0)
   rack-test (= 0.5.7)
+  rainbows (= 3.2.0)
   ruby-debug
   ruby-debug19
   shotgun (= 0.9)

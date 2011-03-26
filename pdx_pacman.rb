@@ -74,6 +74,11 @@ class PdxPacman < Sinatra::Base
       Geoloqi.post Geoloqi::OAUTH_TOKEN, "place/update/#{body.place.place_id}", {:extra => {:active => 0, :team => @player.team.name}}
       @player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
       @player.send_message "You ate a dot! #{body.place.extra.points} points"
+        #require 'socket'
+	#sock = UDPSocket.new
+	#data = '!say '+@player.name+' got '+body.place.extra.points+' points!'
+	#sock.send(data, 0, 'launchpad.pin13.net', 51776)
+	#sock.close
     end
   end
 

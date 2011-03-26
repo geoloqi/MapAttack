@@ -7,7 +7,7 @@ module Geoloqi
                                      :body => body.to_json,
                                      :headers => Geoloqi.headers(oauth_token)
     obj = JSON.parse(response.body)
-    puts response.body
+    # puts response.body
 
     case obj
     when Array
@@ -26,7 +26,7 @@ module Geoloqi
                                      :method  => :get,
                                      :headers => Geoloqi.headers(oauth_token)
     obj = JSON.parse(response.body)
-    puts response.body
+    # puts response.body
 
     case obj
     when Array
