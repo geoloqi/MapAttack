@@ -147,6 +147,7 @@ var playerIcons = {
   			var marker = new google.maps.Marker({
   				position: myLatLng,
   				map: map,
+  				title: serverMessage.id,
   				icon: playerIcons[serverMessage.team]
   			});
   			serverMessage.marker = marker;
