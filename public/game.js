@@ -92,15 +92,23 @@ var playerIcons = {
   				});
   				
   				// Move the player markers and update the scoreboard
-  				$("#scoreboard").html("");
+  				$("#scoreboard-red, #scoreboard-blue").html("");
+  				var total_score = {
+  					red: 0,
+  					blue: 0
+  				};
   				$(data.players).each(function(i, player){
-  					$("#scoreboard").append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
+  					$("#scoreboard-"+player.team).append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
+					total_score[player.team] += player.score;
   					receivePlayerData({
   						id: player.name, 
   						team: player.team,
   						latitude: player.location.location.position.latitude, 
-  						longitude: player.location.location.position.longitude});
+  						longitude: player.location.location.position.longitude
+  					});
   				});
+  				$("#score-red").html(total_score.red);
+  				$("#score-blue").html(total_score.blue);
 
 			  	setTimeout(updateGame, 5000);
   		    }

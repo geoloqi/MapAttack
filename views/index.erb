@@ -17,7 +17,6 @@
     		color: #f16d3e;
     	}
     	.player {
-    		background-color: #7f7f79;
     		padding: 3px;
     	}
     	.player .pic {
@@ -26,7 +25,7 @@
     	}
     	.player .name {
     		font-size: 12pt;
-    		color: #333; 
+    		color: #fff; 
     		font-weight: bold;
     	}
     	.player .score {
@@ -35,6 +34,25 @@
     	}
     	.player .end {
     		clear: both;
+    	}
+    	.red .player .score {
+	    	color: #FF8875;
+    	}
+    	.blue .player .score {
+    		color: #8BB7FF;
+    	}
+    	.team-header {
+    		margin: 3px 5px 5px 5px; 
+    		font-size: 16pt; 
+    		font-weight: bold;
+    	}
+    	.team-header.red {
+    		color: #FF8875;
+    		border-bottom: 1px #600 solid;
+    	}
+    	.team-header.blue {
+    		color: #8BB7FF;
+    		border-bottom: 1px #008 solid;
     	}
     </style>
   <script type="text/javascript" src="/game.js"></script>
@@ -51,10 +69,19 @@
     	  <td width="600">
     		  <div id="map" style="width: 100%; height: 500px;"></div>
     	  </td>
-    	  <td valign="top">
-    		  <div style="margin-bottom: 5px;"><img src="/img/leaderboard-text.png" /></div>
-    		  <div id="scoreboard">
+    	  <td valign="top" width="150" style="background-color: #400;">
+    		  <div class="team-header red">
+    		  	<div style="float: right; margin-right: 15px;" id="score-red"></div>
+    		  	Red
     		  </div>
+    		  <div id="scoreboard-red" class="red"></div>
+    	  </td>
+    	  <td valign="top" width="150" style="background-color: #004;">
+    		  <div class="team-header blue">
+    		  	<div style="float: right; margin-right: 15px;" id="score-blue"></div>
+    		  	Blue
+    		  </div>
+    		  <div id="scoreboard-blue" class="blue"></div>
     	  </td>
       </tr>
     </table>
