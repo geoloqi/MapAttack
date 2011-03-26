@@ -52,7 +52,7 @@ class PdxPacman < Sinatra::Base
 	end
 
     # send message to user indicating team
-    @player.send_message "You're on the " + @player.team.name + " team!"
+    @player.send_message("You're on the " + @player.team.name + " team!").to_json
   end
 
   get '/game/:layer_id/mobile' do
