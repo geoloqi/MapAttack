@@ -19,7 +19,7 @@ class Player
   end
   
   def send_message(text)
-    Geoloqi.post Geoloqi::OAUTH_TOKEN, 'messages/send', :user_id => geoloqi_user_id, :text => text
+    Geoloqi.post Geoloqi::OAUTH_TOKEN, 'message/send', :user_id => geoloqi_user_id, :text => text
   end
   
 end
