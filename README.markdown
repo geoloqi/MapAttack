@@ -15,3 +15,21 @@ Install
 6) Point your browser to http://localhost:9393
 
 For fast, non-development: bundle exec rackup -p 9393
+
+To run tests: bundle exec test/test.rb
+
+config.yml example:
+---
+development: 
+  database:
+    adapter: mysql
+    username: user
+    password: pass
+    database: pacmap
+    host: localhost
+  oauth_token: 1234blahblah
+test:
+  database:
+    adapter: sqlite
+    database: test.sqlite3
+  oauth_token: phonytokendontusearealone
