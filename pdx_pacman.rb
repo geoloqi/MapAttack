@@ -101,7 +101,7 @@ class PdxPacman < Sinatra::Base
     response = Geoloqi.get Geoloqi::OAUTH_TOKEN, 'share/last?geoloqi_token=,' + @tokens.join(",")
 
     players = []
-    @game.player.each do |player|
+    @game.player(:order => :points_cache.desc).each do |player|
     	location = {}
     	response.each do |p|
     	  if p['username'] == player.name
