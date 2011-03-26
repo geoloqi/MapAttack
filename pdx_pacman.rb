@@ -51,7 +51,8 @@ class PdxPacman < Sinatra::Base
 	    @player.save
 	end
 
-    #  send message to user indicating team
+    # send message to user indicating team
+    @player.send_message "You're on the " + @player.team.name + " team!"
   end
 
   get '/game/:layer_id/mobile' do
@@ -111,6 +112,7 @@ class PdxPacman < Sinatra::Base
     	players << {:geoloqi_id => player.id,
 	                   :score => player.points_cache,
 	                   :name => player.name,
+	                   :team => player.team.name,
 	                   :profile_image => player.profile_image,
 	                   :location => location}
     end

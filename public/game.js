@@ -26,6 +26,14 @@ var coins = {
 	}
 };
 
+var playerIconSize = new google.maps.Size(32, 32);
+var playerIconOrigin = new google.maps.Point(0,0);
+var playerIconAnchor = new google.maps.Point(16, 32);
+var playerIcons = {
+	blue: new google.maps.MarkerImage("http://www.google.com/intl/en_us/mapfiles/ms/icons/blue-dot.png", playerIconSize, playerIconOrigin, playerIconAnchor),
+	red: new google.maps.MarkerImage("http://www.google.com/intl/en_us/mapfiles/ms/icons/red-dot.png", playerIconSize, playerIconOrigin, playerIconAnchor)
+}
+
 
   $(function(){
   	var people = [];
@@ -87,7 +95,11 @@ var coins = {
   				$("#scoreboard").html("");
   				$(data.players).each(function(i, player){
   					$("#scoreboard").append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
-  					receivePlayerData({id: player.username, latitude:player.location.location.position.latitude, longitude:player.location.location.position.longitude});
+  					receivePlayerData({
+  						id: player.name, 
+  						team: player.team,
+  						latitude: player.location.location.position.latitude, 
+  						longitude: player.location.location.position.longitude});
   				});
 
 			  	setTimeout(updateGame, 5000);
@@ -98,7 +110,7 @@ var coins = {
     function deletePellet(id) {
   	  $(pellets).each(function(i, pellet) {
   		  if(pellet.id == id) {
-  		    console.log("Pellet id removal");
+  		    // console.log("Pellet id removal");
         	pellet.marker.setMap(null);
         }
       });
@@ -116,7 +128,7 @@ var coins = {
 			
   			}else{
   				exists = 1;
-  				console.log("moving existing user");
+  				// console.log(serverMessage);
   				person.marker.setPosition(myLatLng);
   			}
   		}
@@ -124,7 +136,8 @@ var coins = {
   			//console.log("creating user");
   			var marker = new google.maps.Marker({
   				position: myLatLng,
-  				map: map
+  				map: map,
+  				icon: playerIcons[serverMessage.team]
   			});
   			serverMessage.marker = marker;
   			people.push(serverMessage);
