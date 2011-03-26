@@ -44,7 +44,6 @@ var coins = {
       // Load the initial game state and place the pins on the map. Sample data in pellets.json
 
   	updateGame();
-  	setInterval(updateGame, 5000);
 
   	function updateGame() {
   		$.ajax({ 
@@ -90,6 +89,8 @@ var coins = {
   					$("#scoreboard").append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
   					receivePlayerData({id: player.username, latitude:player.location.location.position.latitude, longitude:player.location.location.position.longitude});
   				});
+
+			  	setTimeout(updateGame, 5000);
   		    }
   		});
   	}
