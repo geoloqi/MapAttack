@@ -23,6 +23,7 @@ group :development do
 end
 
 group :test do
-  gem 'rack-test', '0.5.7', :require => 'rack/test'
-  gem 'contest',   '0.1.2'
+  gem 'rack-test',         '0.5.7', :require => 'rack/test'
+  gem 'contest',           '0.1.2'
+  gem 'dm-sqlite-adapter', '1.1.0'
 end

@@ -4,6 +4,7 @@ raise 'Forget it.' if ENV['RACK_ENV'] == 'production'
 require File.join(File.expand_path(File.dirname(__FILE__)), '..', 'environment.rb')
 require 'test/unit'
 Bundler.require :test
+DataMapper.auto_migrate!
 
 class Test::Unit::TestCase
   include Rack::Test::Methods
@@ -17,17 +18,11 @@ class ControllerTests < Test::Unit::TestCase
     PdxPacman
   end
 
-  context 'the index' do
-    test 'loads correctly' do
-      get '/'
+  context "a game" do
+    test "loads the join page" do
+      get 'game/test/join'
       assert last_response.ok?
-      assert last_response.body.length > 0
+      assert last_response.body =~ /Join Game/
     end
   end
-
-  context "the trigger" do
-    
-  end
-
-
 end

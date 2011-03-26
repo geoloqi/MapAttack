@@ -17,7 +17,7 @@ class Sinatra::Base
     Geoloqi::OAUTH_TOKEN = config_hash['oauth_token']
 
     DataMapper.finalize
-    DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
+    DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash[environment.to_s]['database']
     DataMapper.auto_upgrade!
     DataMapper::Model.raise_on_save_failure = true
   end

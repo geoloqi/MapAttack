@@ -1,3 +1,4 @@
 pdx_pacman.db
 config.yml
 .DS_Store
+test.sqlite3
