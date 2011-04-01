@@ -1,7 +1,4 @@
-case RUBY_VERSION[0..2]
-  when '1.8' then $KCODE = "u"
-  when '1.9' then Encoding.default_internal = 'UTF-8'
-end
+Encoding.default_internal = 'UTF-8'
 require "rubygems"
 require "bundler"
 Bundler.setup
