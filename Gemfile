@@ -8,7 +8,7 @@ gem 'dm-migrations',    '1.1.0'
 gem 'xmpp4r-simple',    '0.8.8'
 gem 'symboltable',      '1.0.0'
 gem 'dm-mysql-adapter', '1.1.0'
-gem 'rainbows',         '3.2.0'
+gem 'thin',             '1.2.11'
 
 group :development do
   gem 'shotgun', '0.9', :require => nil
