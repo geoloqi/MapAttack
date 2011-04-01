@@ -1,7 +1,7 @@
 
 class PdxPacman < Sinatra::Base
 
-  get '/game/:layer_id/join' do
+  aget '/game/:layer_id/join' do
     @game = Game.first :layer_id => params[:layer_id]
     if @game == nil
       response = Geoloqi.get Geoloqi::OAUTH_TOKEN, 'layer/info/' + params[:layer_id]
@@ -20,7 +20,7 @@ class PdxPacman < Sinatra::Base
     end
   end
 
-  post '/game/:layer_id/join.json' do
+  apost '/game/:layer_id/join.json' do
     content_type 'application/json'
 
     #  params[:layer_id] comes from JOIN button
@@ -55,17 +55,17 @@ class PdxPacman < Sinatra::Base
     @player.send_message("You're on the " + @player.team.name + " team!").to_json
   end
 
-  get '/game/:layer_id/mobile' do
+  aget '/game/:layer_id/mobile' do
     @game = Game.first_or_create :layer_id => params[:layer_id]
     erb :'mobile'
   end
 
-  get '/game/:layer_id/?' do
+  aget '/game/:layer_id/?' do
     @game = Game.first_or_create :layer_id => params[:layer_id]
     erb :'index'
   end
 
-  post '/trigger' do
+  apost '/trigger' do
     body = SymbolTable.new JSON.parse(request.body)
     
     @player = Player.first :game => Game.first(:layer_id => body.layer.layer_id), :geoloqi_user_id => body.user.user_id
@@ -82,7 +82,7 @@ class PdxPacman < Sinatra::Base
     end
   end
 
-  get '/game/:layer_id/status.json' do
+  aget '/game/:layer_id/status.json' do
     # content_type 'application/json'
 
     response = Geoloqi.post Geoloqi::OAUTH_TOKEN, 'place/list', {:layer_id => params[:layer_id]}

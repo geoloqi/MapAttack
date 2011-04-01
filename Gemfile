@@ -1,5 +1,6 @@
 source 'http://gems.rubyforge.org'
 gem 'sinatra',          '1.2.1', :require => 'sinatra/base'
+gem 'async_sinatra',    '0.5.0', :require => 'sinatra/async'
 gem 'yajl-ruby',        '0.8.1', :require => 'yajl/json_gem'
 gem 'typhoeus',         '0.2.4'
 gem 'dm-core',          '1.1.0'
@@ -9,7 +10,7 @@ gem 'xmpp4r-simple',    '0.8.8'
 gem 'symboltable',      '1.0.0'
 gem 'dm-mysql-adapter', '1.1.0'
 gem 'thin',             '1.2.11'
-gem 'em-synchrony',     '0.2.0'
+gem 'em-synchrony',     '0.2.0', :require => 'em-synchrony/em-http'
 
 group :development do
   gem 'shotgun', '0.9', :require => nil

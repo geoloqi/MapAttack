@@ -3,6 +3,9 @@ GEM
   specs:
     addressable (2.2.4)
     archive-tar-minitar (0.5.2)
+    async_sinatra (0.5.0)
+      rack (>= 1.2.1)
+      sinatra (>= 1.0)
     columnize (0.3.2)
     contest (0.1.2)
     daemons (1.1.0)
@@ -75,6 +78,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  async_sinatra (= 0.5.0)
   contest (= 0.1.2)
   dm-core (= 1.1.0)
   dm-migrations (= 1.1.0)
