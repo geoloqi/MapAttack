@@ -22,19 +22,14 @@ class PdxPacman < Sinatra::Base
 
   apost '/game/:layer_id/join.json' do
     content_type 'application/json'
-
-    #  params[:layer_id] comes from JOIN button
-    #  params[:oauth_token] comes in via the query string from the iPhone app
-
-	user_profile = Geoloqi.get params[:oauth_token], 'account/profile'
-
+	  user_profile = Geoloqi.get params[:oauth_token], 'account/profile'
     @game = Game.first :layer_id => params[:layer_id]
 
     #  generate shared token so we can retrieve their location for the map later
-	shared_token = Geoloqi.post params[:oauth_token], 'link/create', {:description => "Created for "+@game.name}
+	  shared_token = Geoloqi.post params[:oauth_token], 'link/create', {:description => "Created for "+@game.name}
 
     #  subscribe the player to the layer
-	Geoloqi.get params[:oauth_token], 'layer/subscribe/' + params[:layer_id]
+	  Geoloqi.get params[:oauth_token], 'layer/subscribe/' + params[:layer_id]
 
     @player = Player.first :geoloqi_user_id => user_profile.user_id, :game => @game
     if @player == nil
@@ -74,11 +69,6 @@ class PdxPacman < Sinatra::Base
       Geoloqi.post Geoloqi::OAUTH_TOKEN, "place/update/#{body.place.place_id}", {:extra => {:active => 0, :team => @player.team.name}}
       @player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
       @player.send_message "You ate a dot! #{body.place.extra.points} points"
-        #require 'socket'
-	#sock = UDPSocket.new
-	#data = '!say '+@player.name+' got '+body.place.extra.points+' points!'
-	#sock.send(data, 0, 'launchpad.pin13.net', 51776)
-	#sock.close
     end
   end
 
