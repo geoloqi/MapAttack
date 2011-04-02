@@ -1,4 +1,4 @@
-Encoding.default_internal = 'UTF-8'
+# Encoding.default_internal = 'UTF-8'
 require "rubygems"
 require "bundler"
 Bundler.setup
@@ -15,7 +15,7 @@ class Sinatra::Base
 
     DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash[environment.to_s]['database']
-    DataMapper.auto_upgrade!
+    # DataMapper.auto_upgrade!
     DataMapper::Model.raise_on_save_failure = true
   end
 end

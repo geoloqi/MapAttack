@@ -2,6 +2,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     addressable (2.2.4)
+    bouncy-castle-java (1.5.0145.2)
     columnize (0.3.2)
     contest (0.1.2)
     data_objects (0.10.3)
@@ -37,12 +38,15 @@ GEM
       jdbc-sqlite3 (>= 3.5.8)
     jdbc-mysql (5.1.13)
     jdbc-sqlite3 (3.6.14.2.056-java)
+    jruby-openssl (0.7.3)
+      bouncy-castle-java
     json_pure (1.5.1)
     linecache (0.43)
     mime-types (1.16)
     rack (1.2.2)
     rack-test (0.5.7)
       rack (>= 1.0)
+    rake (0.8.7)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     ruby-debug (0.10.4)
@@ -73,8 +77,10 @@ DEPENDENCIES
   dm-mysql-adapter (= 1.1.0)
   dm-sqlite-adapter (= 1.1.0)
   dm-timestamps (= 1.1.0)
+  jruby-openssl
   json_pure (= 1.5.1)
   rack-test (= 0.5.7)
+  rake
   rest-client (= 1.6.1)
   ruby-debug
   shotgun (= 0.9)

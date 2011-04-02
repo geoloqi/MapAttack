@@ -1,14 +1,15 @@
 module Geoloqi
   API_URL = 'https://api.geoloqi.com/1/'
   def self.headers(oauth_token); {'Authorization' => "OAuth #{oauth_token}", 'Content-Type' => 'application/json'} end
+  
+  def self.run(meth, oauth_token, url, body=nil)
+    args = {:method => meth.to_sym, :url => API_URL+url, :headers => headers(oauth_token)}
+    args.merge!(:body => body.to_json) if body
+    JSON.response RestClient::Request.execute(args)
+  end
+  
   def self.post(oauth_token, url, body)
-    response = Typhoeus::Request.run API_URL+url,
-                                     :method  => :post,
-                                     :body => body.to_json,
-                                     :headers => Geoloqi.headers(oauth_token)
-    obj = JSON.parse(response.body)
-    # puts response.body
-
+    response = run :post, oauth_token, url, body
     case obj
     when Array
       ret = []
@@ -18,16 +19,11 @@ module Geoloqi
     when Hash
       ret = SymbolTable.new obj
     end
-    
     ret
   end
+  
   def self.get(oauth_token, url)
-    response = Typhoeus::Request.run API_URL+url,
-                                     :method  => :get,
-                                     :headers => Geoloqi.headers(oauth_token)
-    obj = JSON.parse(response.body)
-    # puts response.body
-
+    response = run :get, oauth_token, url
     case obj
     when Array
       ret = []
@@ -37,7 +33,6 @@ module Geoloqi
     when Hash
       ret = SymbolTable.new obj
     end
-    
     ret
   end
 end

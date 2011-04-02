@@ -1,8 +1,7 @@
 source :rubyforge
+gem 'jruby-openssl'
 gem 'sinatra',          '1.2.1', :require => 'sinatra/base'
-gem 'json_pure',        '1.5.1'
-# gem 'yajl-ruby',        '0.8.1', :require => 'yajl/json_gem'
-# gem 'typhoeus',         '0.2.4'
+gem 'json_pure',        '1.5.1', :require => 'json'
 gem 'rest-client',      '1.6.1'
 gem 'dm-core',          '1.1.0'
 gem 'dm-timestamps',    '1.1.0'
@@ -10,6 +9,7 @@ gem 'dm-migrations',    '1.1.0'
 gem 'xmpp4r-simple',    '0.8.8'
 gem 'symboltable',      '1.0.0'
 gem 'dm-mysql-adapter', '1.1.0'
+gem 'rake'
 
 group :development do
   gem 'shotgun',        '0.9',    :require => nil
