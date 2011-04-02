@@ -1,7 +1,9 @@
 source :rubyforge
 gem 'sinatra',          '1.2.1', :require => 'sinatra/base'
-gem 'yajl-ruby',        '0.8.1', :require => 'yajl/json_gem'
-gem 'typhoeus',         '0.2.4'
+gem 'json_pure',        '1.5.1'
+# gem 'yajl-ruby',        '0.8.1', :require => 'yajl/json_gem'
+# gem 'typhoeus',         '0.2.4'
+gem 'rest-client',      '1.6.1'
 gem 'dm-core',          '1.1.0'
 gem 'dm-timestamps',    '1.1.0'
 gem 'dm-migrations',    '1.1.0'

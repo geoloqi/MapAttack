@@ -1,1 +1,1 @@
-rvm use 1.9.2@PacMap --create
+rvm use jruby-1.6.0@PacMap --create
