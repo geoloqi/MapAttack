@@ -43,6 +43,8 @@ GEM
     json_pure (1.5.1)
     linecache (0.43)
     mime-types (1.16)
+    mizuno (0.4.0)
+      rack (>= 1.0.0)
     rack (1.2.2)
     rack-test (0.5.7)
       rack (>= 1.0)
@@ -79,6 +81,7 @@ DEPENDENCIES
   dm-timestamps (= 1.1.0)
   jruby-openssl
   json_pure (= 1.5.1)
+  mizuno
   rack-test (= 0.5.7)
   rake
   rest-client (= 1.6.1)

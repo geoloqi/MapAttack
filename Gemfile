@@ -10,6 +10,7 @@ gem 'xmpp4r-simple',    '0.8.8'
 gem 'symboltable',      '1.0.0'
 gem 'dm-mysql-adapter', '1.1.0'
 gem 'rake'
+gem 'mizuno'
 
 group :development do
   gem 'shotgun',        '0.9',    :require => nil
