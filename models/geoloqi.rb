@@ -7,7 +7,7 @@ module Geoloqi
     args.merge!(:body => body.to_json) if body
     JSON.response RestClient::Request.execute(args)
   end
-  
+
   def self.post(oauth_token, url, body)
     response = run :post, oauth_token, url, body
     case obj
