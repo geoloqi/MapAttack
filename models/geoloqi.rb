@@ -1,3 +1,4 @@
+RestClient.log = STDOUT
 module Geoloqi
   API_URL = 'https://api.geoloqi.com/1/'
   def self.headers(oauth_token); {'Authorization' => "OAuth #{oauth_token}", 'Content-Type' => 'application/json'} end
