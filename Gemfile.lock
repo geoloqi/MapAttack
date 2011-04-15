@@ -74,9 +74,6 @@ GEM
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     tilt (1.2.2)
-    xmpp4r (0.5)
-    xmpp4r-simple (0.8.8)
-      xmpp4r (>= 0.3.2)
 
 PLATFORMS
   java
@@ -100,4 +97,3 @@ DEPENDENCIES
   sinatra (= 1.2.1)
   symboltable (= 1.0.0)
   thin
-  xmpp4r-simple (= 0.8.8)
