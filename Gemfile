@@ -9,6 +9,8 @@ gem 'xmpp4r-simple',    '0.8.8'
 gem 'symboltable',      '1.0.0'
 gem 'dm-mysql-adapter', '1.1.0'
 gem 'rack-fiber_pool',  '0.9.1', :require => 'rack/fiber_pool'
+gem 'em-synchrony',     '0.2.0'
+gem 'thin'
 gem 'rake',             '0.8.7', :require => nil
 
 group :development do
