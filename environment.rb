@@ -6,6 +6,7 @@ Bundler.require
 
 class Sinatra::Base
   configure do
+    use Rack::FiberPool
     set :root, File.expand_path(File.join(File.dirname(__FILE__)))
     set :public, File.join(root, 'public')
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }

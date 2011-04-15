@@ -8,7 +8,8 @@ gem 'dm-migrations',    '1.1.0'
 gem 'xmpp4r-simple',    '0.8.8'
 gem 'symboltable',      '1.0.0'
 gem 'dm-mysql-adapter', '1.1.0'
-gem 'rake'
+gem 'rack-fiber_pool',  '0.9.1', :require => 'rack/fiber_pool'
+gem 'rake',             '0.8.7', :require => nil
 
 group :development do
   gem 'shotgun',        '0.9',    :require => nil

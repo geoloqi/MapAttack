@@ -43,6 +43,7 @@ GEM
       ruby_core_source (>= 0.1.4)
     mime-types (1.16)
     rack (1.2.2)
+    rack-fiber_pool (0.9.1)
     rack-test (0.5.7)
       rack (>= 1.0)
     rake (0.8.7)
@@ -81,8 +82,9 @@ DEPENDENCIES
   dm-sqlite-adapter (= 1.1.0)
   dm-timestamps (= 1.1.0)
   json_pure (= 1.5.1)
+  rack-fiber_pool (= 0.9.1)
   rack-test (= 0.5.7)
-  rake
+  rake (= 0.8.7)
   rest-client (= 1.6.1)
   ruby-debug19 (= 0.11.6)
   shotgun (= 0.9)
