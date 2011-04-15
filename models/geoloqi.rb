@@ -5,9 +5,9 @@ module Geoloqi
   def self.run(meth, oauth_token, url, payload='')
     JSON.parse RestClient::Request.execute(:method => meth.to_sym, :url => API_URL+url, :headers => headers(oauth_token), :payload => (payload == '' ? '' : payload.to_json))
   end
-  
-  def self.post(oauth_token, url, payload)
-    obj = run :post, oauth_token, url, payload
+
+  def self.post(oauth_token, url, body)
+    obj = run :post, oauth_token, url, body
     case obj
     when Array
       ret = []
