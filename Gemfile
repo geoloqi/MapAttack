@@ -1,5 +1,4 @@
 source :rubyforge
-gem 'jruby-openssl'
 gem 'sinatra',          '1.2.1', :require => 'sinatra/base'
 gem 'json_pure',        '1.5.1', :require => 'json'
 gem 'rest-client',      '1.6.1'
@@ -13,7 +12,7 @@ gem 'rake'
 
 group :development do
   gem 'shotgun',        '0.9',    :require => nil
-  gem 'ruby-debug'
+  gem 'ruby-debug19',   '0.11.6', :require => nil
 end
 
 group :test do
