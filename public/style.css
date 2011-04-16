@@ -366,7 +366,7 @@ Small Screen/Mobile Styles
 	
 	#scoreboard {
 		background: #e1e1e1;
-		height: 67px;
+		height: 58px;
 		width:238px;
 		margin: 0 auto;
 	}
@@ -380,8 +380,8 @@ Small Screen/Mobile Styles
 		padding: 26px 21px 2px 4px;
 		text-align: center;
 		position: absolute;
-		top:22px;
-		left: -33px;
+		top:-18px;
+		left: -41px;
 		text-shadow: 0 -1px 0px #8c2824;
 		line-height: 45px;
 	}
@@ -423,8 +423,8 @@ Small Screen/Mobile Styles
 		padding: 26px 1px 2px 23px;
 		text-align: center;
 		position: absolute;
-		top:22px;
-		right: -33px;
+		top:-18px;
+		right: -39px;
 		text-shadow: 0 -1px 0px #183c6a;
 		line-height: 45px;
 	
