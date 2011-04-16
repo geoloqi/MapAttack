@@ -83,7 +83,7 @@ class PdxPacman < Sinatra::Base
 
     response = Geoloqi.post Geoloqi::OAUTH_TOKEN, 'place/list', {:layer_id => params[:layer_id]}
 
-	@game = Game.first :layer_id => params[:layer_id]
+    @game = Game.first :layer_id => params[:layer_id]
 
     places = []
     response['places'].each do |place|
