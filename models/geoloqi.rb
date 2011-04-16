@@ -2,7 +2,7 @@ require "base64"
 
 RestClient.log = STDOUT
 module Geoloqi
-  API_URL = 'http://api.geoloqi.local/1/'
+  API_URL = 'https://api.geoloqi.com/1/'
   def self.headers(oauth_token)
     {'Authorization' => "OAuth #{oauth_token}", 'Content-Type' => 'application/json'} 
   end
