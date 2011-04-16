@@ -8,4 +8,3 @@ gems/*
 cache/*
 bin/*
 specifications/*
-public/img/*.png
