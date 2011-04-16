@@ -47,7 +47,7 @@ html, body {
 	overflow: hidden;
 }
 
-#google-map {
+#map {
 	height: 100%;
 	width: 100%;
 	position: absolute;
@@ -59,9 +59,9 @@ html, body {
 	background: blue;
 	position: absolute;
 	z-index: 2;
-	top:214	px;
-	right:40px;
-	width:180px;
+	top: 170px;
+	right: 40px;
+	width: 180px;
 	background: url('img/blue-bg.png');
 }
 
@@ -69,7 +69,7 @@ html, body {
 	background: red;
 	position: absolute;
 	z-index: 2;
-	top: 215px;
+	top: 170px;
 	left: 40px;
 	width:180px;
 	background: url('img/red-bg.png');

@@ -2,98 +2,107 @@
   <head>
   	<title>PacMap</title>
   	<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
-  	<script src="http://s.phono.com/releases/0.1/jquery.phono.js"></script>
   	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <style type="text/css">
-    	body {
-    		background-color: #53504e;
-    		font-family: Helvetica, sans-serif;
-    	}
-    	table {
-    		background-color: #3c3c39;
-    		margin-top: 7px;
-    	}
-    	a {
-    		color: #f16d3e;
-    	}
-    	.player {
-    		padding: 3px;
-    	}
-    	.player .pic {
-    		float: left;
-    		margin-right: 5px;
-    	}
-    	.player .name {
-    		font-size: 12pt;
-    		color: #fff; 
-    		font-weight: bold;
-    	}
-    	.player .score {
-    		color: #fffa48;
-    		font-size: 16pt;
-    	}
-    	.player .end {
-    		clear: both;
-    	}
-    	.red .player .score {
-	    	color: #FF8875;
-    	}
-    	.blue .player .score {
-    		color: #8BB7FF;
-    	}
-    	.team-header {
-    		margin: 3px 5px 5px 5px; 
-    		font-size: 16pt; 
-    		font-weight: bold;
-    	}
-    	.team-header.red {
-    		color: #FF8875;
-    		border-bottom: 1px #600 solid;
-    	}
-    	.team-header.blue {
-    		color: #8BB7FF;
-    		border-bottom: 1px #008 solid;
-    	}
-    </style>
-  <script type="text/javascript" src="/game.js"></script>
+  	<script type="text/javascript" src="/game.js"></script>
+	<link rel="stylesheet" type="text/css" href="/reset.css" />
+	<link rel="stylesheet" type="text/css" href="/style.css" />
   </head>
   <body>
-    <table width="1040">
-      <tr>
-      	<td colspan="2"><img src="/img/Pac-Map-PDX-Header.png" /></td>
-      </tr>
-    </table>
 
-    <table width="1040">
-      <tr>
-    	  <td width="600">
-    		  <div id="map" style="width: 100%; height: 500px;"></div>
-    	  </td>
-    	  <td valign="top" width="220" style="background-color: #400;">
-    		  <div class="team-header red">
-    		  	<div style="float: right; margin-right: 15px;" id="score-red"></div>
-    		  	Red
-    		  </div>
-    		  <div id="scoreboard-red" class="red"></div>
-    	  </td>
-    	  <td valign="top" width="220" style="background-color: #004;">
-    		  <div class="team-header blue">
-    		  	<div style="float: right; margin-right: 15px;" id="score-blue"></div>
-    		  	Blue
-    		  </div>
-    		  <div id="scoreboard-blue" class="blue"></div>
-    	  </td>
-      </tr>
-    </table>
+	<div id="wrapper">
 
-    <table width="1040">
-      <tr>
-    	  <td colspan="2">
-    		  <span style="float: right;"><a href="http://aaronparecki.com">Aaron Parecki</a> // <a href="http://caseorganic.com">Amber Case</a> // <a href="http://kyledrake.net">Kyle Drake</a> // <a href="http://www.pdxbrain.com/">Tyler Gillies</a> // <a href="http://maxogden.com">Max Ogden</a></span>
-    	  </td>
-      </tr>
-    </table>
+		<section id="scoreboard-wrapper">
+			<div id="scoreboard">				
+				<h1>Park Blocks Battle</h1>
+				<h5 class="tagline">14 Players in Portland Or</h5>
+			<a href="" id="join-game" class="button">Join Game</a>
+
+			</div>
+			<h2 id="red-score" class="red-score-value">1420</h2>
+			<h2 id="blue-score" class="blue-score-value">1420</h2>
+		</section>
+
+
+
+		<section id="red-team-wrapper">
+			<div id="red-team">
+				<h2>Red : <span class="red-score-value">1420</span></h2>
+				
+				<ol id="red-team-players" class="team-players">
+					<li>
+						<img src="" alt="" style="" />
+						<h3>ambercase</h3>
+						<span class="points">210</span>
+					</li>
+											<li>
+						<img src="" alt="" style="" />
+						<h3>ambercase</h3>
+						<span class="points">210</span>
+					</li>
+
+					<li>
+						<img src="" alt="" style="" />
+						<h3>ambercase</h3>
+						<span class="points">210</span>
+					</li>
+					
+					<li>
+						<img src="" alt="" style="" />
+						<h3>ambercase</h3>
+						<span class="points">210</span>
+					</li>
+				
+				</ol>
+			</div>
+		</section>
+			
+		<section id="blue-team-wrapper">
+			<div id="blue-team">
+				<h2>Blue : <span class="blue-score-value">1420</h2>
+				<ol id="blue-team-players" class="team-players">
+				
+					<li>
+						<img src="" alt="" style="" />
+						<h3>ambercase</h3>
+						<span class="points">210</span>
+					</li>
+					<li>
+						<img src="" alt="" style="" />
+						<h3>ambercase</h3>
+						<span class="points">210</span>
+					</li>
+
+					<li>
+						<img src="" alt="" style="" />
+						<h3>ambercase</h3>
+						<span class="points">210</span>
+					</li>
+					
+					<li>
+						<img src="" alt="" style="" />
+						<h3>ambercase</h3>
+						<span class="points">210</span>
+					</li>
+				
+				</ol>
+			</div>
+		</section>
+
+		<div id="map"></div>
+
+		<nav id="top-nav">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="http://geoloqi.com">Get Geoloqi</a></li>
+			</ul>
+		</nav>
+
+		<footer>
+			<p class="right">Powered by Geoloqi</p>
+			<p class="left">Credits: <a href="http://aaronparecki.com">Aaron Parecki</a> // <a href="http://caseorganic.com">Amber Case</a> // <a href="http://kyledrake.net">Kyle Drake</a> // <a href="http://patrickarlt.com/">Patrick Arlt</a></p>
+		</footer>
     
+      </div> <!-- wrapper -->
     <input type="hidden" id="layer_id" value="<%=@game.layer_id%>" />
   </body>
 </html>
