@@ -1,3 +1,4 @@
+require 'RMagick'
 
 class PdxPacman < Sinatra::Base
 
@@ -110,7 +111,7 @@ class PdxPacman < Sinatra::Base
     	  end
     	end
     
-    	players << {:geoloqi_id => player.id,
+    	players << {:geoloqi_id => player.geoloqi_user_id,
 	                   :score => player.points_cache,
 	                   :name => player.name,
 	                   :team => player.team.name,
@@ -121,4 +122,25 @@ class PdxPacman < Sinatra::Base
 
     {:places => places, :players => players}.to_json
   end
+
+  get '/player/:player_id/:team/map_icon.png' do
+	filename = File.join PdxPacman.root, "public", "icons", params[:player_id] + '_' + params[:team] + '.png';
+	if File.exist?(filename)
+		send_file filename
+  	else
+		@player = Player.first :geoloqi_user_id => params[:player_id]
+	  
+		playerImg = Magick::Image.read(@player.profile_image).first
+		playerImg.crop_resized!(16, 16, Magick::NorthGravity)
+		
+		markerIcon = Magick::Image.read(File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")).first
+		
+		result = markerIcon.composite(playerImg, 3, 3, Magick::OverCompositeOp)
+		
+		result.write(filename)
+	    
+	    send_file filename
+	end
+  end
+  
 end

@@ -5,6 +5,9 @@ var cg = {
 	},
 	p: function(w,h) {
 		return new google.maps.Point(w,h);
+	},
+	playerImage: function(id, team) {
+		return new google.maps.MarkerImage("/player/"+id+"/"+team+"/map_icon.png", new google.maps.Size(38, 31), new google.maps.Point(0,0), new google.maps.Point(10, 30));
 	}
 }
 
@@ -119,7 +122,8 @@ var playerIcons = {
 					total_score[player.team] += player.score;
 					if(typeof player.location.location != "undefined") {
 	  					receivePlayerData({
-	  						id: player.name, 
+	  						id: player.geoloqi_id,
+	  						username: player.name, 
 	  						team: player.team,
 	  						latitude: player.location.location.position.latitude, 
 	  						longitude: player.location.location.position.longitude
@@ -145,6 +149,7 @@ var playerIcons = {
   
     function receivePlayerData(serverMessage) {
   		var id = serverMessage.id;
+  		var username = serverMessage.username;
   		var latitude = serverMessage.latitude;
   		var longitude = serverMessage.longitude;
   		var myLatLng = new google.maps.LatLng(latitude, longitude);
@@ -164,8 +169,8 @@ var playerIcons = {
   			var marker = new google.maps.Marker({
   				position: myLatLng,
   				map: map,
-  				title: serverMessage.id,
-  				icon: playerIcons[serverMessage.team]
+  				title: username,
+  				icon: cg.playerImage(id, serverMessage.team)
   			});
   			serverMessage.marker = marker;
   			people.push(serverMessage);
