@@ -1,6 +1,12 @@
 
 class PdxPacman < Sinatra::Base
 
+  get '/test' do
+    result = EM::Synchrony.sync(EventMachine::HttpRequest.new('http://www.google.com/').get)
+    puts result.response[0..20]
+    result.response
+  end
+
   get '/game/:layer_id/join' do
     @game = Game.first :layer_id => params[:layer_id]
     if @game == nil

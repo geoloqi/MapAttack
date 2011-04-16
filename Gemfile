@@ -8,9 +8,9 @@ gem 'dm-migrations',    '1.1.0'
 # gem 'xmpp4r-simple',    '0.8.8'
 gem 'symboltable',      '1.0.0'
 gem 'dm-mysql-adapter', '1.1.0'
-#gem 'rack-fiber_pool',  '0.9.1', :require => 'rack/fiber_pool'
+gem 'rack-fiber_pool',  '0.9.1', :require => 'rack/fiber_pool'
 gem 'thin'
-gem 'em-http-request',  '0.3.0'
+gem 'em-http-request',  '1.0.0.beta.3'
 gem 'em-synchrony',     '0.2.0'
 gem 'rake',             '0.8.7', :require => nil
 
