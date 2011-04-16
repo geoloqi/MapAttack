@@ -89,7 +89,8 @@ html, body {
 	left: 50%;
 	margin: 0 0 0 -200px;
 	padding:0 0 4px 0;
-	top: 45px;
+	/* top: 45px; should be 45 when the top bar is displayed */
+	top: 0; 
 }
 
 #scoreboard {
@@ -201,6 +202,7 @@ nav ul li {
 }
 
 nav {
+	display: none;
 	height: 45px;
 	border-bottom: 1px solid #101010;
 	line-height: 45px;
@@ -214,12 +216,17 @@ footer {
 	font-size: 12px;
 	line-height: 20px;
 	border-top: 1px solid #101010;
+	color: #999;
 }
 
 footer p {
 	padding:0 20px;
 }
 
+footer a {
+	color: #aaa;
+	text-decoration: underline;
+}
 
 /*********************
 Common Team Styles

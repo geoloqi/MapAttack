@@ -1,30 +1,38 @@
 
-var coinSpriteURL = "http://loqi.me/pdx-pacmap/coins.png";
-var coinWidth = 14;
-var coinSpriteSize = new google.maps.Size(coinWidth, coinWidth);
-var coinSpriteAnchor = new google.maps.Point(coinWidth/2, coinWidth/2);
+var cg = {
+	s: function(w,h) {
+		return new google.maps.Size(w,h);
+	},
+	p: function(w,h) {
+		return new google.maps.Point(w,h);
+	}
+}
+
+var coinSpriteURL = "/img/gameboard-sprite.png";
+var coinHeight = 25;
 var coins = {
 	10: {
-		blue: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(0, 0), coinSpriteAnchor),
-		red: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(0, coinWidth), coinSpriteAnchor),
-		grey: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(0, coinWidth*2), coinSpriteAnchor)
+		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(17,17),  cg.p(0, 277), cg.p(17/2, 17/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(17,17), cg.p(0, 302), cg.p(17/2, 17/2)),
+		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(17,17), cg.p(0, 327), cg.p(17/2, 17/2))
 	},
 	20: {
-		blue: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth, 0), coinSpriteAnchor),
-		red: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth, coinWidth), coinSpriteAnchor),
-		grey: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth, coinWidth*2), coinSpriteAnchor)
+		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19),  cg.p(17, 276), cg.p(19/2, 19/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19), cg.p(17, 300), cg.p(19/2, 19/2)),
+		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19), cg.p(17, 326), cg.p(19/2, 19/2))
 	},
 	30: {
-		blue: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth*2, 0), coinSpriteAnchor),
-		red: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth*2, coinWidth), coinSpriteAnchor),
-		grey: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth*2, coinWidth*2), coinSpriteAnchor)
+		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(21,21),  cg.p(36, 275), cg.p(21/2, 21/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(21,21), cg.p(36, 299), cg.p(21/2, 21/2)),
+		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(21,21), cg.p(36, 325), cg.p(21/2, 21/2))
 	},
 	50: {
-		blue: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth*3, 0), coinSpriteAnchor),
-		red: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth*3, coinWidth), coinSpriteAnchor),
-		grey: new google.maps.MarkerImage(coinSpriteURL, coinSpriteSize, new google.maps.Point(coinWidth*3, coinWidth*2), coinSpriteAnchor)
+		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25),  cg.p(57, 273), cg.p(25/2, 25/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25), cg.p(57, 297), cg.p(25/2, 25/2)),
+		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25), cg.p(57, 323), cg.p(25/2, 25/2))
 	}
 };
+
 
 var playerIconSize = new google.maps.Size(32, 32);
 var playerIconOrigin = new google.maps.Point(0,0);
@@ -34,6 +42,7 @@ var playerIcons = {
 	red: new google.maps.MarkerImage("http://www.google.com/intl/en_us/mapfiles/ms/icons/red-dot.png", playerIconSize, playerIconOrigin, playerIconAnchor)
 }
 
+// player icon: '/player/' + player.geoloqi_id + "/" + player.team + '/map_icon.png'
 
   $(function(){
   	var people = [];
@@ -97,8 +106,16 @@ var playerIcons = {
   					red: 0,
   					blue: 0
   				};
+  				
   				$(data.players).each(function(i, player){
-  					$("#scoreboard-"+player.team).append('<div class="player"><div class="pic"><img src="' + player.profile_image + '" /></div><div class="name">' + player.name + '</div><div class="score">' + player.score + '</div><div class="end"></div></div>');
+  					if($("#player-score-" + player.geoloqi_id).length == 0) {
+	  					$("#"+player.team+"-team-players").append('<li id="player-score-' + player.geoloqi_id + '"><img src="' + player.profile_image + '" />'
+	  						+ '<h3>' + player.name + '</h3>'
+	  						+ '<span class="points">' + player.score + '</span>'
+	  						+ '</li>');
+	  				} else {
+	  					$("#player-score-" + player.geoloqi_id + " .points").html(player.score);
+	  				}
 					total_score[player.team] += player.score;
 					if(typeof player.location.location != "undefined") {
 	  					receivePlayerData({
@@ -109,8 +126,8 @@ var playerIcons = {
 	  					});
 	  				}
   				});
-  				$("#score-red").html(total_score.red);
-  				$("#score-blue").html(total_score.blue);
+  				$(".red-score-value").html(total_score.red);
+  				$(".blue-score-value").html(total_score.blue);
 
 			  	setTimeout(updateGame, 5000);
   		    }
