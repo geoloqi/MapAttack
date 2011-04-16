@@ -17,7 +17,7 @@ class PdxPacman < Sinatra::Base
     response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
     
     if response.subscription.nil? || response.subscription == false || response.subscription.subscribed.to_i == 0
-	    erb :join
+	    erb :join, :layout => false
 	else
     	redirect "/game/" + params[:layer_id] + "/mobile"
     end
