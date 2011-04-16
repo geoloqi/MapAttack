@@ -1,0 +1,443 @@
+@font-face {
+	font-family: 'DroidSansRegular';
+	src: url('fonts/DroidSans-webfont.eot');
+	src: url('fonts/DroidSans-webfont.eot?#iefix') format('eot'),
+			 url('fonts/DroidSans-webfont.woff') format('woff'),
+			 url('fonts/DroidSans-webfont.ttf') format('truetype'),
+			 url('fonts/DroidSans-webfont.svg#webfontw7zqO19G') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'DroidSansBold';
+	src: url('fonts/DroidSans-Bold-webfont.eot');
+	src: url('fonts/DroidSans-Bold-webfont.eot?#iefix') format('eot'),
+			 url('fonts/DroidSans-Bold-webfont.woff') format('woff'),
+			 url('fonts/DroidSans-Bold-webfont.ttf') format('truetype'),
+			 url('fonts/DroidSans-Bold-webfont.svg#webfontSOhoM6aS') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'LeagueGothicRegular';
+	src: url('fonts/League_Gothic-webfont.eot');
+	src: url('fonts/League_Gothic-webfont.eot?#iefix') format('eot'),
+			 url('fonts/League_Gothic-webfont.woff') format('woff'),
+			 url('fonts/League_Gothic-webfont.ttf') format('truetype'),
+			 url('fonts/League_Gothic-webfont.svg#webfontFHzvtkso') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: 'DroidSansRegular';
+}
+
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
+#wrapper {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	overflow: hidden;
+}
+
+#google-map {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	background: green;
+	z-index: 1;
+}
+
+#blue-team-wrapper {	
+	background: blue;
+	position: absolute;
+	z-index: 2;
+	top:214	px;
+	right:40px;
+	width:180px;
+	background: url('img/blue-bg.png');
+}
+
+#red-team-wrapper {
+	background: red;
+	position: absolute;
+	z-index: 2;
+	top: 215px;
+	left: 40px;
+	width:180px;
+	background: url('img/red-bg.png');
+}
+
+#red-team, #blue-team {
+	width:172px;
+	margin: 4px auto;
+	background: url('img/grey-pattern.png');
+}
+
+#scoreboard-wrapper {
+	background: url('img/white-bg.png');
+	position: absolute;
+	z-index: 2;
+	width: 410px;
+	left: 50%;
+	margin: 0 0 0 -200px;
+	padding:0 0 4px 0;
+	top: 45px;
+}
+
+#scoreboard {
+	background: #e1e1e1;
+	height: 120px;
+	width:400px;
+	margin: 0 auto;
+}
+
+#red-score {
+	background: url('img/gameboard-sprite.png') no-repeat -128px 0px;
+	width: 96px;
+	height: 60px;
+	color: #E8A9A7;
+	padding: 32px 28px 3px 4px;
+	text-align: center;
+	position: absolute;
+	top:58px;
+	left: -45px;
+	text-shadow: 0 -1px 0px #8c2824;
+}
+
+#scoreboard:before {
+	content: '';
+	display: block;
+	background: url('img/gameboard-sprite.png') no-repeat -103px -338px;
+	width:155px;
+	height: 10px;
+	position: relative;
+	z-index: 10px;
+	margin: 0px auto;
+	top:110px;
+}
+
+#join-game {
+	background: url('img/green-pattern.png');
+	padding: .5em;
+	font-weight: 700;
+	text-shadow:0 -1px 0px #ffffff;
+	color: #4f5642;
+	text-align: center;
+	display: block;
+	margin: 22px auto;
+	width: 100px;
+	border-bottom:2px solid #4f5642;
+	border-right:2px solid #4f5642;
+	border-left:2px solid #4f5642;
+}
+
+#blue-score {
+	background: url('img/gameboard-sprite.png') no-repeat 0px 0px;
+	width: 96px;
+	height: 60px;
+	color: #9bc1ef;
+	padding: 32px 4px 3px 28px;
+	text-align: center;
+	position: absolute;
+	top:58px;
+	right: -45px;
+	text-shadow: 0 -1px 0px #183c6a;
+}
+
+h1, h2 {
+	font-family: 'LeagueGothicRegular';
+	line-height: 1em;
+	text-transform: uppercase;
+}
+
+h1 {
+	font-size: 60px;
+	text-align: center;
+}
+
+h5.tagline {
+	font-family: Georgia, Palatine, Baskerville, sans-serif;
+	text-align: center;
+	font-weight:500;
+	font-style: italic;
+}
+
+h2 {
+	font-size: 56px;
+	text-align: center;
+	height: 87px;
+	line-height: 67px;
+	position: relative;
+}
+
+/*********************
+Top/Bottom Bars
+*********************/
+	
+nav, footer {
+	background: #353535;
+	position: absolute;
+	z-index: 3;
+	width: 100%;
+	color:#ffffff;
+}
+
+
+nav a {
+	color:#ffffff;
+}
+
+nav ul li {
+	float: left;
+	margin: 0 1em;
+}
+
+nav {
+	height: 45px;
+	border-bottom: 1px solid #101010;
+	line-height: 45px;
+	font-family: 'DroidSansBold';
+	font-size: 16px;
+}
+
+footer {
+	bottom:0px;
+	height: 20px;
+	font-size: 12px;
+	line-height: 20px;
+	border-top: 1px solid #101010;
+}
+
+footer p {
+	padding:0 20px;
+}
+
+
+/*********************
+Common Team Styles
+*********************/
+
+.team-players {
+	list-style: none;
+	margin: -20px 0 0 0;
+}
+
+.team-players img {
+	width: 42px;
+	height: 42px;
+	background: black;
+	position: relative;
+}
+
+.team-players li {
+	clear: both;
+	height: 58px;
+	display: block;
+	margin: 15px 0 20px 0;
+}
+
+.team-players .points {
+	font-size: 30px;
+	font-family: 'DroidSansBold';
+	line-height: 30px;
+}
+
+.team-players li:after {
+		content: "."; display: block; height: 0; clear: both; visibility: hidden; 
+}
+
+.team-players h3 {
+	font-size: 16px;
+	margin:-10px 0 0 0;
+}
+
+/*********************
+Red Team
+*********************/
+
+#red-team .team-players {
+	color: #a42f2a;
+	text-shadow: 0 -1px 0	px #fff;
+}
+
+#red-team .team-players img {
+	background: url('img/gameboard-sprite.png') no-repeat -199px -273px;
+	float: left;
+	padding:3px 13px 19px 3px;
+	margin:0 10px 0 -15px;
+}
+
+#red-team h2 {
+	color: #e8a9a7;
+	text-shadow: 0px -1px 2px #792727;
+	background: url('img/gameboard-sprite.png') no-repeat 0px -98px;
+	top: -20px;
+	left: -33px;
+	padding:0 20px 0 0;
+	width: 234px;
+}
+
+/*********************
+Blue Team
+*********************/
+
+#blue-team h2 {
+	color: #9bc1ef;
+	text-shadow: 0px -1px 2px #16355c;
+	background: url('img/gameboard-sprite.png') no-repeat 0px -186px;
+	top:-20px;
+	left:-49px;
+	width: 234px;
+	padding:0 0 0 20px;
+}
+
+#blue-team .team-players {
+	color: #1c477c;
+	text-shadow: 0 -1px 0	px #fff;
+	text-align: right;
+}
+
+#blue-team .team-players img {
+	background: url('img/gameboard-sprite.png') no-repeat -141px -273px;
+	float: right;
+	padding:3px 3px 19px 13px;
+	margin:0 -15px 0 10px;
+}
+
+/*********************
+Small Screen/Mobile Styles
+*********************/
+	/* based on */
+	/*	Less Framework 4
+	http://lessframework.com
+	by Joni Korpi
+	License: http://creativecommons.org/licenses/MIT/	*/
+
+/* Tablet/Small Screen Layout */
+
+@media only screen and (min-width: 769px) and (max-width: 1080px) {
+
+	#red-score, #blue-score {
+		display: none;
+	}
+	
+	#red-team-wrapper, #blue-team-wrapper {
+		top:148px;
+	}
+
+}
+
+/* Mobile Layout */
+@media only screen and (max-width: 768px) {
+
+	#red-score, #blue-score {
+		display: block;
+	}
+
+	#red-team-wrapper, #blue-team-wrapper {
+		display:none;
+	}
+	
+	#scoreboard-wrapper {
+		background: url('img/white-bg.png');
+		position: absolute;
+		z-index: 2;
+		width: 246px;
+		left: 50%;
+		margin: 0 0 0 -123px;
+		padding:0 0 4px 0;
+		top: 0px;
+	}
+	
+	#scoreboard {
+		background: #e1e1e1;
+		height: 67px;
+		width:238px;
+		margin: 0 auto;
+	}
+	
+	#red-score {
+		background: url('img/gameboard-sprite.png') no-repeat -96px 0px;
+		background-size: 194px 261px;
+		width: 72px;
+		height: 45px;
+		color: #E8A9A7;
+		padding: 26px 21px 2px 4px;
+		text-align: center;
+		position: absolute;
+		top:22px;
+		left: -33px;
+		text-shadow: 0 -1px 0px #8c2824;
+		line-height: 45px;
+	}
+	
+	#scoreboard:before {
+		content: '';
+		display: none;
+		width:155px;
+		height: 10px;
+		position: relative;
+		z-index: 10px;
+		margin: 0px auto;
+		top:57px;
+	}
+	
+	#join-game {
+		background: url('img/green-pattern.png');
+		padding: .5em .15em;
+		font-weight: 700;
+		text-shadow:0 -1px 0px #ffffff;
+		color: #4f5642;
+		text-align: center;
+		display: block;
+		margin: 6px auto;
+		width: 100px;
+		border-bottom:2px solid #4f5642;
+		border-right:2px solid #4f5642;
+		border-left:2px solid #4f5642;
+		font-size: 12px;
+		border-top:2px solid #4f5642;
+	}
+	
+	#blue-score {
+		background: url('img/gameboard-sprite.png') no-repeat 0px 0px;
+		background-size: 194px 261px;
+		width: 72px;
+		height: 45px;
+		color: #9bc1ef;
+		padding: 26px 1px 2px 23px;
+		text-align: center;
+		position: absolute;
+		top:22px;
+		right: -33px;
+		text-shadow: 0 -1px 0px #183c6a;
+		line-height: 45px;
+	
+	}
+	
+	h5.tagline {
+		display: none;
+	}
+	
+	h2 {
+		font-size: 38px;
+	}
+	
+	h1 {
+		font-size: 32px;
+		padding:9px;
+	}
+	
+	
+	nav, footer {
+		display: none;
+	}
+}
