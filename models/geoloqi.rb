@@ -1,7 +1,11 @@
+require "base64"
+
 RestClient.log = STDOUT
 module Geoloqi
-  API_URL = 'https://api.geoloqi.com/1/'
-  def self.headers(oauth_token); {'Authorization' => "OAuth #{oauth_token}", 'Content-Type' => 'application/json'} end
+  API_URL = 'http://api.geoloqi.local/1/'
+  def self.headers(oauth_token)
+    {'Authorization' => "OAuth #{oauth_token}", 'Content-Type' => 'application/json'} 
+  end
   
   def self.run(meth, oauth_token, url, body=nil)
     args = {:head => headers(oauth_token)}
@@ -35,5 +39,17 @@ module Geoloqi
       ret = SymbolTable.new obj
     end
     ret
+  end
+  
+  def self.get_token(auth_code, redirect_uri)
+    args = {}  # {:head => {'Authorization' => "Basic " + Base64.encode64(Geoloqi::CLIENT_ID + ":" + Geoloqi::CLIENT_SECRET)}}
+    args[:body] = {
+      client_id: Geoloqi::CLIENT_ID,
+      client_secret: Geoloqi::CLIENT_SECRET,
+      code: auth_code,
+      grant_type: "authorization_code",
+      redirect_uri: redirect_uri
+    }
+    JSON.parse EM::Synchrony.sync(EventMachine::HttpRequest.new(API_URL+"oauth/token").post(args)).response
   end
 end

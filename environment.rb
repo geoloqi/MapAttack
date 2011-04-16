@@ -12,6 +12,9 @@ class Sinatra::Base
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
     config_hash = YAML.load_file(File.join(root, 'config.yml'))[environment.to_s]
     Geoloqi::OAUTH_TOKEN = config_hash['oauth_token']
+    Geoloqi::CLIENT_ID = config_hash['client_id']
+    Geoloqi::CLIENT_SECRET = config_hash['client_secret']
+    Geoloqi::BASE_URI = config_hash['base_uri']
 
     DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']

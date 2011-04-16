@@ -9,6 +9,9 @@ class PdxPacman < Sinatra::Base
   end
 
   get '/game/:layer_id/join' do
+  
+    oauth_token = Geoloqi.get_token(params[:code], Geoloqi::BASE_URI + "game/" + params[:layer_id] + "/join")["access_token"]
+  
     @game = Game.first :layer_id => params[:layer_id]
     if @game == nil
       response = Geoloqi.get Geoloqi::OAUTH_TOKEN, 'layer/info/' + params[:layer_id]
@@ -16,14 +19,14 @@ class PdxPacman < Sinatra::Base
       @game.teams.create :name => "red"
       @game.teams.create :name => "blue"
     end
-    @oauth_token = params[:oauth_token]
+    @oauth_token = oauth_token
     
     response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
     
     if response.subscription.nil? || response.subscription == false || response.subscription.subscribed.to_i == 0
 	    erb :join
 	else
-    	redirect "/game/" + params[:layer_id] + "/mobile"
+    	redirect "/game/" + params[:layer_id]
     end
   end
 
