@@ -1,6 +1,9 @@
-require 'RMagick'
-
 class PdxPacman < Sinatra::Base
+  
+  get '/?' do
+    erb :'index_stub'
+  end
+  
   get '/game/:layer_id/join' do
     @game = Game.first :layer_id => params[:layer_id]
     if @game == nil
