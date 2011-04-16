@@ -1,13 +1,9 @@
-require 'RMagick'
-
 class PdxPacman < Sinatra::Base
-
-  get '/test' do
-    result = EM::Synchrony.sync(EventMachine::HttpRequest.new('http://www.google.com/').get)
-    puts result.response[0..20]
-    result.response
+  
+  get '/?' do
+    erb :'index_stub'
   end
-
+  
   get '/game/:layer_id/join' do
   
     oauth_token = Geoloqi.get_token(params[:code], Geoloqi::BASE_URI + "game/" + params[:layer_id] + "/join")["access_token"]
@@ -24,7 +20,7 @@ class PdxPacman < Sinatra::Base
     response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
     
     if response.subscription.nil? || response.subscription == false || response.subscription.subscribed.to_i == 0
-	    erb :join
+	    erb :join, :layout => false
 	else
     	redirect "/game/" + params[:layer_id]
     end
