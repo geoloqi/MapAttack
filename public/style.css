@@ -51,7 +51,7 @@ html, body {
 	height: 100%;
 	width: 100%;
 	position: absolute;
-	background: green;
+	background: white;
 	z-index: 1;
 }
 
@@ -162,6 +162,10 @@ h1, h2 {
 h1 {
 	font-size: 60px;
 	text-align: center;
+}
+
+h1 a {
+	color: #444;
 }
 
 h5.tagline {
