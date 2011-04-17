@@ -8,3 +8,4 @@ gems/*
 cache/*
 bin/*
 specifications/*
+vendor/*
