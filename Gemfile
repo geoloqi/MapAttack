@@ -15,6 +15,7 @@ gem 'em-http-request',  '1.0.0.beta.3'
 gem 'em-synchrony',     '0.2.0'
 gem 'rake',             '0.8.7', :require => nil
 gem 'rmagick',          '2.13.1', :require => 'RMagick'
+gem 'rufus-scheduler',  '2.0.8',  :require => 'rufus/scheduler'
 
 group :development do
   gem 'shotgun',        '0.9',    :require => nil

@@ -61,6 +61,8 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
+    rufus-scheduler (2.0.8)
+      tzinfo (>= 0.3.23)
     shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.2.1)
@@ -72,6 +74,7 @@ GEM
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     tilt (1.2.2)
+    tzinfo (0.3.26)
     yajl-ruby (0.8.2)
 
 PLATFORMS
@@ -93,6 +96,7 @@ DEPENDENCIES
   rest-client (= 1.6.1)
   rmagick (= 2.13.1)
   ruby-debug19 (= 0.11.6)
+  rufus-scheduler (= 2.0.8)
   shotgun (= 0.9)
   sinatra (= 1.2.1)
   symboltable (= 1.0.0)

@@ -7,7 +7,7 @@ Bundler.require
 class Sinatra::Base
   configure do
     use Rack::FiberPool
-    use Rack::Cache, :verbose => true,
+    use Rack::Cache, :verbose => false,
                      :metastore => "file:cache/meta",
                      :entitystore => "file:cache/body"
     set :root, File.expand_path(File.join(File.dirname(__FILE__)))
@@ -23,6 +23,14 @@ class Sinatra::Base
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     # DataMapper.auto_upgrade!
     DataMapper::Model.raise_on_save_failure = true
+
+    EM.next_tick do
+      scheduler = Rufus::Scheduler::EmScheduler.start_new
+      scheduler.every '1s' do
+        puts "LOL!"
+      end
+    end
+    
   end
 end
 
