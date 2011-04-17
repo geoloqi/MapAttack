@@ -10,10 +10,7 @@ DataMapper.auto_migrate!
 class Test::Unit::TestCase
   include Rack::Test::Methods
   def mock_app(base=Sinatra::Base, &block)
-    EM.run {
-      @app = Sinatra.new base, &block
-      EM.stop
-    }
+    @app = Sinatra.new base, &block
   end
   def app; @app end
   def app=(new_app); @app = new_app end
