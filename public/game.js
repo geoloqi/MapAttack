@@ -53,7 +53,7 @@ var playerIcons = {
 	
   	var myOptions = {
   		zoom: 17,
-  		center: new google.maps.LatLng(45.512, -122.643),
+  		center: new google.maps.LatLng(45.52514, -122.67876),
   		mapTypeId: google.maps.MapTypeId.ROADMAP,
   		mapTypeControl: false
   	};

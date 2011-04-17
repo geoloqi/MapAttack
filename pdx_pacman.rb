@@ -1,13 +1,11 @@
 class PdxPacman < Sinatra::Base
-  
+
   get '/?' do
     erb :'index_stub'
   end
-  
+
   get '/game/:layer_id/join' do
-  
     oauth_token = Geoloqi.get_token(params[:code], Geoloqi::BASE_URI + "game/" + params[:layer_id] + "/join")["access_token"]
-  
     @game = Game.first :layer_id => params[:layer_id]
     if @game == nil
       response = Geoloqi.get Geoloqi::OAUTH_TOKEN, 'layer/info/' + params[:layer_id]
@@ -16,13 +14,12 @@ class PdxPacman < Sinatra::Base
       @game.teams.create :name => "blue"
     end
     @oauth_token = oauth_token
-    
     response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
-    
+
     if response.subscription.nil? || response.subscription == false || response.subscription.subscribed.to_i == 0
-	    erb :join, :layout => false
-	else
-    	redirect "/game/" + params[:layer_id]
+      erb :join, :layout => false
+    else
+      redirect "/game/" + params[:layer_id]
     end
   end
 
@@ -45,7 +42,7 @@ class PdxPacman < Sinatra::Base
 	    @player.geoloqi_user_id = user_profile.user_id
 	    @player.token = shared_token.token
 	    @player.game = @game
-	    # assign the player to a team 
+	    # assign the player to a team
 	    # TODO: store the team in the layer subscription?
 	    # layer/subscription/:layer_id   :body => {:settings => {:team_id => @team.id}}
 	    @player.team = @game.pick_team
@@ -68,9 +65,9 @@ class PdxPacman < Sinatra::Base
 
   post '/trigger' do
     body = SymbolTable.new JSON.parse(request.body)
-    
+
     @player = Player.first :game => Game.first(:layer_id => body.layer.layer_id), :geoloqi_user_id => body.user.user_id
-    
+
     if body.place.extra.active.to_i == 1
       Geoloqi.post Geoloqi::OAUTH_TOKEN, "place/update/#{body.place.place_id}", {:extra => {:active => 0, :team => @player.team.name}}
       @player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
@@ -94,7 +91,7 @@ class PdxPacman < Sinatra::Base
                  :team => place['extra']['team'],
                  :active => place['extra']['active']}
     end
-    
+
     @tokens = []
     @game.player.each do |player|
       @tokens.push player.token
@@ -109,37 +106,33 @@ class PdxPacman < Sinatra::Base
     	    location = p
     	  end
     	end
-    
+
     	players << {:geoloqi_id => player.geoloqi_user_id,
-	                   :score => player.points_cache,
-	                   :name => player.name,
-	                   :team => player.team.name,
-	                   :profile_image => player.profile_image,
-	                   :location => location}
+                  :score => player.points_cache,
+	                :name => player.name,
+	                :team => player.team.name,
+	                :profile_image => player.profile_image,
+	                :location => location}
     end
-
-
     {:places => places, :players => players}.to_json
   end
 
   get '/player/:player_id/:team/map_icon.png' do
-	filename = File.join PdxPacman.root, "public", "icons", params[:player_id] + '_' + params[:team] + '.png';
-	if File.exist?(filename)
-		send_file filename
-  	else
-		@player = Player.first :geoloqi_user_id => params[:player_id]
-	  	if @player.profile_image != ''
-  		  playerImg = Magick::Image.read(@player.profile_image).first
-		  playerImg.crop_resized!(16, 16, Magick::NorthGravity)
-		  markerIcon = Magick::Image.read(File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")).first
-  		  result = markerIcon.composite(playerImg, 3, 3, Magick::OverCompositeOp)
-		  result.write(filename)
-                  send_file filename
-                else
-                  send_file File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")
-                end
-	    
-	end
+	  filename = File.join PdxPacman.root, "public", "icons", params[:player_id] + '_' + params[:team] + '.png';
+	  if File.exist?(filename)
+      send_file filename
+    else
+      @player = Player.first :geoloqi_user_id => params[:player_id]
+      if @player.profile_image != ''
+        playerImg = Magick::Image.read(@player.profile_image).first
+        playerImg.crop_resized!(16, 16, Magick::NorthGravity)
+        markerIcon = Magick::Image.read(File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")).first
+        result = markerIcon.composite(playerImg, 3, 3, Magick::OverCompositeOp)
+        result.write(filename)
+        send_file filename
+      else
+        send_file File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")
+      end
+    end
   end
-  
 end
