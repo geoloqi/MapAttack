@@ -110,6 +110,8 @@ var playerIcons = {
   					blue: 0
   				};
   				
+  				$("#num-players").html(data.players.length + " Players");
+  				
   				$(data.players).each(function(i, player){
   					if($("#player-score-" + player.geoloqi_id).length == 0) {
 	  					$("#"+player.team+"-team-players").append('<li id="player-score-' + player.geoloqi_id + '"><img src="' + player.profile_image + '" />'
@@ -146,12 +148,12 @@ var playerIcons = {
         }
       });
     }
-  
-    function receivePlayerData(serverMessage) {
-  		var id = serverMessage.id;
-  		var username = serverMessage.username;
-  		var latitude = serverMessage.latitude;
-  		var longitude = serverMessage.longitude;
+
+    function receivePlayerData(data) {
+  		var id = data.id;
+  		var username = data.username;
+  		var latitude = data.latitude;
+  		var longitude = data.longitude;
   		var myLatLng = new google.maps.LatLng(latitude, longitude);
   		var exists;
   		for(i=0;i<people.length;i++){
@@ -160,20 +162,18 @@ var playerIcons = {
 			
   			}else{
   				exists = 1;
-  				// console.log(serverMessage);
   				person.marker.setPosition(myLatLng);
   			}
   		}
   		if(!exists){
-  			//console.log("creating user");
   			var marker = new google.maps.Marker({
   				position: myLatLng,
   				map: map,
   				title: username,
-  				icon: cg.playerImage(id, serverMessage.team)
+  				icon: cg.playerImage(id, data.team)
   			});
-  			serverMessage.marker = marker;
-  			people.push(serverMessage);
+  			data.marker = marker;
+  			people.push(data);
   		}
     }
   });
