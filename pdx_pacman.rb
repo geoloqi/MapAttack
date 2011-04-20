@@ -78,7 +78,7 @@ class PdxPacman < Sinatra::Base
   get '/game/:layer_id/status.json' do
     # content_type 'application/json'
 
-    response = Geoloqi.post Geoloqi::OAUTH_TOKEN, 'place/list', {:layer_id => params[:layer_id]}
+    response = Geoloqi.post Geoloqi::OAUTH_TOKEN, 'place/list', {:layer_id => params[:layer_id], :after => params[:after]}
 
     @game = Game.first :layer_id => params[:layer_id]
 

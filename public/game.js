@@ -50,6 +50,7 @@ var playerIcons = {
   $(function(){
   	var people = [];
   	var pellets = [];
+  	var lastRequestTime = 0;
 	
   	var myOptions = {
   		zoom: 17,
@@ -68,6 +69,8 @@ var playerIcons = {
   	function updateGame() {
   		$.ajax({ 
   			url: "/game/"+$("#layer_id").val()+"/status.json",
+  			type: "POST",
+  			data: {after: lastRequestTime},
   			dataType: "json", 
   			success: function(data) {
   				// Add the new pellets
@@ -135,6 +138,7 @@ var playerIcons = {
   				$(".red-score-value").html(total_score.red);
   				$(".blue-score-value").html(total_score.blue);
 
+				lastRequestTime = Math.round((new Date()).getTime() / 1000);
 			  	setTimeout(updateGame, 5000);
   		    }
   		});
