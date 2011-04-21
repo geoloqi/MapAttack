@@ -23,14 +23,14 @@ class Sinatra::Base
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     # DataMapper.auto_upgrade!
     DataMapper::Model.raise_on_save_failure = true
-
+=begin
     EM.next_tick do
       scheduler = Rufus::Scheduler::EmScheduler.start_new
       scheduler.every '1s' do
         puts "LOL!"
       end
     end
-    
+=end
   end
 end
 
