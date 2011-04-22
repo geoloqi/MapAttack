@@ -9,3 +9,5 @@ cache/*
 bin/*
 specifications/*
 vendor/*
+log
+tmp
