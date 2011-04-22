@@ -54,7 +54,7 @@ var playerIcons = {
 	
   	var myOptions = {
   		zoom: 17,
-  		center: new google.maps.LatLng(45.52514, -122.67876),
+  		center: new google.maps.LatLng(37.4300, -122.1695),
   		mapTypeId: google.maps.MapTypeId.ROADMAP,
   		mapTypeControl: false
   	};
@@ -65,11 +65,10 @@ var playerIcons = {
       // Load the initial game state and place the pins on the map. Sample data in pellets.json
 
   	updateGame();
-
   	function updateGame() {
   		$.ajax({ 
   			url: "/game/"+$("#layer_id").val()+"/status.json",
-  			type: "POST",
+  			type: "GET",
   			data: {after: lastRequestTime},
   			dataType: "json", 
   			success: function(data) {
