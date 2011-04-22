@@ -10,8 +10,6 @@ class PdxPacman < Sinatra::Base
     if @game == nil
       response = Geoloqi.get Geoloqi::OAUTH_TOKEN, 'layer/info/' + params[:layer_id]
       @game = Game.create :layer_id => params[:layer_id], :name => response.name
-      @game.teams.create :name => "red"
-      @game.teams.create :name => "blue"
     end
     @oauth_token = oauth_token
     response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]

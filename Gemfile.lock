@@ -3,11 +3,13 @@ GEM
   specs:
     addressable (2.2.5)
     archive-tar-minitar (0.5.2)
+    async-rack (0.5.1)
+      rack (~> 1.1)
     columnize (0.3.2)
-    contest (0.1.2)
     daemons (1.1.2)
     data_objects (0.10.3)
       addressable (~> 2.1)
+    diff-lcs (1.1.2)
     dm-core (1.1.0)
       addressable (~> 2.2.4)
     dm-do-adapter (1.1.0)
@@ -51,6 +53,14 @@ GEM
     rest-client (1.6.1)
       mime-types (>= 1.16)
     rmagick (2.13.1)
+    rspec (2.5.0)
+      rspec-core (~> 2.5.0)
+      rspec-expectations (~> 2.5.0)
+      rspec-mocks (~> 2.5.0)
+    rspec-core (2.5.1)
+    rspec-expectations (2.5.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.5.0)
     ruby-debug-base19 (0.11.25)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -81,7 +91,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  contest (= 0.1.2)
+  async-rack (= 0.5.1)
   dm-core (= 1.1.0)
   dm-migrations (= 1.1.0)
   dm-mysql-adapter (= 1.1.0)
@@ -95,6 +105,7 @@ DEPENDENCIES
   rake (= 0.8.7)
   rest-client (= 1.6.1)
   rmagick (= 2.13.1)
+  rspec
   ruby-debug19 (= 0.11.6)
   rufus-scheduler (= 2.0.8)
   shotgun (= 0.9)
