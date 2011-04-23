@@ -17,40 +17,40 @@ class PdxPacman < Sinatra::Base
     response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
 
     if response.subscription.nil? || response.subscription == false
-      erb :join, :layout => false
+        # The player has never subscribed to the layer before, so create a new record in our DB and set up their shared tokens
+        
+    	  user_profile = Geoloqi.get @oauth_token, 'account/profile'
+        @game = Game.first :layer_id => params[:layer_id]
+
+        #  generate shared token so we can retrieve their location for the map later
+    	  shared_token = Geoloqi.post @oauth_token, 'link/create', {:description => "Created for "+@game.name, :minutes => 240}
+
+        #  subscribe the player to the layer
+    	  Geoloqi.get @oauth_token, 'layer/subscribe/' + params[:layer_id]
+
+        @player = Player.first :geoloqi_user_id => user_profile.user_id, :game => @game
+        if @player == nil
+        	@player = Player.new
+        	# If user_profile.profile_image is not there or is null, don't do this (Should prevent errors on non-twitter accounts)
+    	    @player.profile_image = user_profile.profile_image unless user_profile.profile_image.nil? || user_profile.profile_image.empty?
+    	    @player.name = user_profile.username
+    	    @player.geoloqi_user_id = user_profile.user_id
+    	    @player.token = shared_token.token
+    	    @player.game = @game
+    	    # assign the player to a team
+    	    # TODO: store the team in the layer subscription?
+    	    # layer/subscription/:layer_id   :body => {:settings => {:team_id => @team.id}}
+    	    @player.team = @game.pick_team
+    	    @player.save
+    	  end
+
+        # send message to user indicating team
+        @player.send_message("You're on the " + @player.team.name + " team!").to_json
+
+        redirect "/game/" + params[:layer_id]
     else
       redirect "/game/" + params[:layer_id]
     end
-  end
-
-  post '/game/:layer_id/join.json' do
-    content_type 'application/json'
-	  user_profile = Geoloqi.get params[:oauth_token], 'account/profile'
-    @game = Game.first :layer_id => params[:layer_id]
-
-    #  generate shared token so we can retrieve their location for the map later
-	  shared_token = Geoloqi.post params[:oauth_token], 'link/create', {:description => "Created for "+@game.name}
-
-    #  subscribe the player to the layer
-	  Geoloqi.get params[:oauth_token], 'layer/subscribe/' + params[:layer_id]
-
-    @player = Player.first :geoloqi_user_id => user_profile.user_id, :game => @game
-    if @player == nil
-    	@player = Player.new
-	    @player.profile_image = user_profile.profile_image
-	    @player.name = user_profile.username
-	    @player.geoloqi_user_id = user_profile.user_id
-	    @player.token = shared_token.token
-	    @player.game = @game
-	    # assign the player to a team
-	    # TODO: store the team in the layer subscription?
-	    # layer/subscription/:layer_id   :body => {:settings => {:team_id => @team.id}}
-	    @player.team = @game.pick_team
-	    @player.save
-	end
-
-    # send message to user indicating team
-    @player.send_message("You're on the " + @player.team.name + " team!").to_json
   end
 
   get '/game/:layer_id/mobile' do
