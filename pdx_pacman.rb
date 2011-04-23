@@ -1,6 +1,7 @@
 class PdxPacman < Sinatra::Base
 
   get '/?' do
+    redirect '/game/1Lx'
     erb :'index_stub'
   end
 

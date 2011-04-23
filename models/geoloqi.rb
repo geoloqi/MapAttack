@@ -10,9 +10,17 @@ module Geoloqi
   def self.run(meth, oauth_token, url, body=nil)
     args = {:head => headers(oauth_token)}
     args[:body] = body.to_json if body
-    puts "ARGS: #{args[:body].inspect}\nURL:#{API_URL+url}"
+    begin
+    puts "ARGS: #{args[:body].inspect}\nURL:#{API_URL+url}" unless url =~ /place\/list/ || url =~ /share\/last/
+    rescue
+      puts "ERROR!"
+    end
     response = JSON.parse EM::Synchrony.sync(EventMachine::HttpRequest.new(API_URL+url).send(meth.to_sym, args)).response
-    puts "RESPONSE: #{response.inspect}"
+    begin
+    puts "RESPONSE: #{response.inspect}" unless url =~ /place\/list/ || url =~ /share\/last/
+    rescue
+      puts "ERROR!"
+    end
     response
   end
 
