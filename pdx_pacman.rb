@@ -16,7 +16,7 @@ class PdxPacman < Sinatra::Base
     @oauth_token = oauth_token
     response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
 
-    if response.subscription.nil? || response.subscription == false || response.subscription.subscribed.to_i == 0
+    if response.subscription.nil? || response.subscription == false
       erb :join, :layout => false
     else
       redirect "/game/" + params[:layer_id]
