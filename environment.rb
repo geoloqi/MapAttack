@@ -18,6 +18,7 @@ class Sinatra::Base
     Geoloqi::CLIENT_ID = config_hash['client_id']
     Geoloqi::CLIENT_SECRET = config_hash['client_secret']
     Geoloqi::BASE_URI = config_hash['base_uri']
+    Geoloqi::GA_ID = config_hash['ga_id']
 
     DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']

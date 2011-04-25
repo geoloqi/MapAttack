@@ -60,9 +60,13 @@ var playerIcons = {
   	};
 
   	// Create the main map
+  	if(!document.getElementById("map")) {
+  		return;
+	}
+
   	map = new google.maps.Map(document.getElementById("map"), myOptions);
 
-      // Load the initial game state and place the pins on the map. Sample data in pellets.json
+    // Load the initial game state and place the pins on the map. Sample data in pellets.json
 
   	updateGame();
   	function updateGame() {

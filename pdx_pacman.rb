@@ -1,7 +1,6 @@
 class PdxPacman < Sinatra::Base
 
   get '/?' do
-    redirect '/game/1Lx'
     erb :'index_stub'
   end
 
@@ -119,8 +118,8 @@ class PdxPacman < Sinatra::Base
   end
 
   get '/player/:player_id/:team/map_icon.png' do
-	  filename = File.join PdxPacman.root, "public", "icons", params[:player_id] + '_' + params[:team] + '.png';
-	  if File.exist?(filename)
+    filename = File.join PdxPacman.root, "public", "icons", params[:player_id] + '_' + params[:team] + '.png';
+    if File.exist?(filename)
       send_file filename
     else
       @player = Player.first :geoloqi_user_id => params[:player_id]
@@ -130,14 +129,17 @@ class PdxPacman < Sinatra::Base
       else
         playerImg = Magick::Image.read(File.join(PdxPacman.root, "public", "img", "mini-dino-" + params[:team] + ".png")).first
       end
-        markerIcon = Magick::Image.read(File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")).first
-        result = markerIcon.composite(playerImg, 3, 3, Magick::OverCompositeOp)
-        result.write(filename)
-        send_file filename
-
-      #else
-      #  send_file File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")
-      #end
+      markerIcon = Magick::Image.read(File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")).first
+      result = markerIcon.composite(playerImg, 3, 3, Magick::OverCompositeOp)
+      result.write(filename)
+      send_file filename
     end
+  end
+  
+  post '/contact_submit' do
+    puts params
+    puts RestClient.post 'http://business.geoloqi.com/contact-submit.php', params
+    # puts EM::Synchrony.sync(EventMachine::HttpRequest.new('http://business.geoloqi.com/contact-submit.php').post(params)).response
+    {:result => "ok"}
   end
 end

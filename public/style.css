@@ -32,7 +32,8 @@
 }
 
 body {
-	font-family: 'DroidSansRegular';
+	font-family: 'DroidSansRegular', Verdana, Arial, sans-serif;
+	background: url('img/home-bkg.png') repeat-x top #eee6dc;
 }
 
 html, body {
@@ -195,6 +196,9 @@ nav, footer {
 	color:#ffffff;
 }
 
+#splash footer {
+	position: relative;
+}
 
 nav a {
 	color:#ffffff;
@@ -454,3 +458,16 @@ Small Screen/Mobile Styles
 		display: none;
 	}
 }
+
+/*********************
+Home Page
+*********************/
+#splash input.contact {
+	border: 1px #888 solid;
+	width: 220px;
+	font-size: 14pt;
+}
+#splash textarea {
+	font-size: 13pt;
+}
+
