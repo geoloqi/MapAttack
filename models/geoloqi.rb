@@ -17,7 +17,6 @@ module Geoloqi
   def self.run(meth, oauth_token, url, body=nil)
     args = {:head => headers(oauth_token)}
     args[:body] = body.to_json if body
-    puts args.inspect
     response_json = JSON.parse EM::Synchrony.sync(EventMachine::HttpRequest.new(API_URL+url).send(meth.to_sym, args)).response
     raise Error.new(response_json['error'], response_json['error_description']) if response_json['error']
     response_json
@@ -59,9 +58,6 @@ module Geoloqi
                                      :grant_type => "authorization_code",
                                      :redirect_uri => redirect_uri
     response = EM::Synchrony.sync(EventMachine::HttpRequest.new(API_URL+"oauth/token").post(args)).response
-    puts "RESPONSE OAUTH: #{response.inspect}"
     response_json = JSON.parse response
-    puts response_json.inspect
-    response_json
   end
 end

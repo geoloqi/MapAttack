@@ -6,7 +6,7 @@ var cg = {
 	p: function(w,h) {
 		return new google.maps.Point(w,h);
 	},
-	playerImage: function(id, team) {
+	playerImage: function(id, team, useDefault) {
 		return new google.maps.MarkerImage("/player/"+id+"/"+team+"/map_icon.png", new google.maps.Size(38, 31), new google.maps.Point(0,0), new google.maps.Point(10, 30));
 	}
 }
@@ -54,9 +54,9 @@ var playerIcons = {
 	
   	var myOptions = {
   		zoom: 17,
-  		center: new google.maps.LatLng(37.4300, -122.1695),
+  		center: new google.maps.LatLng(37.4313, -122.1647),
   		mapTypeId: google.maps.MapTypeId.ROADMAP,
-  		mapTypeControl: false
+  		mapTypeControl: true
   	};
 
   	// Create the main map
@@ -116,6 +116,18 @@ var playerIcons = {
   				
   				$(data.players).each(function(i, player){
   					if($("#player-score-" + player.geoloqi_id).length == 0) {
+					    if(player.name.match('^_')) {
+					      player.name = '';
+					    }
+					    var useDefaultIcon = false;
+					    if(player.profile_image == '' || player.profile_image == null) {
+					      useDefaultIcon = true;
+					      if(player.team == "red") {
+						player.profile_image = "/img/blank-profile-red.png";
+					      } else {
+						player.profile_image = 'http://beta.geoloqi.com/themes/standard/assets/images/profile-blank.png';
+					      }
+					    }
 	  					$("#"+player.team+"-team-players").append('<li id="player-score-' + player.geoloqi_id + '"><img src="' + player.profile_image + '" />'
 	  						+ '<h3>' + player.name + '</h3>'
 	  						+ '<span class="points">' + player.score + '</span>'
@@ -130,7 +142,8 @@ var playerIcons = {
 	  						username: player.name, 
 	  						team: player.team,
 	  						latitude: player.location.location.position.latitude, 
-	  						longitude: player.location.location.position.longitude
+	  						longitude: player.location.location.position.longitude,
+							useDefaultIcon: useDefaultIcon
 	  					});
 	  				}
   				});
@@ -173,7 +186,7 @@ var playerIcons = {
   				position: myLatLng,
   				map: map,
   				title: username,
-  				icon: cg.playerImage(id, data.team)
+  				icon: cg.playerImage(id, data.team, data.useDefaultIcon)
   			});
   			data.marker = marker;
   			people.push(data);
