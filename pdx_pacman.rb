@@ -124,16 +124,20 @@ class PdxPacman < Sinatra::Base
       send_file filename
     else
       @player = Player.first :geoloqi_user_id => params[:player_id]
-      if @player.profile_image != ''
+      if !@player.profile_image.nil? && @player.profile_image != ''
         playerImg = Magick::Image.read(@player.profile_image).first
         playerImg.crop_resized!(16, 16, Magick::NorthGravity)
+      else
+        playerImg = Magick::Image.read(File.join(PdxPacman.root, "public", "img", "mini-dino-" + params[:team] + ".png")).first
+      end
         markerIcon = Magick::Image.read(File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")).first
         result = markerIcon.composite(playerImg, 3, 3, Magick::OverCompositeOp)
         result.write(filename)
         send_file filename
-      else
-        send_file File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")
-      end
+
+      #else
+      #  send_file File.join(PdxPacman.root, "public", "img", "player-icon-" + params[:team] + ".png")
+      #end
     end
   end
 end

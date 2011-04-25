@@ -7,11 +7,7 @@ var cg = {
 		return new google.maps.Point(w,h);
 	},
 	playerImage: function(id, team, useDefault) {
-			     if(useDefault) { 
-		return new google.maps.MarkerImage("http://mapattack.org/img/mini-dino.png", new google.maps.Size(38, 31), new google.maps.Point(0,0), new google.maps.Point(10, 30));
-			     } else {
 		return new google.maps.MarkerImage("/player/"+id+"/"+team+"/map_icon.png", new google.maps.Size(38, 31), new google.maps.Point(0,0), new google.maps.Point(10, 30));
-			     }
 	}
 }
 
@@ -124,9 +120,13 @@ var playerIcons = {
 					      player.name = '';
 					    }
 					    var useDefaultIcon = false;
-					    if(player.profile_image === '') {
+					    if(player.profile_image == '' || player.profile_image == null) {
 					      useDefaultIcon = true;
-					      player.profile_image = 'http://beta.geoloqi.com/themes/standard/assets/images/profile-blank.png';
+					      if(player.team == "red") {
+						player.profile_image = "/img/blank-profile-red.png";
+					      } else {
+						player.profile_image = 'http://beta.geoloqi.com/themes/standard/assets/images/profile-blank.png';
+					      }
 					    }
 	  					$("#"+player.team+"-team-players").append('<li id="player-score-' + player.geoloqi_id + '"><img src="' + player.profile_image + '" />'
 	  						+ '<h3>' + player.name + '</h3>'
