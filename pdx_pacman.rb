@@ -137,9 +137,7 @@ class PdxPacman < Sinatra::Base
   end
   
   post '/contact_submit' do
-    puts params
-    puts RestClient.post 'http://business.geoloqi.com/contact-submit.php', params
-    # puts EM::Synchrony.sync(EventMachine::HttpRequest.new('http://business.geoloqi.com/contact-submit.php').post(params)).response
+    RestClient.post 'http://business.geoloqi.com/contact-submit.php', params
     {:result => "ok"}
   end
 end
