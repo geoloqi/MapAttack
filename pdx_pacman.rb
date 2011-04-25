@@ -6,35 +6,23 @@ class PdxPacman < Sinatra::Base
   end
 
   get '/game/:layer_id/join' do
-=begin
     @oauth_token = Geoloqi.get_token(params[:code], Geoloqi::BASE_URI+'game/'+params[:layer_id]+'/join')['access_token']
     @game = Game.create_unless_exists params[:layer_id]
     response = Geoloqi.get @oauth_token, 'layer/info/'+params[:layer_id]
-    redirect '/game/'+params[:layer_id] if response.subscription
-    erb :join, :layout => false
-=end
-    oauth_token = Geoloqi.get_token(params[:code], Geoloqi::BASE_URI + "game/" + params[:layer_id] + "/join")["access_token"]
-    @game = Game.first :layer_id => params[:layer_id]
-    if @game == nil
-      response = Geoloqi.get Geoloqi::OAUTH_TOKEN, 'layer/info/' + params[:layer_id]
-      @game = Game.create :layer_id => params[:layer_id], :name => response.name
-    end
-    @oauth_token = oauth_token
-    response = Geoloqi.get @oauth_token, 'layer/info/' + params[:layer_id]
 
    	user_profile = Geoloqi.get @oauth_token, 'account/profile'
-    
+
     @player = Player.first :geoloqi_user_id => user_profile.user_id, :game => @game
 
-    if response.subscription.nil? || response.subscription == false || @player == nil
+    if response.subscription.nil? || response.subscription == false || @player.nil?
       # The player has never subscribed to the layer before, so create a new record in our DB and set up their shared tokens.
-      #  generate shared token so we can retrieve their location for the map later
+      # Generate shared token so we can retrieve their location for the map later
     	shared_token = Geoloqi.post @oauth_token, 'link/create', {:description => "Created for "+@game.name, :minutes => 240}
-      
-      #  subscribe the player to the layer
+
+      # Subscribe the player to the layer
     	Geoloqi.get @oauth_token, 'layer/subscribe/' + params[:layer_id]
 
-	    if @player == nil
+	    if @player.nil?
 	      @player = Player.new
         # If user_profile.profile_image is not there or is null, don't do this (Should prevent errors on non-twitter accounts)
         @player.profile_image = user_profile.profile_image unless user_profile.profile_image.nil? || user_profile.profile_image.empty?
