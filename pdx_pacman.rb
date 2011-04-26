@@ -34,11 +34,6 @@ class PdxPacman < Sinatra::Base
     redirect "/game/" + params[:layer_id]
   end
 
-  get '/game/:layer_id/mobile' do
-    @game = Game.first_or_create :layer_id => params[:layer_id]
-    erb :'mobile'
-  end
-
   get '/game/:layer_id/?' do
     @game = Game.first_or_create :layer_id => params[:layer_id]
     erb :'index'
