@@ -35,7 +35,11 @@ class PdxPacman < Sinatra::Base
   end
 
   get '/game/:layer_id/?' do
-    @game = Game.first_or_create :layer_id => params[:layer_id]
+    begin
+      @game = Game.create_unless_exists params[:layer_id]
+    rescue Geoloqi::Error
+      redirect '/'
+    end
     erb :'index'
   end
 

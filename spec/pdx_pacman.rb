@@ -58,7 +58,7 @@ describe PdxPacman do
 
     EM.synchrony do
       get '/game/1QY/join?code=1234'
-      EventMachine.stop
+      EM.stop
     end
     last_response.should be_redirect
     last_response.headers['Location'].should == 'http://example.org/game/1QY'
@@ -69,4 +69,27 @@ describe PdxPacman do
     Team.all(:name => 'red').length.should == 1
     Team.all(:name => 'blue').length.should == 1
   end
+  
+  it 'loads game for valid layer' do
+    EM.synchrony do
+      get '/game/1QY'
+      EM.stop
+    end
+    last_response.should be_ok
+    last_response.should =~ /map ?attack/i
+  end
+  
+  it 'redirects to index for invalid layer' do
+    stub_request(:get, "https://api.geoloqi.com/1/layer/info/DADEMURPHYRULZOK").
+      with(:headers => {:authorization => "OAuth #{Geoloqi::OAUTH_TOKEN}", :content_type => 'application/json'}).
+      to_return(:status => 200, :body => {"error"=>"access_denied", "error_description"=>"Access denied to this layer"}.to_json)
+    
+    EM.synchrony do
+      get '/game/DADEMURPHYRULZOK'
+      EM.stop
+    end
+    last_response.should be_redirect
+    last_response.headers['Location'].should == 'http://example.org/'
+  end
+  
 end
