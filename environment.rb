@@ -3,10 +3,10 @@ require "rubygems"
 require "bundler"
 Bundler.setup
 Bundler.require
+require 'async-rack'
 
 class Sinatra::Base
   configure do
-    use Rack::FiberPool
     use Rack::Cache, :verbose => false,
                      :metastore => "file:cache/meta",
                      :entitystore => "file:cache/body"
