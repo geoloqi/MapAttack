@@ -19,17 +19,17 @@ describe PdxPacman do
 =end
 
     stub_request(:post, "https://api.geoloqi.com/1/oauth/token").
-      with(:body => Rack::Utils.escape(:client_id => "client_id1234",
-                                       :client_secret => "client_secret1234",
+      with(:body => Rack::Utils.escape(:client_id => Geoloqi::CLIENT_ID,
+                                       :client_secret => Geoloqi::CLIENT_SECRET,
                                        :code => "1234",
                                        :grant_type => "authorization_code",
                                        :redirect_uri => "http://mapattack.org/game/1QY/join")).
       to_return(:status => 200,
                 :headers => {:content_type => 'application/json'},
                 :body => {:access_token => 'access_token1234',
-                                    :scope => nil,
-                                    :expires_in => '86400',
-                                    :refresh_token => 'refresh_token1234'}.to_json)
+                          :scope => nil,
+                          :expires_in => '86400',
+                          :refresh_token => 'refresh_token1234'}.to_json)
 
     stub_request(:get, "https://api.geoloqi.com/1/layer/info/1QY").
       with(:body => '').
@@ -41,7 +41,7 @@ describe PdxPacman do
                           :description => 'description',
                           :icon => 'http://localhost/test.png',
                           :public => '1',
-                          :url => 'https://a.geoloqi.com/oauth/authorize?response_type=code&client_id=7bcd478f26bd14b1fed18e9fe59e506f&redirect_uri=http%3A%2F%2Fmapattack.org%2Fgame%2F1Lx%2Fjoin',
+                          :url => "https://a.geoloqi.com/oauth/authorize?response_type=code&client_id=#{Geoloqi::CLIENT_ID}&redirect_uri=#{Rack::Utils.escape Geoloqi::BASE_URI}game%2F1Lx%2Fjoin",
                           :subscription => {'subscribed' => '0', 'date_subscribed' => '2011-01-01 01:01:01'},
                           :settings => []}.to_json)
 
@@ -64,7 +64,7 @@ describe PdxPacman do
 
     stub_request(:post, "https://api.geoloqi.com/1/message/send").
              with(:body => {:user_id => 'user_id1234', :text => "You're on the blue team!"}.to_json,
-                  :headers => {:authorization => 'OAuth oauth1234', :content_type => 'application/json'}).
+                  :headers => {:authorization => "OAuth #{Geoloqi::OAUTH_TOKEN}", :content_type => 'application/json'}).
              to_return(:status => 200, :body => {:result => 'ok', :username => 'username1234', :user_id => 'user_id1234'}.to_json)
 
     get '/game/1QY/join?code=1234'
