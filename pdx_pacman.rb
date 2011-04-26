@@ -118,6 +118,6 @@ class PdxPacman < Sinatra::Base
   
   post '/contact_submit' do
     RestClient.post 'http://business.geoloqi.com/contact-submit.php', params
-    {:result => "ok"}
+    {:result => "ok"}.to_json
   end
 end
