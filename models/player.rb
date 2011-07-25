@@ -17,9 +17,4 @@ class Player
     update :points_cache => (self.points_cache + points.to_i)
     reload
   end
-  
-  def send_message(text)
-    Geoloqi.post Geoloqi::OAUTH_TOKEN, 'message/send', :user_id => geoloqi_user_id, :text => text
-  end
-  
 end
