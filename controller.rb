@@ -56,7 +56,7 @@ class Controller < Sinatra::Base
   end
 
   post '/trigger' do
-    body = SymbolTable.new JSON.parse(request.body)
+    body = Hashie::Mash.new JSON.parse(request.body)
 
     player = Player.first :game => Game.first(:layer_id => body.layer.layer_id), :geoloqi_user_id => body.user.user_id
 

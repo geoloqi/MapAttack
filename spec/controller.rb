@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe PdxPacman do
+describe Controller do
   include WebMock::API
   include Rack::Test::Methods
-  def app; PdxPacman end
+  def app; Controller end
 
   it 'returns join page, create game, and add teams for valid layer' do
     stub_request(:post, "https://api.geoloqi.com/1/oauth/token").

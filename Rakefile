@@ -10,3 +10,7 @@ namespace :db do
     DataMapper.auto_upgrade!
   end
 end
+
+task :test do
+  `ruby ./spec/controller.rb`
+end

@@ -3,7 +3,6 @@ require "rubygems"
 require "bundler"
 Bundler.setup
 Bundler.require
-require 'async-rack'
 
 class Sinatra::Base
   configure do
@@ -16,7 +15,6 @@ class Sinatra::Base
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
     config_hash = YAML.load_file(File.join(root, 'config.yml'))[environment.to_s]
 
-    Geoloqi::BASE_URI = config_hash['base_uri']
     Geoloqi::GA_ID = config_hash['ga_id']
 
     Geoloqi.config :client_id => config_hash['client_id'],
@@ -31,4 +29,4 @@ class Sinatra::Base
   end
 end
 
-require File.join(Sinatra::Base.root, 'pdx_pacman.rb')
+require File.join(Sinatra::Base.root, 'controller.rb')

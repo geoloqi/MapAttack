@@ -91,7 +91,6 @@ GEM
       em-synchrony (= 0.2.0)
       rack-fiber_pool (= 0.9.1)
       sinatra (>= 1.0)
-    symboltable (1.0.0)
     thin (1.2.11)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -125,7 +124,6 @@ DEPENDENCIES
   shotgun (= 0.9)
   sinatra (= 1.2.6)
   sinatra-synchrony (= 0.1.0.beta.2)
-  symboltable (= 1.0.0)
   thin
   webmock (= 1.6.2)
   yajl-ruby (= 0.8.2)
