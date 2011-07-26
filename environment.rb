@@ -15,7 +15,7 @@ class Sinatra::Base
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
     config_hash = YAML.load_file(File.join(root, 'config.yml'))[environment.to_s]
 
-    Geoloqi::GA_ID = config_hash['ga_id']
+    GA_ID = config_hash['ga_id']
 
     Geoloqi.config :client_id => config_hash['client_id'],
                    :client_secret => config_hash['client_secret'],
