@@ -56,10 +56,7 @@ describe Controller do
                      :headers => {:authorization => "OAuth 1234", :content_type => 'application/json'}).
       to_return(:status => 200, :body => {:result => 'ok', :username => 'username1234', :user_id => 'user_id1234'}.to_json)
 
-    EM.synchrony do
-      get '/game/1QY/join?code=1234'
-      EM.stop
-    end
+    get '/game/1QY/join?code=1234'
     last_response.should be_redirect
     last_response.headers['Location'].should == 'http://example.org/game/1QY'
     Game.count.should == 1
@@ -71,10 +68,7 @@ describe Controller do
   end
   
   it 'loads game for valid layer' do
-    EM.synchrony do
-      get '/game/1QY'
-      EM.stop
-    end
+    get '/game/1QY'
     last_response.should be_ok
     last_response.should =~ /map ?attack/i
   end
@@ -84,10 +78,8 @@ describe Controller do
       with(:headers => {:authorization => "OAuth 1234", :content_type => 'application/json'}).
       to_return(:status => 200, :body => {"error"=>"access_denied", "error_description"=>"Access denied to this layer"}.to_json)
     
-    EM.synchrony do
-      get '/game/DADEMURPHYRULZOK'
-      EM.stop
-    end
+    get '/game/DADEMURPHYRULZOK'
+
     last_response.should be_redirect
     last_response.headers['Location'].should == 'http://example.org/'
   end
