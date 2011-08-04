@@ -12,7 +12,7 @@ class Controller < Sinatra::Base
     geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
     redirect geoloqi.authorize_url(request.url) unless geoloqi.access_token?
 
-    game = Game.create_unless_exists params[:layer_id]
+    game = Game.create_unless_exists geoloqi, params[:layer_id]
 
    	user_profile = geoloqi.get 'account/profile'
 
@@ -48,7 +48,7 @@ class Controller < Sinatra::Base
 
   get '/game/:layer_id/?' do
     begin
-      @game = Game.create_unless_exists params[:layer_id]
+      @game = Game.create_unless_exists geoloqi, params[:layer_id]
     rescue Geoloqi::Error
       redirect '/'
     end
@@ -130,7 +130,7 @@ class Controller < Sinatra::Base
   end
 
   post '/contact_submit' do
-    RestClient.post 'http://business.geoloqi.com/contact-submit.php', params
+    Faraday.post 'http://business.geoloqi.com/contact-submit.php', params
     {:result => "ok"}.to_json
   end
 

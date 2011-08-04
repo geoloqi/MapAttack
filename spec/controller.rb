@@ -1,14 +1,14 @@
-require File.dirname(__FILE__) + '/spec_helper'
+require File.join('.', File.dirname(__FILE__) + '/spec_helper')
 
 describe Controller do
   include WebMock::API
   include Rack::Test::Methods
   def app; Controller end
-
+  
   it 'returns join page, create game, and add teams for valid layer' do
     stub_request(:post, "https://api.geoloqi.com/1/oauth/token").
-      with(:body => Rack::Utils.escape(:client_id => Geoloqi::CLIENT_ID,
-                                       :client_secret => Geoloqi::CLIENT_SECRET,
+      with(:body => Rack::Utils.escape(:client_id => Geoloqi.config.client_id,
+                                       :client_secret => Geoloqi.config.client_secret,
                                        :code => "1234",
                                        :grant_type => "authorization_code",
                                        :redirect_uri => "http://mapattack.org/game/1QY/join")).
@@ -29,7 +29,7 @@ describe Controller do
                            :description => 'description',
                            :icon => 'http://localhost/test.png',
                            :public => '1',
-                           :url => "https://a.geoloqi.com/oauth/authorize?response_type=code&client_id=#{Geoloqi::CLIENT_ID}&redirect_uri=#{Rack::Utils.escape Geoloqi::BASE_URI}game%2F1Lx%2Fjoin",
+                           :url => "https://a.geoloqi.com/oauth/authorize?response_type=code&client_id=#{Geoloqi.config.client_id}&redirect_uri=#{Rack::Utils.escape Geoloqi.config.redirect_uri}game%2F1Lx%2Fjoin",
                            :subscription => {'subscribed' => '0', 'date_subscribed' => '2011-01-01 01:01:01'},
                            :settings => []}.to_json)
 
@@ -53,7 +53,7 @@ describe Controller do
     stub_request(:post, "https://api.geoloqi.com/1/message/send").
       with(:body => {:user_id => 'user_id1234',
                      :text => "You're on the blue team!"}.to_json,
-                     :headers => {:authorization => "OAuth #{Geoloqi::OAUTH_TOKEN}", :content_type => 'application/json'}).
+                     :headers => {:authorization => "OAuth 1234", :content_type => 'application/json'}).
       to_return(:status => 200, :body => {:result => 'ok', :username => 'username1234', :user_id => 'user_id1234'}.to_json)
 
     EM.synchrony do
@@ -81,7 +81,7 @@ describe Controller do
   
   it 'redirects to index for invalid layer' do
     stub_request(:get, "https://api.geoloqi.com/1/layer/info/DADEMURPHYRULZOK").
-      with(:headers => {:authorization => "OAuth #{Geoloqi::OAUTH_TOKEN}", :content_type => 'application/json'}).
+      with(:headers => {:authorization => "OAuth 1234", :content_type => 'application/json'}).
       to_return(:status => 200, :body => {"error"=>"access_denied", "error_description"=>"Access denied to this layer"}.to_json)
     
     EM.synchrony do
