@@ -3,4 +3,4 @@ production:
   client_id:
   client_secret:
   base_uri: "http://mapattack.org/"
-  ga_id: UA-16359758-24
+  ga_id:
