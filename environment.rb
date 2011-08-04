@@ -14,7 +14,7 @@ class Sinatra::Base
     mime_type :woff, 'application/octet-stream'
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
     config_hash = YAML.load_file(File.join(root, 'config.yml'))[environment.to_s]
-
+    raise "in config.yml, the \"#{environment.to_s}\" configuration is missing" if config_hash.nil?
     GA_ID = config_hash['ga_id']
 
     Geoloqi.config :client_id => config_hash['client_id'],
