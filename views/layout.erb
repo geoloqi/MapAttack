@@ -10,7 +10,7 @@
   	<% if Controller::GA_ID %>
       <script type="text/javascript">
         var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', '<%= Geoloqi::GA_ID %>']);
+        _gaq.push(['_setAccount', '<%= Controller::GA_ID %>']);
         _gaq.push(['_trackPageview']);
 
         (function() {
