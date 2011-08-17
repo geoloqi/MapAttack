@@ -10,7 +10,7 @@ gem 'thin'
 gem 'rake',              '0.8.7',  :require => nil
 gem 'rmagick',           '2.13.1', :require => 'RMagick'
 # gem 'sinatra-synchrony', '0.1.1', :require => 'sinatra/synchrony'
-gem 'geoloqi',           '0.9.18'
+gem 'geoloqi',           '0.9.20'
 gem 'hashie',            '1.0.0'
 
 group :development do

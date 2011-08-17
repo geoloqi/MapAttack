@@ -15,6 +15,7 @@ class Game
   def self.create_unless_exists(session, layer_id)
     game = first :layer_id => layer_id
     unless game
+      puts session.inspect
       response = session.get "layer/info/" + layer_id
       game = create :layer_id => layer_id, :name => response.name
     end

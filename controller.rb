@@ -70,8 +70,8 @@ class Controller < Sinatra::Base
 
   get '/game/:layer_id/status.json' do
     content_type 'application/json'
-
-    response = geoloqi.post 'place/list', :layer_id => params[:layer_id], :after => params[:after]
+    response = Geoloqi.get APPLICATION_ACCESS_TOKEN, 'place/list', :layer_id => params[:layer_id], :after => params[:after]
+    # response = geoloqi.get 'place/list', :layer_id => params[:layer_id], :after => params[:after]
 
     game = Game.first :layer_id => params[:layer_id]
 
@@ -89,23 +89,21 @@ class Controller < Sinatra::Base
     game.player.each do |player|
       tokens.push player.token
     end
-    response = geoloqi.get 'share/last?geoloqi_token=,' + tokens.join(",")
+
+    locations = geoloqi.get("share/last?geoloqi_token=,#{tokens.join ','}").locations
 
     players = []
     game.player(:order => :points_cache.desc).each do |player|
-    	location = {}
-    	response.each do |p|
-    	  if p['username'] == player.name
-    	    location = p
-    	  end
-    	end
+    	player_location = {}
+    	
+    	locations.each {|p| player_location = p if p['username'] == player.name }
 
     	players << {:geoloqi_id => player.geoloqi_user_id,
                   :score => player.points_cache,
 	                :name => player.name,
 	                :team => player.team.name,
 	                :profile_image => player.profile_image,
-	                :location => location}
+	                :location => player_location}
     end
     {:places => places, :players => players}.to_json
   end

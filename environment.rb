@@ -6,7 +6,7 @@ Bundler.require
 
 class Sinatra::Base
   configure do
-#    register Sinatra::Synchrony
+    # register Sinatra::Synchrony
     if test?
       set :sessions, false
     else
@@ -21,6 +21,7 @@ class Sinatra::Base
     config_hash = YAML.load_file(File.join(root, 'config.yml'))[environment.to_s]
     raise "in config.yml, the \"#{environment.to_s}\" configuration is missing" if config_hash.nil?
     GA_ID = config_hash['ga_id']
+    APPLICATION_ACCESS_TOKEN = config_hash['oauth_token']
     # Faraday.default_adapter = :em_synchrony
     Geoloqi.config :client_id => config_hash['client_id'],
                    :client_secret => config_hash['client_secret'],
