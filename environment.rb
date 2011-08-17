@@ -33,4 +33,18 @@ class Sinatra::Base
   end
 end
 
+# Monkey patch fix for migrations bug on JRuby
+DataMapper.repository.adapter.class.class_eval do
+  def show_variable(name)
+    select('SELECT variable_value FROM information_schema.session_variables WHERE LOWER(variable_name) = ?', name).first
+  end
+end
+
+# Quit whining about the certificate!
+require 'openssl'
+original_verbosity = $VERBOSE
+$VERBOSE = nil
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+$VERBOSE = original_verbosity
+
 require File.join(Sinatra::Base.root, 'controller.rb')

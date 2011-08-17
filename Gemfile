@@ -1,20 +1,22 @@
 source :rubyforge
 gem 'sinatra',           '1.2.6', :require => 'sinatra/base'
-gem 'yajl-ruby',         '0.8.2', :require => 'yajl/json_gem'
+gem 'json',              '1.5.3'
 gem 'dm-core',           '1.1.0'
 gem 'dm-timestamps',     '1.1.0'
 gem 'dm-migrations',     '1.1.0'
 gem 'dm-mysql-adapter',  '1.1.0'
+gem 'do_jdbc'
+gem 'jdbc-mysql'
+gem 'jruby-openssl'
 gem 'rack-cache',        '1.0.1', :require => 'rack/cache'
-gem 'thin'
 gem 'rake',              '0.8.7',  :require => nil
-gem 'rmagick',           '2.13.1', :require => 'RMagick'
-# gem 'sinatra-synchrony', '0.1.1', :require => 'sinatra/synchrony'
-gem 'geoloqi',           '0.9.20'
+#gem 'rmagick',           '2.13.1', :require => 'RMagick'
+gem 'geoloqi',           '0.9.21'
 gem 'hashie',            '1.0.0'
+gem 'kirk'
 
 group :development do
-  gem 'ruby-debug19',   '0.11.6', :require => 'ruby-debug'
+  gem 'ruby-debug'
 end
 
 group :test do
