@@ -1,0 +1,4 @@
+rack 'config.ru' do
+  env :RACK_ENV => "production"
+  listen '40000'
+end
