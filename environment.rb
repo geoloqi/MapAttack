@@ -15,7 +15,7 @@ class Sinatra::Base
     end
     set :root, File.expand_path(File.join(File.dirname(__FILE__)))
     set :public, File.join(root, 'public')
-    set :display_errors, false
+    set :display_errors, true
     mime_type :woff, 'application/octet-stream'
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
     config_hash = YAML.load_file(File.join(root, 'config.yml'))[environment.to_s]

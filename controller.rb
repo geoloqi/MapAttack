@@ -109,21 +109,25 @@ class Controller < Sinatra::Base
   end
 
   get '/player/:player_id/:team/map_icon.png' do
-    filename = File.join Controller.root, "public", "icons", "#{params[:player_id]}_#{params[:team]}.png"
-    if File.exist?(filename)
-      send_file filename
+    file_path = File.join Controller.root, "public", "icons", "#{params[:player_id]}_#{params[:team]}.png"
+    file_path_tmp = "#{file_path}tmp"
+    generic_icon_path = File.join Controller.root, "public", "img", "mini-dino-" + params[:team] + ".png"
+    marker_path = File.join Controller.root, "public", "img", "player-icon-" + params[:team] + ".png"
+
+    if File.exist?(file_path)
+      send_file file_path
     else
       player = Player.first :geoloqi_user_id => params[:player_id]
       if !player.profile_image.nil? && player.profile_image != ''
-        playerImg = Magick::Image.read(player.profile_image).first
-        playerImg.crop_resized!(16, 16, Magick::NorthGravity)
+        File.open(file_path_tmp, 'w') {|f| f.write(Faraday.get(player.profile_image).body) }
+        `mogrify -resize 16x16^ -crop 16x16+0+0 -gravity north #{file_path_tmp}`
       else
-        playerImg = Magick::Image.read(File.join(Controller.root, "public", "img", "mini-dino-" + params[:team] + ".png")).first
+        File.cp generic_icon_path, file_path_tmp
       end
-      markerIcon = Magick::Image.read(File.join(Controller.root, "public", "img", "player-icon-" + params[:team] + ".png")).first
-      result = markerIcon.composite(playerImg, 3, 3, Magick::OverCompositeOp)
-      result.write(filename)
-      send_file filename
+
+      `composite -geometry +3+3 -compose Over #{file_path_tmp} #{marker_path} #{file_path_tmp}`
+      FileUtils.mv file_path_tmp, file_path
+      send_file file_path
     end
   end
 
