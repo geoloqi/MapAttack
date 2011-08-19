@@ -25,16 +25,16 @@ class Controller < Sinatra::Base
       # The player has never subscribed to the layer before, so create a new record in our DB and add them to the group.
 
       # Add them to the group, so Geoloqi will publish their locations to this group.
-    	shared_token = geoloqi.post 'group/join/#{game.group_token}'
+    	geoloqi.post "group/join/#{game.group_token}"
 
       # Subscribe the player to the layer. This enables geofencing for this user for all the places on the layer.
     	geoloqi.get "layer/subscribe/#{params[:layer_id]}"
 
 	    if player.nil?
 	      player = Player.new :name => user_profile.username,
-	                           :geoloqi_user_id => user_profile.user_id,
-	                           :game => game,
-	                           :team => game.pick_team
+	                          :geoloqi_user_id => user_profile.user_id,
+	                          :game => game,
+	                          :team => game.pick_team
 
           # If user_profile.profile_image is not there or is null, don't do this (Should prevent errors on non-twitter accounts)
           player.profile_image = user_profile.profile_image unless user_profile.profile_image.nil? || user_profile.profile_image.empty?
