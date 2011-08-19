@@ -73,7 +73,7 @@ class Controller < Sinatra::Base
       score_blue = 0
 
       # Broadcast the coin state to the group
-      geoloqi.post 'group/message/#{game.group_token}', {
+      geoloqi.post "group/message/#{game.group_token}", {
         :mapattack => {
           :place_id => body.place.place_id,
           :team => player.team.name,
