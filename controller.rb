@@ -22,26 +22,26 @@ class Controller < Sinatra::Base
 
     if layer_info.subscription.nil? || layer_info.subscription == false || player.nil? # This conditional needs cleaning.
 
-      # The player has never subscribed to the layer before, so create a new record in our DB and set up their shared tokens.
-      # Generate shared token so we can retrieve their location for the map later
-    	shared_token = geoloqi.post 'link/create', :description => "Created for #{game.name}", :minutes => 240
+      # The player has never subscribed to the layer before, so create a new record in our DB and add them to the group.
 
-      # Subscribe the player to the layer
+      # Add them to the group, so Geoloqi will publish their locations to this group.
+    	shared_token = geoloqi.post 'group/join/#{game.group_token}'
+
+      # Subscribe the player to the layer. This enables geofencing for this user for all the places on the layer.
     	geoloqi.get "layer/subscribe/#{params[:layer_id]}"
 
 	    if player.nil?
 	      player = Player.new :name => user_profile.username,
 	                           :geoloqi_user_id => user_profile.user_id,
-	                           :token => shared_token.token,
 	                           :game => game,
 	                           :team => game.pick_team
 
-        # If user_profile.profile_image is not there or is null, don't do this (Should prevent errors on non-twitter accounts)
-        player.profile_image = user_profile.profile_image unless user_profile.profile_image.nil? || user_profile.profile_image.empty?
-        player.save
-		  end
+          # If user_profile.profile_image is not there or is null, don't do this (Should prevent errors on non-twitter accounts)
+          player.profile_image = user_profile.profile_image unless user_profile.profile_image.nil? || user_profile.profile_image.empty?
+          player.save
+        end
 
-		  geoloqi.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You're on the #{player.team.name} team!"
+        geoloqi.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You're on the #{player.team.name} team!"
     end
     redirect "/game/" + params[:layer_id]
   end
@@ -58,11 +58,34 @@ class Controller < Sinatra::Base
   post '/trigger' do
     body = Hashie::Mash.new JSON.parse(request.body)
 
-    player = Player.first :game => Game.first(:layer_id => body.layer.layer_id), :geoloqi_user_id => body.user.user_id
+    game = Game.first(:layer_id => body.layer.layer_id)
+    player = Player.first :game => game, :geoloqi_user_id => body.user.user_id
 
     if body.place.extra.active.to_i == 1
+      # Update the place info in Geoloqi to set it inactive and record the team that ate the coin
       geoloqi.post "place/update/#{body.place.place_id}", :extra => {:active => 0, :team => player.team.name}
+
+      # Add points to this player's score
       player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
+
+      # TODO: Calculate the total red/blue score here
+      score_red = 0
+      score_blue = 0
+
+      # Broadcast the coin state to the group
+      geoloqi.post 'group/message/#{game.group_token}', {
+        :mapattack => {
+          :place_id => body.place.place_id,
+          :team => player.team.name,
+          :points => body.place.extra.points,
+          :latitude => body.place.latitude,
+          :longitude => body.place.longitude,
+          :score_red => score_red,
+          :score_blue => score_blue
+        }
+      }
+
+      # Notify the user that they ate the dot
       geoloqi.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You ate a dot! #{body.place.extra.points} points"
     end
     true
@@ -90,6 +113,7 @@ class Controller < Sinatra::Base
       tokens.push player.token
     end
 
+    # TODO: update to use group/last/:group_token to retrieve all user's locations
     locations = geoloqi.get("share/last?geoloqi_token=,#{tokens.join ','}").locations
 
     players = []
