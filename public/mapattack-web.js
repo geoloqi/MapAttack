@@ -37,7 +37,7 @@
 	  					});
 	  				}
   				});
-  				function receiveScores(total_score.red, total_score.blue);
+  				receiveScores(total_score.red, total_score.blue);
 
 				lastRequestTime = Math.round((new Date()).getTime() / 1000);
 			  	setTimeout(updateGame, 5000);
