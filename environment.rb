@@ -6,6 +6,9 @@ Bundler.require
 
 class Sinatra::Base
   configure do
+    
+    use Rack::MobileDetect
+    
     # register Sinatra::Synchrony
     if test?
       set :sessions, false

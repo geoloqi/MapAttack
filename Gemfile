@@ -14,6 +14,7 @@ gem 'rake',              '0.8.7',  :require => nil
 gem 'geoloqi',           '0.9.21'
 gem 'hashie',            '1.0.0'
 gem 'kirk'
+gem 'rack-mobile-detect', '0.3.0'
 
 group :development do
   gem 'ruby-debug'
