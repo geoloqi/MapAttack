@@ -93,6 +93,7 @@ class Controller < Sinatra::Base
 
   get '/game/:layer_id/status.json' do
     content_type 'application/json'
+
     response = Geoloqi.get APPLICATION_ACCESS_TOKEN, 'place/list', :layer_id => params[:layer_id], :after => params[:after]
     # response = geoloqi.get 'place/list', :layer_id => params[:layer_id], :after => params[:after]
 
@@ -108,18 +109,21 @@ class Controller < Sinatra::Base
                  :active => place['extra']['active']}
     end
 
+=begin
     tokens = []
     game.player.each do |player|
       tokens.push player.token
     end
+=end
+    raise 'TODO: update to use group/last/:group_token to retrieve all users locations'
 
-    # TODO: update to use group/last/:group_token to retrieve all user's locations
+
     locations = geoloqi.get("share/last?geoloqi_token=,#{tokens.join ','}").locations
 
     players = []
     game.player(:order => :points_cache.desc).each do |player|
     	player_location = {}
-    	
+
     	locations.each {|p| player_location = p if p['username'] == player.name }
 
     	players << {:geoloqi_id => player.geoloqi_user_id,

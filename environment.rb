@@ -1,4 +1,5 @@
 # Encoding.default_internal = 'UTF-8'
+$stderr.reopen $stdout
 require "rubygems"
 require "bundler"
 Bundler.setup
