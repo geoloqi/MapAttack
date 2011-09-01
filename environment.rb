@@ -6,10 +6,18 @@ Bundler.setup
 Bundler.require
 
 class Sinatra::Base
+  helpers do
+    def h(val)
+      Rack::Utils.escape_html val
+    end
+  end
+
+  configure :development do
+    DataMapper::Logger.new STDOUT, :debug
+  end
+
   configure do
-    
     use Rack::MobileDetect
-    
     # register Sinatra::Synchrony
     if test?
       set :sessions, false
@@ -17,6 +25,7 @@ class Sinatra::Base
       set :sessions, true
       set :session_secret,  'PUT SECRET HERE'
     end
+
     set :root, File.expand_path(File.join(File.dirname(__FILE__)))
     set :public, File.join(root, 'public')
     set :display_errors, true

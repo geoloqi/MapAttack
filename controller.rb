@@ -8,11 +8,36 @@ class Controller < Sinatra::Base
     erb :'index_stub'
   end
 
+  get '/admin/games' do
+    @games = Game.all
+    erb :'admin/games/index', :layout => :'admin/layout'
+  end
+
+  get '/admin/games/new' do
+    erb :'admin/game/new', :layout => :'admin/layout'
+  end
+
+  post '/admin/games' do
+    layer_response = geoloqi.post 'layer/create'
+
+    # Create a new group for this game. Players will be added to the group when they join.
+    # Group permissions are "open" which allows players to add themselves to the group without prior permission.
+    group_response = geoloqi.post "group/create", :visibility => 'open', :publish_access => 'open'
+
+    game = Game.create :layer_id => layer_response.layer_id, :group_token => group_response.token, :name => params[:game][:name]
+    redirect "/admin/games/#{game.id}/edit"
+  end
+
+
+
+
+
+
   get '/game/:layer_id/join' do
     geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
     redirect geoloqi.authorize_url(request.url) unless geoloqi.access_token?
 
-    game = Game.create_unless_exists geoloqi, params[:layer_id]
+    game = Game.get :layer_id => params[:layer_id]
 
    	user_profile = geoloqi.get 'account/profile'
 
@@ -58,7 +83,7 @@ class Controller < Sinatra::Base
   post '/trigger' do
     body = Hashie::Mash.new JSON.parse(request.body)
 
-    game = Game.first(:layer_id => body.layer.layer_id)
+    game = Game.first :layer_id => body.layer.layer_id
     player = Player.first :game => game, :geoloqi_user_id => body.user.user_id
 
     if body.place.extra.active.to_i == 1
@@ -109,17 +134,10 @@ class Controller < Sinatra::Base
                  :active => place['extra']['active']}
     end
 
-=begin
-    tokens = []
-    game.player.each do |player|
-      tokens.push player.token
-    end
-=end
-
     locations = geoloqi.get("group/last/#{game.group_token}")['locations']
 
     players = []
-    game.player(:order => :points_cache.desc).each do |player|
+    game.players(:order => :points_cache.desc).each do |player|
     	player_location = {}
 
     	locations.each {|p| player_location = p if p['username'] == player.name }
@@ -133,7 +151,7 @@ class Controller < Sinatra::Base
     end
     {:places => places, :players => players}.to_json
   end
-  
+
   get '/player/:geoloqi_user_id.json' do
     content_type :json
     player = Player.first :geoloqi_user_id => params[:geoloqi_user_id]

@@ -6,24 +6,16 @@ class Game
   property :group_token, String, :length => 9
   property :created_at, DateTime
   property :updated_at, DateTime
+  property :is_active, Boolean, :default => true
   has n, :teams
-  has n, :player
+  has n, :players
 
-  after :create do
-    ['red', 'blue'].each {|color| teams.create :name => color}
+  def self.team_names
+    %w{red blue}
   end
 
-  def self.create_unless_exists(session, layer_id)
-    game = first :layer_id => layer_id
-    unless game
-      puts session.inspect
-      response = session.get "layer/info/" + layer_id
-      # Create a new group for this game. Players will be added to the group when they join.
-      # Group permissions are "open" which allows players to add themselves to the group without prior permission.
-      group = session.post "group/create", :visibility => 'open', :publish_access => 'open'
-      game = create :layer_id => layer_id, :group_token => group.token, :name => response.name
-    end
-    game
+  after :create do
+    self.class.team_names.each {|color| teams.create :name => color}
   end
 
   def pick_team
@@ -31,4 +23,19 @@ class Game
   	# was created in the "/games/:layer_id/join"
   	team = (teams.first.players.count < teams.last.players.count ? teams.first : teams.last)
   end
+  
+  def total_points
+    total_array = self.class.team_names.collect! {|team_name| points_for(team_name)}
+    total = 0
+    total_array.each {|t| total += t}
+    total
+  end
+  
+  def points_for(team)
+    points = teams.first(:name => team).players.collect {|player| player.points_cache}
+    total = 0
+    points.each {|p| total += p}
+    total
+  end
+  
 end

@@ -4,6 +4,6 @@ class Team
   property :name, String, :length => 255
   property :created_at, DateTime
   property :updated_at, DateTime
-  belongs_to :game
+  belongs_to :game, :index => true
   has n, :players
 end
