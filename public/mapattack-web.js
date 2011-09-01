@@ -23,7 +23,6 @@ function updateGame() {
 		$("#num-players").html(data.players.length + " Players");
 		
 		$(data.players).each(function(i, player){
-
 		total_score[player.team] += player.score;
 		if(typeof player.location.location != "undefined") {
 					receivePlayerLocation({
@@ -31,9 +30,9 @@ function updateGame() {
 						username: player.name, 
 						team: player.team,
 						latitude: player.location.location.position.latitude, 
-						longitude: player.location.location.position.longitude,
-				useDefaultIcon: useDefaultIcon
+						longitude: player.location.location.position.longitude
 					});
+					receivePlayerScore(player);
 				}
 			});
 			receiveScores(total_score.red, total_score.blue);

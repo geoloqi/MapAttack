@@ -1,4 +1,3 @@
-
 var cg = {
 	s: function(w,h) {
 		return new google.maps.Size(w,h);
@@ -6,7 +5,7 @@ var cg = {
 	p: function(w,h) {
 		return new google.maps.Point(w,h);
 	},
-	playerImage: function(id, team, useDefault) {
+	playerImage: function(id, team) {
 		return new google.maps.MarkerImage("/player/"+id+"/"+team+"/map_icon.png", new google.maps.Size(38, 31), new google.maps.Point(0,0), new google.maps.Point(10, 30));
 	}
 }
@@ -47,6 +46,7 @@ var playerIcons = {
 
 var people = [];
 var pellets = [];
+var player_profiles = [];
 
 // player icon: '/player/' + player.geoloqi_id + "/" + player.team + '/map_icon.png'
 
@@ -152,17 +152,23 @@ function receivePlayerLocation(data) {
 		}
 	}
 	if(!exists){
-		// TODO: We need "team". Look up which team the user is on. Add a route to controller.rb to retrieve the player info?
-		var team = "";
 		
-		var marker = new google.maps.Marker({
-			position: myLatLng,
-			map: map,
-			title: data.username,
-			icon: cg.playerImage(id, team, data.useDefaultIcon)
-		});
-		data.marker = marker;
-		people.push(data);
+		if(typeof player_profiles[data.id] == "undefined") {
+			$.getJSON('/player/'+data.id+'.json', function(response) {
+				player_profiles[data.id] = response;
+				
+				var team = player_profiles[data.id].team;
+				var marker = new google.maps.Marker({
+					position: myLatLng,
+					map: map,
+					title: data.username,
+					icon: cg.playerImage(id, team)
+				});
+				data.marker = marker;
+				people.push(data);
+				
+			});
+		}
 	}
 }
 

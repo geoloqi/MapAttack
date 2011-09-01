@@ -115,10 +115,8 @@ class Controller < Sinatra::Base
       tokens.push player.token
     end
 =end
-    raise 'TODO: update to use group/last/:group_token to retrieve all users locations'
 
-
-    locations = geoloqi.get("share/last?geoloqi_token=,#{tokens.join ','}").locations
+    locations = geoloqi.get("group/last/#{game.group_token}")['locations']
 
     players = []
     game.player(:order => :points_cache.desc).each do |player|
@@ -134,6 +132,12 @@ class Controller < Sinatra::Base
 	                :location => player_location}
     end
     {:places => places, :players => players}.to_json
+  end
+  
+  get '/player/:geoloqi_user_id.json' do
+    content_type :json
+    player = Player.first :geoloqi_user_id => params[:geoloqi_user_id]
+    {:team => player.team.name.downcase, :profile_image => player.profile_image, :name => player.name}.to_json
   end
 
   get '/player/:player_id/:team/map_icon.png' do
