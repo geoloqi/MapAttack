@@ -16,7 +16,7 @@
       <tr>
         <td><a href="/game/<%= game.layer_id %>"><%= h game.name %></a></td>
         <td><%= h game.created_at.strftime('%D') %></td>
-        <td><%= h game.players(:order => :updated_at).first.updated_at.strftime('%D') %></td>
+        <td><%= h game.players(:order => :updated_at).first.updated_at.strftime('%D') if game.players.length > 0 %></td>
         <td><%= h game.is_active? ? 'On' : 'Off' %></td>
         <td><%= h game.players.count %></td>
         <td><%= h game.total_points %></td>
@@ -26,8 +26,4 @@
 <% end %>
 <br><br>
 
-Create New Game:
-<form action="/admin/games" method="POST">
-  Game Name: <input name="game[name]" type="text">
-  <input type="submit" value="Create">
-</form>
+<a href="/admin/games/new">Create New Game</a>

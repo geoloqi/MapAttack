@@ -10,6 +10,15 @@ class Sinatra::Base
     def h(val)
       Rack::Utils.escape_html val
     end
+
+    def require_login
+      geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
+      redirect geoloqi.authorize_url(request.url) unless geoloqi.access_token?
+    end
+    
+    def geoloqi_app
+      @_geoloqi_app ||= Geoloqi::Session.new :access_token => APPLICATION_ACCESS_TOKEN
+    end
   end
 
   configure :development do

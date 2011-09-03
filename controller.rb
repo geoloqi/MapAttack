@@ -14,24 +14,21 @@ class Controller < Sinatra::Base
   end
 
   get '/admin/games/new' do
-    erb :'admin/game/new', :layout => :'admin/layout'
+    erb :'admin/games/new', :layout => :'admin/layout'
   end
 
   post '/admin/games' do
-    layer_response = geoloqi.post 'layer/create'
-
-    # Create a new group for this game. Players will be added to the group when they join.
-    # Group permissions are "open" which allows players to add themselves to the group without prior permission.
-    group_response = geoloqi.post "group/create", :visibility => 'open', :publish_access => 'open'
-
-    game = Game.create :layer_id => layer_response.layer_id, :group_token => group_response.token, :name => params[:game][:name]
-    redirect "/admin/games/#{game.id}/edit"
+    game = Game.new params[:game]
+    group_response = geoloqi_app.post 'group/create', :visibility => 'open', :publish_access => 'open'
+    layer_response = geoloqi_app.post 'layer/create', :name => game.name,
+                                                      :latitude => game.latitude,
+                                                      :longitude => game.longitude,
+                                                      :radius => game.radius,
+                                                      :group_token => group_response.token
+    game.layer_id = layer_response.layer_id
+    game.save
+    redirect "/admin/games"
   end
-
-
-
-
-
 
   get '/game/:layer_id/join' do
     geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
@@ -72,11 +69,7 @@ class Controller < Sinatra::Base
   end
 
   get '/game/:layer_id/?' do
-    begin
-      @game = Game.create_unless_exists geoloqi, params[:layer_id]
-    rescue Geoloqi::Error
-      redirect '/'
-    end
+    @game = Game.first :layer_id => params[:layer_id]
     erb :'index'
   end
 

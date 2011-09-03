@@ -2,11 +2,14 @@ class Game
   include DataMapper::Resource
   property :id, Serial
   property :name, String
+  property :latitude, String
+  property :longitude, String
+  property :radius, String
   property :layer_id, String, :length => 12, :index => true
   property :group_token, String, :length => 9
+  property :is_active, Boolean, :default => true
   property :created_at, DateTime
   property :updated_at, DateTime
-  property :is_active, Boolean, :default => true
   has n, :teams
   has n, :players
 

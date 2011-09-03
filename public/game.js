@@ -50,22 +50,6 @@ var player_profiles = [];
 
 // player icon: '/player/' + player.geoloqi_id + "/" + player.team + '/map_icon.png'
 
-$(function(){
-	if(!document.getElementById("map")) {
-		return;
-	}
-	
-	var myOptions = {
-		zoom: 17,
-		center: new google.maps.LatLng(37.4313, -122.1647),
-		mapTypeId: google.maps.MapTypeId.ROADMAP,
-		mapTypeControl: true
-	};
-	
-	// Create the main map
-	map = new google.maps.Map(document.getElementById("map"), myOptions);
-});
-
 function receiveScores(red, blue) {
 	$(".red-score-value").html(red);
 	$(".blue-score-value").html(blue);
