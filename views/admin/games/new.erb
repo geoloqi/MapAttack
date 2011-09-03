@@ -1,43 +1,6 @@
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+<h1>Create Game</h1>
 
-<style type="text/css">
-  #map_canvas { height: 50% }
-</style>
-
-<script type="text/javascript">
-  $(function() {
-    var latlng = new google.maps.LatLng(45.52, -122.681944);
-    var myOptions = {
-      zoom: 13,
-      center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-  });
-
-  function computeRadius(){
-    var center = map.getCenter();
-    var northEast = map.getBounds().getNorthEast();
-    var topMiddle = new google.maps.LatLng(northEast.lat(), center.lng());
-    var radius = google.maps.geometry.spherical.computeDistanceBetween(center, topMiddle);
-
-    $('#latitude').val(center.lat());
-    $('#longitude').val(center.lng());
-    $('#radius').val(radius);
-    return true;
-  }
-</script>
-
-<h1>New Game</h1>
-
-<form action="/admin/games" method="POST" onsubmit="computeRadius()">
-  Name of the Game: <input name="game[name]" type="text">
-  <br>
-  Where is it (go to where you want the game to be centered, and zoom to the zoom level you want):
-  <div id="map_canvas" style="width:50%; height:50%"></div>
-
-  <input id="latitude" name="game[latitude]" type="hidden">
-  <input id="longitude" name="game[longitude]" type="hidden">
-  <input id="radius" name="game[radius]" type="hidden">
-  <input type="submit" value="Create">
+<form action="/admin/games" method="POST">
+  <%= partial :'admin/games/_form' %>
+  <input value="Create" type="submit" onclick="computeRadius()">
 </form>

@@ -30,6 +30,30 @@ class Controller < Sinatra::Base
     redirect "/admin/games"
   end
 
+  get '/admin/games/:id/edit' do
+    @game = Game.get params[:id]
+    erb :'admin/games/edit', :layout => :'admin/layout'
+  end
+
+  put '/admin/games/:id' do
+    @game = Game.get params[:id]
+    @game.update params[:game]
+    
+    layer_response = geoloqi_app.post "layer/update/#{@game.layer_id}", :name => @game.name,
+                                                                        :latitude => @game.latitude,
+                                                                        :longitude => @game.longitude,
+                                                                        :radius => @game.radius
+    redirect '/admin/games'
+  end
+
+  delete '/admin/games/:id' do
+    @game = Game.get params[:id]
+    geoloqi_app.post "layer/delete/#{@game.layer_id}"
+    # geoloqi_app.post "group/delete/#{@game.group_token}"  NOT IMPLEMENTED YET
+    @game.destroy
+    redirect '/'
+  end
+
   get '/game/:layer_id/join' do
     geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
     redirect geoloqi.authorize_url(request.url) unless geoloqi.access_token?

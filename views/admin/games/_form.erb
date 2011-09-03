@@ -1,0 +1,50 @@
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+
+<style type="text/css">
+  #map_canvas { height: 50% }
+</style>
+
+<script type="text/javascript">
+  $(function() {
+    var latlng = new google.maps.LatLng(<%= @game ? "#{h @game.latitude}, #{h @game.longitude}" : "45.52, -122.681944" %>);
+    var myOptions = {
+      zoom: 13,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    
+    <% if @game %>
+      var center = map.getCenter();
+      
+      topMiddle = google.maps.geometry.spherical.computeOffset(center, <%= @game.radius %>, 0);
+      bottomMiddle = google.maps.geometry.spherical.computeOffset(center, <%= @game.radius %>, 180);
+      bounds = new google.maps.LatLngBounds();
+      bounds.extend(topMiddle);
+      bounds.extend(bottomMiddle);
+      map.fitBounds(bounds);
+    <% end %>
+    
+  });
+
+  function computeRadius(){
+    var center = map.getCenter();
+    var northEast = map.getBounds().getNorthEast();
+    var topMiddle = new google.maps.LatLng(northEast.lat(), center.lng());
+    var radius = google.maps.geometry.spherical.computeDistanceBetween(center, topMiddle);
+
+    $('#latitude').val(center.lat());
+    $('#longitude').val(center.lng());
+    $('#radius').val(radius);
+    return true;
+  }
+</script>
+
+Name of the Game: <input name="game[name]" type="text" value="<%= h @game.name %>">
+<br>
+Where is it (go to where you want the game to be centered, and zoom to the zoom level you want):
+<div id="map_canvas" style="width:50%; height:50%"></div>
+
+<input id="latitude" name="game[latitude]" type="hidden" value="<%= h @game.latitude %>">
+<input id="longitude" name="game[longitude]" type="hidden" value="<%= h @game.longitude %>">
+<input id="radius" name="game[radius]" type="hidden" value="<%= h @game.radius %>">

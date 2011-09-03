@@ -20,6 +20,7 @@
         <td><%= h game.is_active? ? 'On' : 'Off' %></td>
         <td><%= h game.players.count %></td>
         <td><%= h game.total_points %></td>
+        <td><a href="/admin/games/<%= game.id %>/edit">Edit</a></td>
       </tr>
     <% end %>
   </table>

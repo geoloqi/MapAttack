@@ -7,6 +7,10 @@ Bundler.require
 
 class Sinatra::Base
   helpers do
+    def partial(page, options={})
+      erb page, options.merge!(:layout => false)
+		end
+
     def h(val)
       Rack::Utils.escape_html val
     end
@@ -38,6 +42,7 @@ class Sinatra::Base
     set :root, File.expand_path(File.join(File.dirname(__FILE__)))
     set :public, File.join(root, 'public')
     set :display_errors, true
+    set :method_override, true
     mime_type :woff, 'application/octet-stream'
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
     config_hash = YAML.load_file(File.join(root, 'config.yml'))[environment.to_s]

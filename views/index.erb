@@ -3,27 +3,26 @@
   	if(!document.getElementById("map")) {
   		return;
   	}
-	
+
 	  var map = new google.maps.LatLng(<%= @game.latitude %>, <%= @game.longitude %>)
-	
+
   	var myOptions = {
   		zoom: 17,
   		center: map,
   		mapTypeId: google.maps.MapTypeId.ROADMAP,
   		mapTypeControl: true
   	};
-	
+
   	// Create the main map
   	map = new google.maps.Map(document.getElementById("map"), myOptions);
   });
 </script>
 
 	<div id="wrapper">
-
 		<section id="scoreboard-wrapper">
 			<div id="scoreboard">				
 				<h1><a href="/game/<%=@game.layer_id%>" target="_top">Map Attack!</a></h1>
-				<h5 class="tagline"><span id="num-players"></span> <span id="city"></span></h5>
+				<h5 class="tagline"><span id="num-players"></span> <span id="city"><%= h @game.name %></span></h5>
 				<!-- <a href="" id="join-game" class="button">Join Game</a> -->
 			</div>
 			<h2 id="red-score" class="red-score-value">-</h2>
