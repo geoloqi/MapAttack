@@ -61,6 +61,22 @@ class Controller < Sinatra::Base
   end
 
   get '/game/:layer_id/join' do
+    content_type :json
+
+    geoloqi = Geoloqi::Session.new :auth => {:access_token => params[:access_token]}
+    game = Game.first :layer_id => params[:layer_id]
+    player = Player.first :access_token => params[:access_token]
+    unless player
+      game.players.create :email => params[:email], :name => params[:initials], :team => game.pick_team
+      geoloqi.post "group/join/#{game.group_token}"
+      geoloqi.post "layer/subscribe/#{game.layer_id}"
+      geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
+    end
+    {'team_name' => player.team.name}.to_json
+  end
+
+=begin
+  get '/game/:layer_id/join' do
     require_login
     game = Game.first :layer_id => params[:layer_id]
 
@@ -95,6 +111,7 @@ class Controller < Sinatra::Base
     end
     redirect "/game/" + params[:layer_id]
   end
+=end
 
   get '/game/:layer_id/?' do
     @game = Game.first :layer_id => params[:layer_id]
@@ -139,10 +156,7 @@ class Controller < Sinatra::Base
 
   get '/game/:layer_id/status.json' do
     content_type 'application/json'
-
-    response = Geoloqi.get APPLICATION_ACCESS_TOKEN, 'place/list', :layer_id => params[:layer_id], :after => params[:after]
-    # response = geoloqi.get 'place/list', :layer_id => params[:layer_id], :after => params[:after]
-
+    response = geoloqi_app.get 'place/list', :layer_id => params[:layer_id], :after => params[:after]
     game = Game.first :layer_id => params[:layer_id]
 
     places = []

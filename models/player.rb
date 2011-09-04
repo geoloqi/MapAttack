@@ -1,6 +1,7 @@
 class Player
   include DataMapper::Resource
   property :id, Serial
+  property :access_token, String, :length => 255, :index => true
   property :geoloqi_user_id, String, :length => 12, :index => true
   property :points_cache, Integer, :default => 0
   property :profile_image, String, :length => 255
