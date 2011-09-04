@@ -7,8 +7,8 @@ class Player
   property :name, String
   property :created_at, DateTime
   property :updated_at, DateTime, :index => true
-  belongs_to :team, :index => true
-  belongs_to :game, :index => true
+  belongs_to :team
+  belongs_to :game
   has n, :scores
 
   def add_points(points)

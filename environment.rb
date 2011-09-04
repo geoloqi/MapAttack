@@ -52,7 +52,8 @@ class Sinatra::Base
     # Faraday.default_adapter = :em_synchrony
     Geoloqi.config :client_id => config_hash['client_id'],
                    :client_secret => config_hash['client_secret'],
-                   :use_hashie_mash => true
+                   :use_hashie_mash => true,
+                   :logger => STDOUT
     DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     # DataMapper.auto_upgrade!
@@ -73,5 +74,20 @@ original_verbosity = $VERBOSE
 $VERBOSE = nil
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 $VERBOSE = original_verbosity
+
+module Rack
+  class Request
+    def url_without_path
+      url = scheme + "://"
+      url << host
+
+      if scheme == "https" && port != 443 ||
+        scheme == "http" && port != 80
+        url << ":#{port}"
+      end
+      url
+    end
+  end
+end
 
 require File.join(Sinatra::Base.root, 'controller.rb')

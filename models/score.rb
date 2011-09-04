@@ -4,5 +4,5 @@ class Score
   property :points, Integer
   property :created_at, DateTime
   property :updated_at, DateTime
-  belongs_to :player, :index => true
+  belongs_to :player
 end

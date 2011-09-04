@@ -11,7 +11,7 @@ gem 'jruby-openssl'
 gem 'rack-cache',        '1.0.1', :require => 'rack/cache'
 gem 'rake',              '0.8.7',  :require => nil
 #gem 'rmagick',           '2.13.1', :require => 'RMagick'
-gem 'geoloqi',           '0.9.21'
+gem 'geoloqi',           '0.9.27'
 gem 'hashie',            '1.0.0'
 gem 'kirk'
 gem 'rack-mobile-detect', '0.3.0', :require => 'rack/mobile-detect'

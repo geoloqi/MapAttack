@@ -1,5 +1,9 @@
 class Controller < Sinatra::Base
 
+  before do
+    
+  end
+
   after do
     session[:geoloqi_auth] = geoloqi.auth
   end
@@ -25,8 +29,9 @@ class Controller < Sinatra::Base
                                                       :latitude => game.latitude,
                                                       :longitude => game.longitude,
                                                       :radius => game.radius,
-                                                      :group_token => group_response.token
+                                                      :public => 1
     game.layer_id = layer_response.layer_id
+    game.group_token = group_response.group_token
     game.save
     redirect "/admin/games"
   end
@@ -48,24 +53,22 @@ class Controller < Sinatra::Base
   end
 
   delete '/admin/games/:id' do
-    @game = Game.get params[:id]
-    geoloqi_app.post "layer/delete/#{@game.layer_id}"
-    # geoloqi_app.post "group/delete/#{@game.group_token}"  NOT IMPLEMENTED YET
-    @game.destroy
-    redirect '/'
+    #@game = Game.get params[:id]
+    #geoloqi_app.post "layer/delete/#{@game.layer_id}"
+    ### geoloqi_app.post "group/delete/#{@game.group_token}"  NOT IMPLEMENTED YET
+    #@game.destroy
+    #redirect '/'
   end
 
   get '/game/:layer_id/join' do
-    geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
-    redirect geoloqi.authorize_url(request.url) unless geoloqi.access_token?
-
-    game = Game.get :layer_id => params[:layer_id]
+    require_login
+    game = Game.first :layer_id => params[:layer_id]
 
    	user_profile = geoloqi.get 'account/profile'
 
     player = Player.first :geoloqi_user_id => user_profile.user_id, :game => game
 
-    layer_info = geoloqi.get "layer/info/#{params[:layer_id]}"
+    layer_info = geoloqi_app.get "layer/info/#{params[:layer_id]}"
 
     if layer_info.subscription.nil? || layer_info.subscription == false || player.nil? # This conditional needs cleaning.
 
@@ -75,7 +78,7 @@ class Controller < Sinatra::Base
     	geoloqi.post "group/join/#{game.group_token}"
 
       # Subscribe the player to the layer. This enables geofencing for this user for all the places on the layer.
-    	geoloqi.get "layer/subscribe/#{params[:layer_id]}"
+    	geoloqi.get "layer/subscribe/#{game.layer_id}"
 
 	    if player.nil?
 	      player = Player.new :name => user_profile.username,
@@ -152,7 +155,7 @@ class Controller < Sinatra::Base
                  :active => place['extra']['active']}
     end
 
-    locations = geoloqi.get("group/last/#{game.group_token}")['locations']
+    locations = geoloqi_app.get("group/last/#{game.group_token}")['locations']
 
     players = []
     game.players(:order => :points_cache.desc).each do |player|
@@ -202,6 +205,15 @@ class Controller < Sinatra::Base
   post '/contact_submit' do
     Faraday.post 'http://business.geoloqi.com/contact-submit.php', params
     {:result => "ok"}.to_json
+  end
+
+  get '/authorize' do
+    geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
+    redirect "/#{params[:state]}"
+  end
+
+  def require_login
+    redirect geoloqi.authorize_url("#{request.url_without_path}/authorize", :state => request.path[1..request.path.length]) unless geoloqi.access_token?
   end
 
   def geoloqi
