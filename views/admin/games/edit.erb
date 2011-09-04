@@ -3,5 +3,5 @@
 <form action="/admin/games/<%= @game.id %>" method="POST">
   <input name="_method" value="PUT" type="hidden">
   <%= partial :'admin/games/_form' %>
-  <input value="Update" type="submit" onclick="computeRadius()">
+  <input value="Update" type="submit">
 </form>

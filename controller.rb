@@ -14,6 +14,7 @@ class Controller < Sinatra::Base
   end
 
   get '/admin/games/new' do
+    @game = Game.new
     erb :'admin/games/new', :layout => :'admin/layout'
   end
 

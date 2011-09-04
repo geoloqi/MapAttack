@@ -1,12 +1,10 @@
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
-
 <style type="text/css">
   #map_canvas { height: 50% }
 </style>
 
 <script type="text/javascript">
   $(function() {
-    var latlng = new google.maps.LatLng(<%= @game ? "#{h @game.latitude}, #{h @game.longitude}" : "45.52, -122.681944" %>);
+    var latlng = new google.maps.LatLng(<%= @game.new? ? "45.52, -122.681944" : "#{h @game.latitude}, #{h @game.longitude}" %>);
     var myOptions = {
       zoom: 13,
       center: latlng,
@@ -14,30 +12,28 @@
     };
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
     
-    <% if @game %>
-      var center = map.getCenter();
-      
-      topMiddle = google.maps.geometry.spherical.computeOffset(center, <%= @game.radius %>, 0);
-      bottomMiddle = google.maps.geometry.spherical.computeOffset(center, <%= @game.radius %>, 180);
-      bounds = new google.maps.LatLngBounds();
-      bounds.extend(topMiddle);
-      bounds.extend(bottomMiddle);
-      map.fitBounds(bounds);
+    <% unless @game.new? %>
+      GameMap.fitToRadius(<%= @game.radius %>);
     <% end %>
     
+  	// Compute lat/long/radius
+  	google.maps.event.addListener(map, 'bounds_changed', function(event) {
+  	  GameMap.computeRadius();
+  	});
   });
 
-  function computeRadius(){
-    var center = map.getCenter();
-    var northEast = map.getBounds().getNorthEast();
-    var topMiddle = new google.maps.LatLng(northEast.lat(), center.lng());
-    var radius = google.maps.geometry.spherical.computeDistanceBetween(center, topMiddle);
+	GameMap.computeRadius = function() {
+	  var center = map.getCenter();
+	  var northEast = map.getBounds().getNorthEast();
+	  var topMiddle = new google.maps.LatLng(northEast.lat(), center.lng());
+	  var radius = google.maps.geometry.spherical.computeDistanceBetween(center, topMiddle);
 
-    $('#latitude').val(center.lat());
-    $('#longitude').val(center.lng());
-    $('#radius').val(radius);
-    return true;
-  }
+	  $('#latitude').val(center.lat());
+	  $('#longitude').val(center.lng());
+	  $('#radius').val(radius);
+	  return true;
+	}
+
 </script>
 
 Name of the Game: <input name="game[name]" type="text" value="<%= h @game.name %>">

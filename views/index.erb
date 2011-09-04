@@ -4,17 +4,17 @@
   		return;
   	}
 
-	  var map = new google.maps.LatLng(<%= @game.latitude %>, <%= @game.longitude %>)
-
   	var myOptions = {
   		zoom: 17,
-  		center: map,
+  		center: new google.maps.LatLng(<%= @game.latitude %>, <%= @game.longitude %>),
   		mapTypeId: google.maps.MapTypeId.ROADMAP,
   		mapTypeControl: true
   	};
 
   	// Create the main map
   	map = new google.maps.Map(document.getElementById("map"), myOptions);
+  	  
+    GameMap.fitToRadius(<%= @game.radius %>);
   });
 </script>
 
