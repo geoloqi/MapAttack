@@ -29,7 +29,8 @@ class Controller < Sinatra::Base
                                                       :latitude => game.latitude,
                                                       :longitude => game.longitude,
                                                       :radius => game.radius,
-                                                      :public => 1
+                                                      :public => 1,
+                                                      :is_app => 1
     game.layer_id = layer_response.layer_id
     game.group_token = group_response.group_token
     game.save
