@@ -6,6 +6,7 @@ class Player
   property :points_cache, Integer, :default => 0
   property :profile_image, String, :length => 255
   property :name, String
+  property :email, String, :length => 255
   property :created_at, DateTime
   property :updated_at, DateTime, :index => true
   belongs_to :team

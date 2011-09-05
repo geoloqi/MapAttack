@@ -1,7 +1,8 @@
 class Controller < Sinatra::Base
 
   before do
-    
+    puts "REQUEST URL: #{request.url}"
+    puts "PARAMS: #{params.inspect}" 
   end
 
   after do
@@ -61,14 +62,13 @@ class Controller < Sinatra::Base
     #redirect '/'
   end
 
-  get '/game/:layer_id/join' do
+  post '/game/:layer_id/join' do
     content_type :json
-
     geoloqi = Geoloqi::Session.new :auth => {:access_token => params[:access_token]}
     game = Game.first :layer_id => params[:layer_id]
     player = Player.first :access_token => params[:access_token]
     unless player
-      game.players.create :email => params[:email], :name => params[:initials], :team => game.pick_team
+      player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials], :team => game.pick_team
       geoloqi.post "group/join/#{game.group_token}"
       geoloqi.post "layer/subscribe/#{game.layer_id}"
       geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
