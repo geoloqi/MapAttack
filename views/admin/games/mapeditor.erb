@@ -1,0 +1,468 @@
+<html>
+<head>
+	<title>PacMap Editor</title>
+	<style type="text/css">
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		.coin {
+			float: left;
+			background: url(/img/coins-large.png) no-repeat;
+			width: 18px;
+			height: 18px;
+			cursor: pointer;
+			background-position: 0 -36px;
+			margin: 3px;
+		}
+		.coin-20 {
+			background-position: -18px -36px;
+		}
+		.coin-30 {
+			background-position: -36px -36px;
+		}
+		.coin-50 {
+			background-position: -54px -36px;
+		}
+		.coin-20.selected {
+			background-position: -18px 0;
+		}
+		.coin-30.selected {
+			background-position: -36px 0;
+		}
+		.coin-50.selected {
+			background-position: -54px 0;
+		}
+		#pointToolbar {
+			background: white;
+			padding: 3px;
+			position: absolute;
+		}
+		#lineToolbar {
+			position: absolute;
+			top: 8px;
+			left: 100px;
+			background: white;
+			z-index: 1000;
+			border: 1px #999 solid;
+			-moz-box-shadow: 2px 2px 3px #777;
+			-webkit-box-shadow: 2px 2px 3px #777;
+			box-shadow: 2px 2px 3px #777;
+		}
+	</style>
+	<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?libraries=geometry&sensor=false"></script>
+  <script type="text/javascript" src="/game-common.js"></script>
+<script type="text/javascript">
+
+var cg = {
+	s: function(w,h) {
+		return new google.maps.Size(w,h);
+	},
+	p: function(w,h) {
+		return new google.maps.Point(w,h);
+	}
+}
+
+var coinSpriteURL = "/img/gameboard-sprite.png";
+var coinHeight = 25;
+var coins = {
+	10: {
+		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(17,17),  cg.p(0, 277), cg.p(17/2, 17/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(17,17), cg.p(0, 301), cg.p(17/2, 17/2)),
+		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(17,17), cg.p(0, 327), cg.p(17/2, 17/2))
+	},
+	20: {
+		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19),  cg.p(17, 276), cg.p(19/2, 19/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19), cg.p(17, 300), cg.p(19/2, 19/2)),
+		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19), cg.p(17, 326), cg.p(19/2, 19/2))
+	},
+	30: {
+		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(21,21),  cg.p(36, 275), cg.p(21/2, 21/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(21,21), cg.p(36, 299), cg.p(21/2, 21/2)),
+		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(21,21), cg.p(36, 325), cg.p(21/2, 21/2))
+	},
+	50: {
+		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25),  cg.p(57, 273), cg.p(25/2, 25/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25), cg.p(57, 297), cg.p(25/2, 25/2)),
+		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25), cg.p(57, 323), cg.p(25/2, 25/2))
+	}
+};
+
+var map;
+var pointEditorInfoWindow;
+var pellets = {};
+var activePoint;
+
+var layerId = "<%= @game.layer_id %>";
+
+$(function(){
+
+	var mapOptions = {
+		zoom: 15,
+		center: new google.maps.LatLng(<%= @game.latitude %>, <%= @game.longitude %>),
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		mapTypeControl: true
+	};
+	
+	// Create the main map
+	map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+	$.getJSON("/admin/games/"+layerId+"/setup.json", {
+	}, function(data){
+		var bounds = new google.maps.LatLngBounds();
+		$(data.places).each(function(i, pellet){
+			bounds.extend(new google.maps.LatLng(pellet.latitude, pellet.longitude));
+			addNewPellet(pellet);
+		});
+	});
+	
+	GameMap.fitToRadius(<%= @game.radius %>);
+	
+	// Right click context menu
+	google.maps.event.addListener(map, 'rightclick', function(event) {
+		// Immediately create the pellet and open up the editor for it
+		$.post("/admin/games/"+layerId+"/new_pellet.json", {
+			points: 10,
+			latitude: event.latLng.lat(),
+			longitude: event.latLng.lng()
+		}, function(data){
+			addNewPellet(data);
+			startEditingPoint(data.place_id);
+		}, "json");
+
+	});
+
+	var placeHolderMarker = new google.maps.Marker({
+		draggable: true,
+		raiseOnDrag: false,
+		icon: coins[10]["grey"]
+	});
+	google.maps.event.addListener(placeHolderMarker, "dragend", function(event) {
+		$("#newPointLat").val(event.latLng.lat());
+		$("#newPointLng").val(event.latLng.lng());
+		$("#coordinates").html(
+			(Math.round(event.latLng.lat()*10000)/10000) + ", " + (Math.round(event.latLng.lng()*10000)/10000)
+		);
+	});
+
+	pointEditorInfoWindow = new google.maps.InfoWindow({
+        content: $("#pointToolbar").html(),
+        maxWidth: 140
+    });
+    google.maps.event.addListener(pointEditorInfoWindow, "closeclick", function(){
+    	stopEditingPoint(activePoint);
+    });
+
+	function resizeMap() {
+		$("#map").css({height: $(window).height()});
+	}
+	resizeMap();
+	$(window).resize(resizeMap);
+
+});
+
+
+function addNewPellet(pellet) {
+	if(typeof pellet.extra.points == "undefined"){
+		pellet.extra.points = 10;
+	}
+
+	var marker = new google.maps.Marker({
+		position: new google.maps.LatLng(pellet.latitude, pellet.longitude),
+		map: map,
+		draggable: true,
+		raiseOnDrag: false,
+		title: pellet.place_id,
+		icon: coins[parseInt(pellet.extra.points)].grey,
+	});
+	var circle = new google.maps.Circle({
+		map: map,
+		radius: parseInt(pellet.radius),
+		strokeColor: "#6a9cef",
+		fillColor: "#8bb7ff"
+	});
+	circle.bindTo("center", marker, "position");
+	
+	google.maps.event.addListener(marker, "dragend", function(event){
+		$.post("/admin/games/"+layerId+"/move_pellet.json", {
+			place_id: this.title,
+			latitude: this.position.lat(),
+			longitude: this.position.lng()
+		}, function(data){
+			if(data.result != "ok") {
+				alert("Something went wrong! :(");
+				window.location = window.location;
+			}
+		}, "json");
+	});
+	
+	var theMarkerTitle = marker.getTitle();
+	google.maps.event.addListener(marker, "click", function(event){
+		startEditingPoint(theMarkerTitle);
+	});
+	
+	pellets[pellet.place_id] = {
+		id: pellet.place_id,
+		points: pellet.extra.points,
+		marker: marker,
+		circle: circle
+	};
+}
+
+function startEditingPoint(markerTitle) {
+
+	if(activePoint)
+		stopEditingPoint(activePoint);
+	activePoint = markerTitle;
+
+	pellets[markerTitle].marker.setIcon(coins[pellets[markerTitle].points].blue);
+
+	pointEditorInfoWindow.open(map, pellets[markerTitle].marker);
+	bindPointEditorTools();
+	
+	$(".coin").removeClass("selected");
+	$(".coin-"+pellets[markerTitle].points).addClass("selected");
+}
+
+function stopEditingPoint(markerTitle) {
+	if(pellets[markerTitle] && pellets[markerTitle].marker)
+		pellets[markerTitle].marker.setIcon(coins[pellets[markerTitle].points].grey);
+}
+
+function bindPointEditorTools() {
+	$(".coin").unbind("click").bind("click", function(){
+		$(".coin").removeClass("selected");
+		$(this).addClass("selected");
+		var points = parseInt($(this).attr("id").split("-")[1]);
+
+		pellets[activePoint].marker.setIcon(coins[points].blue);
+		pellets[activePoint].points = points;
+		
+		pointEditorInfoWindow.close(); 
+		stopEditingPoint(activePoint);
+		
+		$.post("/admin/games/"+layerId+"/set_pellet_value.json", {
+			place_id: activePoint,
+			points: points
+		}, function(data) {
+			if(data.result != "ok") {
+				alert("Something went wrong! :(");
+				window.location = window.location;
+			}
+		}, "json");
+	});
+
+	$(".editPointDelete").unbind("click").bind("click", function(){
+		pellets[activePoint].marker.setMap(null);
+		pellets[activePoint].circle.setMap(null);
+		pellets[activePoint].marker = null;
+		pellets[activePoint].circle = null;
+		pellets[activePoint] = null;
+
+		$.post("/admin/games/"+layerId+"/delete_pellet.json", {
+			place_id: activePoint
+		}, function(data) {
+			if(data.result != "ok") {
+				alert("Something went wrong! :(");
+				window.location = window.location;
+			}
+		}, "json");
+	});
+
+}
+
+
+$(function(){
+	
+	var defaultRadius = 20;
+
+	var editingMode = false;
+
+	var markerAnchorOptions = {
+		draggable: true,
+		raiseOnDrag: false,
+		icon: coins[10]["grey"],
+		map: map
+	};
+	
+	var lineMarkers = new google.maps.MVCArray();
+	var linePolyline = null;
+	var lineMapClickListener;
+	var newMarkers = [];
+	
+	$("#newLine").click(function(){
+		if(editingMode == false) {
+			// If editing mode was previously false, start drawing a new line
+			editingMode = "line";
+			
+			$("#newLine").val("Finish");
+			
+			$("#editingCancel").removeAttr("disabled");
+			$("#editingCancel").bind("click", function(){
+				removeLineAndMarkers();
+				$("#editingCancel").unbind("click");
+				$("#editingCancel").attr({disabled: "disabled"});
+				$("#newLine").val("Line");
+			});
+			
+			lineMapClickListener = google.maps.event.addListener(map, "click", function(event) {
+				var marker = new google.maps.Marker(markerAnchorOptions);
+				marker.setPosition(event.latLng);
+				
+				if(lineMarkers.getLength() == 0) {
+					linePolyline = new google.maps.Polyline({
+						map: map,
+						strokeColor: "#000000",
+						strokeOpacity: 0.7,
+						strokeWeight: 4
+					});
+				}
+				
+				linePolyline.getPath().push(marker.getPosition());
+				var markerPosition = lineMarkers.getLength();
+				google.maps.event.addListener(marker, "drag", function(event){
+					lineMarkerDragged(markerPosition, event);
+				});
+				lineMarkers.push(marker);
+			});
+		} else if(editingMode == "line") {
+			// If editing mode was previously "line", then finish this line and create all the pellets
+			editingMode = false;
+			
+			google.maps.event.removeListener(lineMapClickListener);
+		
+			if(lineMarkers.getLength() > 1) {
+				// Traverse each line segment and add evenly-spaced pellets along each
+				var lastMarker = null;
+				var distanceTraveled = 0;
+				var startingOffset = 0;
+				lineMarkers.forEach(function(marker, i){
+					if(i > 0) {
+						// calculate heading from the last point to this point
+						var heading = google.maps.geometry.spherical.computeHeading(lastMarker.getPosition(), marker.getPosition());
+					
+						// start at the last marker, traverse 20m and create a new marker
+						var distanceToTravel = google.maps.geometry.spherical.computeDistanceBetween(lastMarker.getPosition(), marker.getPosition());
+			
+						var j = 0;
+						while(distanceTraveled+startingOffset < distanceToTravel) {
+							// Calculate the new offset
+							var newPoint = google.maps.geometry.spherical.computeOffset(lastMarker.getPosition(), (distanceTraveled+startingOffset), heading);
+
+							var theNewMarker = new google.maps.Marker({
+								map: map,
+								position: newPoint,
+								draggable: true,
+								raiseOnDrag: false,
+								icon: coins[10]["grey"]
+							});
+							var circle = new google.maps.Circle({
+								map: map,
+								radius: defaultRadius,
+								strokeColor: "#9b3e82",
+								fillColor: "#ea75ca"
+							});
+							circle.bindTo('center', theNewMarker, 'position');
+							newMarkers.push({
+								marker: theNewMarker,
+								circle: circle
+							});
+
+							distanceTraveled += defaultRadius*2;
+						}
+
+						// Start the next line with the remainder of the previous path
+						startingOffset = distanceTraveled - distanceToTravel;
+						if(startingOffset < 0)
+							startingOffset += defaultRadius*2;
+						distanceTraveled = 0;
+					}
+					lastMarker = marker;
+				});		
+			}		
+			
+			var pelletLocations = [];
+			$(newMarkers).each(function(i, m){
+				pelletLocations.push(m.marker.getPosition().lat() + "," + m.marker.getPosition().lng());
+			});
+			
+			$.post("/admin/games/"+layerId+"/batch_create_pellets.json", {
+				locations: pelletLocations.join("|")
+			}, function(data) {
+				if(data.result == "ok") {
+					// Remove the placeholder pellets
+					$(newMarkers).each(function(i, m){
+						m.circle.setMap(null);
+						m.marker.setMap(null);
+						m.circle = null;
+						m.marker = null;
+					});
+					newMarkers.length = 0;
+					newMarkers = [];
+					
+					$(data.points).each(function(i, p){
+						addNewPellet(p);
+					});
+				} else {
+					alert("Something went wrong! :(");
+					window.location = window.location;
+				}
+			});
+				
+			removeLineAndMarkers();
+			$("#editingCancel").attr({disabled: "disabled"});
+			$("#editingCancel").unbind("click");
+			$("#newLine").val("Line");
+		}
+	});
+	
+	function lineMarkerDragged(i, event) {
+		// updates the polyline path with the marker that was just dragged
+		linePolyline.getPath().setAt(i, event.latLng);
+	}
+	
+	function removeLineAndMarkers(){
+		if(linePolyline) {
+			linePolyline.setMap(null);
+		}
+		linePolyline = null;
+		lineMarkers.forEach(function(m, i){
+			if(m){
+				m.setMap(null);
+				m = null;
+			}
+		});
+		lineMarkers.length = 0;
+		lineMarkers = new google.maps.MVCArray();
+	}
+});
+
+</script>
+</head>
+
+<body>
+
+	<div id="lineToolbar">
+		<div style="padding: 3px;">
+			<input type="button" id="newLine" value="Line" />
+			<input type="button" id="editingCancel" value="Cancel" disabled="disabled" />
+		  <input type="button" value="Done Editing Points!" onclick="window.location = '/admin/games';"/>
+		</div>
+	</div>
+
+	<div style="display: none;" id="pointToolbar"><div style="width: 180px; padding-top: 10px;">
+
+		<div class="coin coin-10 selected" id="coin-10"></div>
+		<div class="coin coin-20" id="coin-20"></div>
+		<div class="coin coin-30" id="coin-30"></div>
+		<div class="coin coin-50" id="coin-50"></div>
+		
+		<div style="float: right;"><input type="button" class="editPointDelete" style="font-size: 9pt;" value="Delete" /></div>
+	</div></div>
+
+	<div id="map" style="width: 100%; height: 600px;"></div>
+	
+</body>
+
+</html>

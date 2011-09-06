@@ -1,5 +1,5 @@
 rack 'config.ru' do
-  env :RACK_ENV => 'development'
+  env :RACK_ENV => 'production'
   listen '40000'
   watch 'tmp/restart.txt'
 end
