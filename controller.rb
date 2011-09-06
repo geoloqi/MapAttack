@@ -25,7 +25,7 @@ class Controller < Sinatra::Base
 
   get '/admin/games/:id/mapeditor' do
     @game = Game.get params[:id]
-    erb :'admin/games/mapeditor'
+    erb :'admin/games/mapeditor', :layout => false
   end
 
   post '/admin/games' do
@@ -72,19 +72,28 @@ class Controller < Sinatra::Base
   
   post '/admin/games/:layer_id/batch_create_pellets.json' do
     content_type :json
-    successful = true
     points = []
     params[:locations].split('|').each do |location|
-      place_response = geoloqi_app.post "place/create", :name => "#{Time.now.to_i}-#{rand 10000}",
-                                                        :latitude => location.split(',').first,
-                                                        :longitude => location.split(',').last,
-                                                        :radius => 20,
-                                                        :layer_id => params[:layer_id],
-                                                        :extra => {:active => 1, :points => (params[:post] || 10)}
+      place_data = {:name => "#{Time.now.to_i}-#{rand 10000}",
+                    :latitude => location.split(',').first,
+                    :longitude => location.split(',').last,
+                    :radius => 20,
+                    :layer_id => params[:layer_id],
+                    :extra => {:active => 1, :points => (params[:post] || 10)}}
 
-      place_response.place_id.nil? ? successful = false : points << {:place_id => place_response.place_id}
+      place_response = geoloqi_app.post "place/create", place_data
+
+      unless place_response.place_id.nil?
+        place_data[:place_id] = place_response.place_id
+        points << place_data
+      end
     end
-    (successful ? {:result => 'ok', :points => points} : {:result => 'error'}).to_json
+    {:result => 'ok', :points => points}.to_json
+  end
+
+  post '/admin/games/:layer_id/set_pellet_value.json' do
+    content_type :json
+    geoloqi_app.post("place/update/#{params[:place_id]}", :radius => '20', :extra => {:active => '1', :points => params[:points]}).to_json
   end
 
   get '/admin/games/:id/edit' do

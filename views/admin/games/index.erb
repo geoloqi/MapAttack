@@ -1,5 +1,12 @@
 <h1>MapAttack Game Editor</h1>
 
+<style>
+  table td {
+    padding-left: 10px;
+    padding-bottom: 5px;
+  }
+</style>
+
 <% if @games.empty? %>
   No games yet!<br>
 <% else %>
@@ -21,6 +28,7 @@
         <td><%= h game.players.count %></td>
         <td><%= h game.total_points %></td>
         <td><a href="/admin/games/<%= game.id %>/edit">Edit</a></td>
+        <td><a href="/admin/games/<%= game.id %>/mapeditor">Points</a></td>
       </tr>
     <% end %>
   </table>

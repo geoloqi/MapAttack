@@ -242,8 +242,7 @@ function bindPointEditorTools() {
 		pointEditorInfoWindow.close(); 
 		stopEditingPoint(activePoint);
 		
-		$.post("/admin/games/"+layerId+"/move_pellet.json", {
-			action: "setPelletValue",
+		$.post("/admin/games/"+layerId+"/set_pellet_value.json", {
 			place_id: activePoint,
 			points: points
 		}, function(data) {
@@ -402,10 +401,7 @@ $(function(){
 					newMarkers.length = 0;
 					newMarkers = [];
 					
-					console.log(data.points);
-					
 					$(data.points).each(function(i, p){
-					  console.log(p);
 						addNewPellet(p);
 					});
 				} else {
@@ -451,6 +447,7 @@ $(function(){
 		<div style="padding: 3px;">
 			<input type="button" id="newLine" value="Line" />
 			<input type="button" id="editingCancel" value="Cancel" disabled="disabled" />
+		  <input type="button" value="Done Editing Points!" onclick="window.location = '/admin/games';"/>
 		</div>
 	</div>
 
