@@ -20,3 +20,7 @@ function LQHandlePushData(data) {
 		receiveCoinData(data.mapattack);
 	}
 }
+
+$(document).ready(function() {
+	updateGame(true);
+});
