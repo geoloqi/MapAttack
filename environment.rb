@@ -1,9 +1,10 @@
 # Encoding.default_internal = 'UTF-8'
-$stderr.reopen $stdout
+#$stderr.reopen $stdout
 require "rubygems"
 require "bundler"
 Bundler.setup
 Bundler.require
+require 'rack/methodoverride'
 
 class Sinatra::Base
   helpers do

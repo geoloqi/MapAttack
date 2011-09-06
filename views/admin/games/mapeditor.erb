@@ -1,43 +1,60 @@
-<style type="text/css">
-  #map_canvas { height: 50% }
-</style>
-
+<html>
+<head>
+	<title>PacMap Editor</title>
+	<style type="text/css">
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		.coin {
+			float: left;
+			background: url(/img/coins-large.png) no-repeat;
+			width: 18px;
+			height: 18px;
+			cursor: pointer;
+			background-position: 0 -36px;
+			margin: 3px;
+		}
+		.coin-20 {
+			background-position: -18px -36px;
+		}
+		.coin-30 {
+			background-position: -36px -36px;
+		}
+		.coin-50 {
+			background-position: -54px -36px;
+		}
+		.coin-20.selected {
+			background-position: -18px 0;
+		}
+		.coin-30.selected {
+			background-position: -36px 0;
+		}
+		.coin-50.selected {
+			background-position: -54px 0;
+		}
+		#pointToolbar {
+			background: white;
+			padding: 3px;
+			position: absolute;
+		}
+		#lineToolbar {
+			position: absolute;
+			top: 8px;
+			left: 100px;
+			background: white;
+			z-index: 1000;
+			border: 1px #999 solid;
+			-moz-box-shadow: 2px 2px 3px #777;
+			-webkit-box-shadow: 2px 2px 3px #777;
+			box-shadow: 2px 2px 3px #777;
+		}
+	</style>
+	<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?libraries=geometry&sensor=false"></script>
+  <script type="text/javascript" src="/game-common.js"></script>
 <script type="text/javascript">
-  $(function() {
-    var latlng = new google.maps.LatLng(<%= @game.new? ? "45.52, -122.681944" : "#{h @game.latitude}, #{h @game.longitude}" %>);
-    var myOptions = {
-      zoom: 13,
-      center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      mapTypeControl: true
-    };
-    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    
-    <% unless @game.new? %>
-      GameMap.fitToRadius(<%= @game.radius %>);
-    <% end %>
-    
-  	// Compute lat/long/radius
-  	google.maps.event.addListener(map, 'bounds_changed', function(event) {
-  	  GameMap.computeRadius();
-  	});
-  });
 
-	GameMap.computeRadius = function() {
-	  var center = map.getCenter();
-	  var northEast = map.getBounds().getNorthEast();
-	  var topMiddle = new google.maps.LatLng(northEast.lat(), center.lng());
-	  var radius = google.maps.geometry.spherical.computeDistanceBetween(center, topMiddle);
-
-	  $('#latitude').val(center.lat());
-	  $('#longitude').val(center.lng());
-	  $('#radius').val(radius);
-	  return true;
-	}
-
-</script>
-
-<script type="text/javascript">
 var cg = {
 	s: function(w,h) {
 		return new google.maps.Size(w,h);
@@ -77,27 +94,35 @@ var pointEditorInfoWindow;
 var pellets = {};
 var activePoint;
 
-var layer_id = "<%= @game.layer_id %>";
+var layerId = "<%= @game.layer_id %>";
 
 $(function(){
-	$.getJSON("http://loqi.me/pdx-pacmap/editor/ajax.php", {
-		action: "setup",
-		layerID: layer_id
+
+	var mapOptions = {
+		zoom: 15,
+		center: new google.maps.LatLng(<%= @game.latitude %>, <%= @game.longitude %>),
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		mapTypeControl: true
+	};
+	
+	// Create the main map
+	map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+	$.getJSON("/admin/games/"+layerId+"/setup.json", {
 	}, function(data){
 		var bounds = new google.maps.LatLngBounds();
 		$(data.places).each(function(i, pellet){
 			bounds.extend(new google.maps.LatLng(pellet.latitude, pellet.longitude));
 			addNewPellet(pellet);
 		});
-		map.fitBounds(bounds);
 	});
+	
+	GameMap.fitToRadius(<%= @game.radius %>);
 	
 	// Right click context menu
 	google.maps.event.addListener(map, 'rightclick', function(event) {
 		// Immediately create the pellet and open up the editor for it
-		$.post("http://loqi.me/pdx-pacmap/editor/ajax.php", {
-			action: "newPellet",
-			layer_id: layer_id,
+		$.post("/admin/games/"+layerId+"/new_pellet.json", {
 			points: 10,
 			latitude: event.latLng.lat(),
 			longitude: event.latLng.lng()
@@ -105,6 +130,7 @@ $(function(){
 			addNewPellet(data);
 			startEditingPoint(data.place_id);
 		}, "json");
+
 	});
 
 	var placeHolderMarker = new google.maps.Marker({
@@ -159,8 +185,7 @@ function addNewPellet(pellet) {
 	circle.bindTo("center", marker, "position");
 	
 	google.maps.event.addListener(marker, "dragend", function(event){
-		$.post("http://loqi.me/pdx-pacmap/editor/ajax.php", {
-			action: "movePellet",
+		$.post("/admin/games/"+layerId+"/move_pellet.json", {
 			place_id: this.title,
 			latitude: this.position.lat(),
 			longitude: this.position.lng()
@@ -217,7 +242,7 @@ function bindPointEditorTools() {
 		pointEditorInfoWindow.close(); 
 		stopEditingPoint(activePoint);
 		
-		$.post("http://loqi.me/pdx-pacmap/editor/ajax.php", {
+		$.post("/admin/games/"+layerId+"/move_pellet.json", {
 			action: "setPelletValue",
 			place_id: activePoint,
 			points: points
@@ -236,8 +261,7 @@ function bindPointEditorTools() {
 		pellets[activePoint].circle = null;
 		pellets[activePoint] = null;
 
-		$.post("http://loqi.me/pdx-pacmap/editor/ajax.php", {
-			action: "deletePellet",
+		$.post("/admin/games/"+layerId+"/delete_pellet.json", {
 			place_id: activePoint
 		}, function(data) {
 			if(data.result != "ok") {
@@ -364,9 +388,7 @@ $(function(){
 				pelletLocations.push(m.marker.getPosition().lat() + "," + m.marker.getPosition().lng());
 			});
 			
-			$.post("http://loqi.me/pdx-pacmap/editor/ajax.php", {
-				layerID: layer_id,
-				action: "batchCreatePellets",
+			$.post("/admin/games/"+layerId+"/batch_create_pellets.json", {
 				locations: pelletLocations.join("|")
 			}, function(data) {
 				if(data.result == "ok") {
@@ -380,7 +402,10 @@ $(function(){
 					newMarkers.length = 0;
 					newMarkers = [];
 					
+					console.log(data.points);
+					
 					$(data.points).each(function(i, p){
+					  console.log(p);
 						addNewPellet(p);
 					});
 				} else {
@@ -416,13 +441,31 @@ $(function(){
 		lineMarkers = new google.maps.MVCArray();
 	}
 });
+
 </script>
+</head>
 
-Name of the Game: <input name="game[name]" type="text" value="<%= h @game.name %>">
-<br>
-Where is it (go to where you want the game to be centered, and zoom to the zoom level you want):
-<div id="map_canvas" style="width:50%; height:50%"></div>
+<body>
 
-<input id="latitude" name="game[latitude]" type="hidden" value="<%= h @game.latitude %>">
-<input id="longitude" name="game[longitude]" type="hidden" value="<%= h @game.longitude %>">
-<input id="radius" name="game[radius]" type="hidden" value="<%= h @game.radius %>">
+	<div id="lineToolbar">
+		<div style="padding: 3px;">
+			<input type="button" id="newLine" value="Line" />
+			<input type="button" id="editingCancel" value="Cancel" disabled="disabled" />
+		</div>
+	</div>
+
+	<div style="display: none;" id="pointToolbar"><div style="width: 180px; padding-top: 10px;">
+
+		<div class="coin coin-10 selected" id="coin-10"></div>
+		<div class="coin coin-20" id="coin-20"></div>
+		<div class="coin coin-30" id="coin-30"></div>
+		<div class="coin coin-50" id="coin-50"></div>
+		
+		<div style="float: right;"><input type="button" class="editPointDelete" style="font-size: 9pt;" value="Delete" /></div>
+	</div></div>
+
+	<div id="map" style="width: 100%; height: 600px;"></div>
+	
+</body>
+
+</html>

@@ -2,7 +2,7 @@ class Controller < Sinatra::Base
 
   before do
     puts "REQUEST URL: #{request.url}"
-    puts "PARAMS: #{params.inspect}" 
+    puts "PARAMS: #{params.inspect}"
   end
 
   after do
@@ -23,6 +23,11 @@ class Controller < Sinatra::Base
     erb :'admin/games/new', :layout => :'admin/layout'
   end
 
+  get '/admin/games/:id/mapeditor' do
+    @game = Game.get params[:id]
+    erb :'admin/games/mapeditor'
+  end
+
   post '/admin/games' do
     game = Game.new params[:game]
     group_response = geoloqi_app.post 'group/create', :visibility => 'open', :publish_access => 'open'
@@ -32,10 +37,54 @@ class Controller < Sinatra::Base
                                                       :radius => game.radius,
                                                       :public => 1,
                                                       :is_app => 1
+    geoloqi_app.post 'trigger/create', :layer_id => layer_response.layer_id, :type => 'callback', :callback => "http://mapattack.org/trigger", :one_time => 0
     game.layer_id = layer_response.layer_id
     game.group_token = group_response.group_token
     game.save
     redirect "/admin/games"
+  end
+
+  get '/admin/games/:layer_id/setup.json' do
+    content_type :json
+    geoloqi_app.get('place/list', :layer_id => params[:layer_id]).to_json
+  end
+
+  post '/admin/games/:layer_id/new_pellet.json' do
+    content_type :json
+    place_response = geoloqi_app.post "place/create", :name => "#{Time.now.to_i}-#{rand 10000}",
+                                                      :latitude => params[:latitude],
+                                                      :longitude => params[:longitude],
+                                                      :radius => 20,
+                                                      :layer_id => params[:layer_id],
+                                                      :extra => {:active => 1, :points => (params[:post] || 10)}
+    geoloqi_app.get("place/info/#{place_response.place_id}").to_json
+  end
+  
+  post '/admin/games/:layer_id/move_pellet.json' do
+    content_type :json
+    place_response = geoloqi_app.post("place/update/#{params[:place_id]}", :latitude => params[:latitude], :longitude => params[:longitude]).to_json
+  end
+  
+  post '/admin/games/:layer_id/delete_pellet.json' do
+    content_type :json
+    geoloqi_app.post("place/delete/#{params[:place_id]}").to_json
+  end
+  
+  post '/admin/games/:layer_id/batch_create_pellets.json' do
+    content_type :json
+    successful = true
+    points = []
+    params[:locations].split('|').each do |location|
+      place_response = geoloqi_app.post "place/create", :name => "#{Time.now.to_i}-#{rand 10000}",
+                                                        :latitude => location.split(',').first,
+                                                        :longitude => location.split(',').last,
+                                                        :radius => 20,
+                                                        :layer_id => params[:layer_id],
+                                                        :extra => {:active => 1, :points => (params[:post] || 10)}
+
+      place_response.place_id.nil? ? successful = false : points << {:place_id => place_response.place_id}
+    end
+    (successful ? {:result => 'ok', :points => points} : {:result => 'error'}).to_json
   end
 
   get '/admin/games/:id/edit' do
@@ -46,7 +95,7 @@ class Controller < Sinatra::Base
   put '/admin/games/:id' do
     @game = Game.get params[:id]
     @game.update params[:game]
-    
+
     layer_response = geoloqi_app.post "layer/update/#{@game.layer_id}", :name => @game.name,
                                                                         :latitude => @game.latitude,
                                                                         :longitude => @game.longitude,
@@ -75,44 +124,6 @@ class Controller < Sinatra::Base
     end
     {'team_name' => player.team.name}.to_json
   end
-
-=begin
-  get '/game/:layer_id/join' do
-    require_login
-    game = Game.first :layer_id => params[:layer_id]
-
-   	user_profile = geoloqi.get 'account/profile'
-
-    player = Player.first :geoloqi_user_id => user_profile.user_id, :game => game
-
-    layer_info = geoloqi_app.get "layer/info/#{params[:layer_id]}"
-
-    if layer_info.subscription.nil? || layer_info.subscription == false || player.nil? # This conditional needs cleaning.
-
-      # The player has never subscribed to the layer before, so create a new record in our DB and add them to the group.
-
-      # Add them to the group, so Geoloqi will publish their locations to this group.
-    	geoloqi.post "group/join/#{game.group_token}"
-
-      # Subscribe the player to the layer. This enables geofencing for this user for all the places on the layer.
-    	geoloqi.get "layer/subscribe/#{game.layer_id}"
-
-	    if player.nil?
-	      player = Player.new :name => user_profile.username,
-	                          :geoloqi_user_id => user_profile.user_id,
-	                          :game => game,
-	                          :team => game.pick_team
-
-          # If user_profile.profile_image is not there or is null, don't do this (Should prevent errors on non-twitter accounts)
-          player.profile_image = user_profile.profile_image unless user_profile.profile_image.nil? || user_profile.profile_image.empty?
-          player.save
-        end
-
-        geoloqi.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You're on the #{player.team.name} team!"
-    end
-    redirect "/game/" + params[:layer_id]
-  end
-=end
 
   get '/game/:layer_id/?' do
     @game = Game.first :layer_id => params[:layer_id]
@@ -188,7 +199,7 @@ class Controller < Sinatra::Base
     {:places => places, :players => players}.to_json
   end
 
-  get '/player/:geoloqi_user_id.json' do
+  get '/player/:geoloqi_user_id' do
     content_type :json
     player = Player.first :geoloqi_user_id => params[:geoloqi_user_id]
     {:team => player.team.name.downcase, :profile_image => player.profile_image, :name => player.name}.to_json
