@@ -41,7 +41,7 @@ class Controller < Sinatra::Base
     game.layer_id = layer_response.layer_id
     game.group_token = group_response.group_token
     game.save
-    redirect "/admin/games"
+    redirect "/admin/games/#{game.id}/mapeditor"
   end
 
   get '/admin/games/:layer_id/setup.json' do
