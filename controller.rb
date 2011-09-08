@@ -37,6 +37,7 @@ class Controller < Sinatra::Base
                                                       :radius => game.radius,
                                                       :public => 1,
                                                       :is_app => 1
+    geoloqi_app.post "group/join/#{group_response.group_token}"
     geoloqi_app.post 'trigger/create', :layer_id => layer_response.layer_id, :type => 'callback', :callback => "http://mapattack.org/trigger", :one_time => 0
     game.layer_id = layer_response.layer_id
     game.group_token = group_response.group_token
@@ -126,7 +127,8 @@ class Controller < Sinatra::Base
     game = Game.first :layer_id => params[:layer_id]
     player = Player.first :access_token => params[:access_token]
     unless player
-      player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials], :team => game.pick_team
+      profile = geoloqi.get 'account/profile'
+      player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials], :team => game.pick_team, :geoloqi_user_id => profile.user_id
       geoloqi.post "group/join/#{game.group_token}"
       geoloqi.post "layer/subscribe/#{game.layer_id}"
       geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
@@ -140,24 +142,24 @@ class Controller < Sinatra::Base
   end
 
   post '/trigger' do
-    body = Hashie::Mash.new JSON.parse(request.body)
+    body = Hashie::Mash.new JSON.parse(request.body.read)
 
     game = Game.first :layer_id => body.layer.layer_id
     player = Player.first :game => game, :geoloqi_user_id => body.user.user_id
 
     if body.place.extra.active.to_i == 1
       # Update the place info in Geoloqi to set it inactive and record the team that ate the coin
-      geoloqi.post "place/update/#{body.place.place_id}", :extra => {:active => 0, :team => player.team.name}
+      geoloqi_app.post "place/update/#{body.place.place_id}", :extra => {:active => 0, :team => player.team.name}
 
       # Add points to this player's score
       player.add_points body.place.extra.points if body.place.extra && body.place.extra.points
 
       # TODO: Calculate the total red/blue score here
-      score_red = 0
-      score_blue = 0
+      score_red = game.teams.first(:name => 'red').players.collect {|p| p.points_cache}.sum
+      score_blue = game.teams.first(:name => 'blue').players.collect {|p| p.points_cache}.sum
 
       # Broadcast the coin state to the group
-      geoloqi.post "group/message/#{game.group_token}", {
+      geoloqi_app.post "group/message/#{game.group_token}", {
         :mapattack => {
           :place_id => body.place.place_id,
           :team => player.team.name,
@@ -170,7 +172,7 @@ class Controller < Sinatra::Base
       }
 
       # Notify the user that they ate the dot
-      geoloqi.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You ate a dot! #{body.place.extra.points} points"
+      geoloqi_app.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You ate a dot! #{body.place.extra.points} points"
     end
     true
   end
@@ -196,7 +198,7 @@ class Controller < Sinatra::Base
     game.players(:order => :points_cache.desc).each do |player|
     	player_location = {}
 
-    	locations.each {|p| player_location = p if p['username'] == player.name }
+    	locations.each {|p| player_location = p if p['user_id'] == player.geoloqi_user_id }
 
     	players << {:geoloqi_id => player.geoloqi_user_id,
                   :score => player.points_cache,
@@ -211,6 +213,7 @@ class Controller < Sinatra::Base
   get '/player/:geoloqi_user_id' do
     content_type :json
     player = Player.first :geoloqi_user_id => params[:geoloqi_user_id]
+    return {'error' => 'player_not_found'}.to_json if player.nil?
     {:team => player.team.name.downcase, :profile_image => player.profile_image, :name => player.name}.to_json
   end
 
@@ -228,7 +231,7 @@ class Controller < Sinatra::Base
         File.open(file_path_tmp, 'w') {|f| f.write(Faraday.get(player.profile_image).body) }
         `mogrify -resize 16x16^ -crop 16x16+0+0 -gravity north #{file_path_tmp}`
       else
-        File.cp generic_icon_path, file_path_tmp
+        FileUtils.cp generic_icon_path, file_path_tmp
       end
 
       `composite -geometry +3+3 -compose Over #{file_path_tmp} #{marker_path} #{file_path_tmp}`

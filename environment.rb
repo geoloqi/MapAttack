@@ -91,4 +91,6 @@ module Rack
   end
 end
 
+class Array; def sum; inject( nil ) { |sum,x| sum ? sum+x : x }; end; end
+
 require File.join(Sinatra::Base.root, 'controller.rb')
