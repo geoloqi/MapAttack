@@ -47,7 +47,7 @@ class Controller < Sinatra::Base
 
   get '/admin/games/:layer_id/setup.json' do
     content_type :json
-    geoloqi_app.get('place/list', :layer_id => params[:layer_id]).to_json
+    geoloqi_app.get('place/list', :layer_id => params[:layer_id], :limit => 0).to_json
   end
 
   post '/admin/games/:layer_id/new_pellet.json' do
