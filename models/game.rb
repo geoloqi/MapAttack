@@ -2,6 +2,7 @@ class Game
   include DataMapper::Resource
   property :id, Serial
   property :name, String
+  property :address, String, :length => 255
   property :latitude, String
   property :longitude, String
   property :radius, String

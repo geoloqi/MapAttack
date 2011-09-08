@@ -1,0 +1,3 @@
+<form onsubmit="GameMap.goToAddress($('#google_maps_address').val()); $('#game_address').val($('#google_maps_address').val()); return false;">
+Address: <input id="google_maps_address" value="<%= h @game.address %>">
+</form>
