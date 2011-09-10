@@ -152,7 +152,7 @@ function receivePlayerLocation(data) {
 	}
 	if(!exists){
 		if(typeof player_profiles[data.id] == "undefined") {
-			$.getJSON('/player/'+data.id, function(response) {
+			$.getJSON('/game/'+$("#layer_id").val()+'/player/'+data.id, function(response) {
 				player_profiles[data.id] = response;
 				
 				var team = player_profiles[data.id].team;

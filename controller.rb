@@ -125,7 +125,7 @@ class Controller < Sinatra::Base
     content_type :json
     geoloqi = Geoloqi::Session.new :auth => {:access_token => params[:access_token]}
     game = Game.first :layer_id => params[:layer_id]
-    player = Player.first :access_token => params[:access_token]
+    player = Player.first :access_token => params[:access_token], :game => game
     unless player
       profile = geoloqi.get 'account/profile'
       player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials], :team => game.pick_team, :geoloqi_user_id => profile.user_id
