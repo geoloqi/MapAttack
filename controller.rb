@@ -210,9 +210,10 @@ class Controller < Sinatra::Base
     {:places => places, :players => players}.to_json
   end
 
-  get '/game/:game_id/player/:geoloqi_user_id' do
+  get '/game/:layer_id/player/:geoloqi_user_id' do
     content_type :json
-    player = Player.first :geoloqi_user_id => params[:geoloqi_user_id], :game_id => params[:game_id]
+    game = Game.first :layer_id => params[:layer_id]
+    player = Player.first :geoloqi_user_id => params[:geoloqi_user_id], :game => game
     return {'error' => 'player_not_found'}.to_json if player.nil?
     {:team => player.team.name.downcase, :profile_image => player.profile_image, :name => player.name}.to_json
   end
