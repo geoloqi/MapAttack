@@ -1,0 +1,14 @@
+<h1><%= h @game.name %></h1>
+
+<h2>Game over!</h2>
+
+<h3>High scores</h3>
+
+<table>
+<% @game.players.each do |player| %>
+	<tr>
+		<td><%= player.name %></td>
+		<td><%= player.points_cache %></td>
+	</tr>
+<% end %>
+</table>

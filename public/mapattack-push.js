@@ -17,7 +17,16 @@ function LQHandlePushData(data) {
 	
 	// Custom push data from mapattack will contain the "mapattack" key
 	} else if(typeof data.mapattack != "undefined") {
-		receiveCoinData(data.mapattack);
+		var push = data.mapattack;
+		if(typeof push.place_id != "undefined"){
+			receiveCoinData(data.mapattack);
+		}
+		if(typeof push.gamestate != "undefined" && push.gamestate == "done") {
+			window.location = "/game/"+$("#layer_id").val()+"/complete";
+		}
+		if(typeof push.scores != "undefined") {
+			receiveScores(push.scores);
+		}
 	}
 }
 

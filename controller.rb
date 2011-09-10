@@ -136,6 +136,11 @@ class Controller < Sinatra::Base
     {'team_name' => player.team.name}.to_json
   end
 
+  get '/game/:layer_id/complete' do
+    @game = Game.first :layer_id => params[:layer_id]
+    erb :'complete'
+  end
+  
   get '/game/:layer_id/?' do
     @game = Game.first :layer_id => params[:layer_id]
     erb :'index'
