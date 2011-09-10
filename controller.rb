@@ -163,6 +163,7 @@ class Controller < Sinatra::Base
         :mapattack => {
           :place_id => body.place.place_id,
           :team => player.team.name,
+          :triggered_user_id => player.geoloqi_user_id,
           :points => body.place.extra.points,
           :latitude => body.place.latitude,
           :longitude => body.place.longitude,
@@ -171,8 +172,15 @@ class Controller < Sinatra::Base
         }
       }
 
-      # Notify the user that they ate the dot
-      geoloqi_app.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You ate a dot! #{body.place.extra.points} points"
+      scores = {}
+      game.players.each do |player|
+        scores[player.geoloqi_user_id] = player.points_cache
+      end
+
+      geoloqi_app.post "group/message/#{game.group_token}", :mapattack => {:scores => scores}
+
+      # Notify the user that they ate the dot (handled differently now)
+      # geoloqi_app.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You ate a dot! #{body.place.extra.points} points"
     end
     true
   end
