@@ -20,12 +20,25 @@ function LQHandlePushData(data) {
 		var push = data.mapattack;
 		if(typeof push.place_id != "undefined"){
 			receiveCoinData(data.mapattack);
+			if(push.triggered_user_id == $("#user_id").val()) {
+				$("#player-info").addClass("blink");
+				$("#player-info .message").html(push.points+" points!");
+				setTimeout(function(){
+					$("#player-info").removeClass("blink");
+					$("#player-info .message").html("");
+				}, 1200);
+			}
+			
 		}
 		if(typeof push.gamestate != "undefined" && push.gamestate == "done") {
 			window.location = "/game/"+$("#layer_id").val()+"/complete";
 		}
 		if(typeof push.scores != "undefined") {
-			receiveScores(push.scores);
+			for(var i in push.scores) {
+				if(i == $("#user_id").val()) {
+					$("#player-score .value").html("Your Score: " + push.scores[i]);
+				}
+			}
 		}
 	}
 }

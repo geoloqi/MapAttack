@@ -7,7 +7,7 @@
   	<script type="text/javascript" src="/game.js"></script>
   	
   	<% if request.path =~ /\/game\// %>
-    	<% if ['iPhone', 'Android', 'iPod'].include?(request.env[Rack::MobileDetect::X_HEADER]) %>
+    	<% if 1 || ['iPhone', 'Android', 'iPod'].include?(request.env[Rack::MobileDetect::X_HEADER]) %>
     	  <script type="text/javascript" src="/mapattack-push.js"></script>
     	<% else %>
     	  <script type="text/javascript" src="/mapattack-web.js"></script>
