@@ -164,7 +164,6 @@ function receivePlayerLocation(data) {
 				});
 				data.marker = marker;
 				people.push(data);
-				
 			});
 		}
 	}

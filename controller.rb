@@ -246,9 +246,13 @@ class Controller < Sinatra::Base
       file_path_1 = File.join Controller.root, "public", "characters", params[:i1]+".png"
       file_path_2 = File.join Controller.root, "public", "characters", params[:i2]+".png"
 
-      `convert \\( #{marker_path} \\( -geometry +11+6 -compose Over \\( #{file_path_2} -resize 130% \\) \\) -composite \\) \\( -geometry +2+6 -compose Over \\( #{file_path_1} -resize 130% \\) \\) -composite #{file_path_tmp}`
-      FileUtils.mv file_path_tmp, file_path
-      send_file file_path
+      if File.exist?(file_path_1) && !File.exist?(file_path_1)
+        `convert \\( #{marker_path} \\( -geometry +11+6 -compose Over \\( #{file_path_2} -resize 130% \\) \\) -composite \\) \\( -geometry +2+6 -compose Over \\( #{file_path_1} -resize 130% \\) \\) -composite #{file_path_tmp}`
+        FileUtils.mv file_path_tmp, file_path
+        send_file file_path
+      else
+        ''
+      end
     end
   end
 
