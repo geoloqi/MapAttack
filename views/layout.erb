@@ -10,6 +10,7 @@
     	<% if ['iPhone', 'Android', 'iPod'].include?(request.env[Rack::MobileDetect::X_HEADER]) %>
     	  <script type="text/javascript" src="/mapattack-push.js"></script>
     	<% else %>
+    	  <script type="text/javascript" src="http://subscribe.geoloqi.com:81/socket.io/socket.io.js"></script>
     	  <script type="text/javascript" src="/mapattack-web.js"></script>
     	<% end %>
   	<% end %>
