@@ -2,7 +2,7 @@ class Controller < Sinatra::Base
 
   before do
     puts "REQUEST URL: #{request.url}"
-    puts "PARAMS: #{params.inspect}"
+    puts "PARAMS: #{params[0..100]}"
   end
 
   after do
@@ -128,7 +128,7 @@ class Controller < Sinatra::Base
     player = Player.first :access_token => params[:access_token], :game => game
     unless player
       profile = geoloqi.get 'account/profile'
-      player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials], :team => game.pick_team, :geoloqi_user_id => profile.user_id
+      player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials].upcase, :team => game.pick_team, :geoloqi_user_id => profile.user_id
       geoloqi.post "group/join/#{game.group_token}"
       geoloqi.post "layer/subscribe/#{game.layer_id}"
       # geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
@@ -237,6 +237,8 @@ class Controller < Sinatra::Base
   end
 
   get '/player/:i1/:i2/:team/map_icon.png' do
+    params[:i1] = params[:i1].upcase
+    params[:i2] = params[:i2].upcase
     file_path = File.join Controller.root, "public", "icons", "#{params[:i1]}#{params[:i2]}_#{params[:team]}.png"
     file_path_tmp = "#{file_path}tmp"
     marker_path = File.join Controller.root, "public", "img", "player-icon-" + params[:team] + ".png"
@@ -247,13 +249,9 @@ class Controller < Sinatra::Base
       file_path_1 = File.join Controller.root, "public", "characters", params[:i1]+".png"
       file_path_2 = File.join Controller.root, "public", "characters", params[:i2]+".png"
 
-      if File.exist?(file_path_1) && !File.exist?(file_path_1)
         `convert \\( #{marker_path} \\( -geometry +11+6 -compose Over \\( #{file_path_2} -resize 130% \\) \\) -composite \\) \\( -geometry +2+6 -compose Over \\( #{file_path_1} -resize 130% \\) \\) -composite #{file_path_tmp}`
         FileUtils.mv file_path_tmp, file_path
         send_file file_path
-      else
-        ''
-      end
     end
   end
 

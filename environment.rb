@@ -53,8 +53,7 @@ class Sinatra::Base
     # Faraday.default_adapter = :em_synchrony
     Geoloqi.config :client_id => config_hash['client_id'],
                    :client_secret => config_hash['client_secret'],
-                   :use_hashie_mash => true,
-                   :logger => STDOUT
+                   :use_hashie_mash => true
     DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     # DataMapper.auto_upgrade!

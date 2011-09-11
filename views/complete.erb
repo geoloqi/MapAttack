@@ -5,7 +5,7 @@
 <h3>High scores</h3>
 
 <table>
-<% @game.players.each do |player| %>
+<% @game.players(:order => :points_cache).each do |player| %>
 	<tr>
 		<td><%= player.name %></td>
 		<td><%= player.points_cache %></td>
