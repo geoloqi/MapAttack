@@ -154,13 +154,13 @@ function receivePlayerLocation(data) {
 		if(typeof player_profiles[data.id] == "undefined") {
 			$.getJSON('/game/'+$("#layer_id").val()+'/player/'+data.id, function(response) {
 				player_profiles[data.id] = response;
-				
+
 				var team = player_profiles[data.id].team;
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: data.username,
-					icon: cg.playerImage(data.username, team)
+					title: response.name,
+					icon: cg.playerImage(response.name, team)
 				});
 				data.marker = marker;
 				people.push(data);
