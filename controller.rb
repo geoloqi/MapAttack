@@ -197,7 +197,7 @@ class Controller < Sinatra::Base
 
   get '/game/:layer_id/status.json' do
     content_type 'application/json'
-    response = geoloqi_app.get 'place/list', :layer_id => params[:layer_id], :after => params[:after]
+    response = geoloqi_app.get 'place/list', :layer_id => params[:layer_id], :after => params[:after], :limit => 0
     game = Game.first :layer_id => params[:layer_id]
 
     places = []
@@ -236,27 +236,22 @@ class Controller < Sinatra::Base
     {:team => player.team.name.downcase, :profile_image => player.profile_image, :name => player.name}.to_json
   end
 
-  get '/player/:player_id/:team/map_icon.png' do
-    file_path = File.join Controller.root, "public", "icons", "#{params[:player_id]}_#{params[:team]}.png"
+  get '/player/:i1/:i2/:team/map_icon.png' do
+    file_path = File.join Controller.root, "public", "icons", "#{params[:i1]}#{params[:i2]}_#{params[:team]}.png"
     file_path_tmp = "#{file_path}tmp"
-    generic_icon_path = File.join Controller.root, "public", "img", "mini-dino-" + params[:team] + ".png"
     marker_path = File.join Controller.root, "public", "img", "player-icon-" + params[:team] + ".png"
 
-    if File.exist?(file_path)
-      send_file file_path
-    else
-      player = Player.first :geoloqi_user_id => params[:player_id]
-      if !player.profile_image.nil? && player.profile_image != ''
-        File.open(file_path_tmp, 'w') {|f| f.write(Faraday.get(player.profile_image).body) }
-        `mogrify -resize 16x16^ -crop 16x16+0+0 -gravity north #{file_path_tmp}`
-      else
-        FileUtils.cp generic_icon_path, file_path_tmp
-      end
+    #if File.exist?(file_path)
+    #  send_file file_path
+    #else
+      file_path_1 = File.join Controller.root, "public", "characters", params[:i1]+".png"
+      file_path_2 = File.join Controller.root, "public", "characters", params[:i2]+".png"
 
-      `composite -geometry +3+3 -compose Over #{file_path_tmp} #{marker_path} #{file_path_tmp}`
+      puts "convert \( #{marker_path} \( -geometry +11+6 -compose Over \( #{file_path_2} -resize 130% \) \) -composite \) \( -geometry +2+6 -compose Over \( #{file_path_1} -resize 130% \) \) -composite #{file_path_tmp}"
+      `convert \\( #{marker_path} \\( -geometry +11+6 -compose Over \\( #{file_path_2} -resize 130% \\) \\) -composite \\) \\( -geometry +2+6 -compose Over \\( #{file_path_1} -resize 130% \\) \\) -composite #{file_path_tmp}`
       FileUtils.mv file_path_tmp, file_path
       send_file file_path
-    end
+    #end
   end
 
   post '/contact_submit' do
