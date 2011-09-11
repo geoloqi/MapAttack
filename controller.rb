@@ -131,7 +131,7 @@ class Controller < Sinatra::Base
       player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials], :team => game.pick_team, :geoloqi_user_id => profile.user_id
       geoloqi.post "group/join/#{game.group_token}"
       geoloqi.post "layer/subscribe/#{game.layer_id}"
-      geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
+      # geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
     end
     {'team_name' => player.team.name}.to_json
   end
@@ -173,6 +173,7 @@ class Controller < Sinatra::Base
           :place_id => body.place.place_id,
           :team => player.team.name,
           :triggered_user_id => player.geoloqi_user_id,
+          :triggered_name => player.name,
           :points => body.place.extra.points,
           :latitude => body.place.latitude,
           :longitude => body.place.longitude,
