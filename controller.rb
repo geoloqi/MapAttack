@@ -144,10 +144,9 @@ class Controller < Sinatra::Base
   get '/game/:layer_id/?' do
     @game = Game.first :layer_id => params[:layer_id]
     @user_id = params[:user_id]
-    @user_team = params[:team]
-    puts "======================"
-    puts @user_team
-    puts "======================"
+    player = Player.first :geoloqi_user_id => params[:user_id], :game => @game
+    @user_team = player ? player.team.name : ''
+    @user_initials = player ? player.name : ''
     erb :'index'
   end
 

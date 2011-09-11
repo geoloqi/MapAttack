@@ -36,7 +36,7 @@ function LQHandlePushData(data) {
 		if(typeof push.scores != "undefined") {
 			for(var i in push.scores) {
 				if(i == $("#user_id").val()) {
-					$("#player-score .value").html("Your Score: " + push.scores[i]);
+					$("#player-score .value").html($("#user_initials").val() + ": " + push.scores[i]);
 				}
 			}
 		}
@@ -45,4 +45,5 @@ function LQHandlePushData(data) {
 
 $(document).ready(function() {
 	updateGame(true);
+	$("#player-score .value").html($("#user_initials").val());
 });

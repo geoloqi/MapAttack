@@ -483,11 +483,11 @@ Player scores for the mobile devices
 	width: 100%;
 }
 #player-info h3 {
-	margin: 10px;
+	margin: 0;
 }
 #player-info .message {
 	padding: 8px 4px;
-	width: 180px;
+	width: 140px;
 	height: 20px;
 	float: right;
 	text-align: center;
@@ -501,7 +501,7 @@ Player scores for the mobile devices
 
 #player-info .team-red {
 	background: #88332B;
-	width: 150px;
+	width: 140px;
 	height: 20px;
 	color: #E8A9A7;
 	padding: 8px 4px;
@@ -510,7 +510,7 @@ Player scores for the mobile devices
 }
 #player-info .team-blue {
 	background: #213F6A;
-	width: 150px;
+	width: 140px;
 	height: 20px;
 	color: #9bc1ef;
 	padding: 8px 4px;
