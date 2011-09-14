@@ -33,7 +33,7 @@ $(document).ready(function() {
 			}
 			if(typeof push.scores != "undefined") {
 				for(var i in push.scores) {
-					$("#player-score-"+$("#user_id").val()+" .value").html($("#user_initials").val() + ": " + push.scores[i]);
+					$("#player-score-"+i+" .points").html(push.scores[i]);
 				}
 			}
 			
