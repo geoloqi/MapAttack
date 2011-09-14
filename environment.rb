@@ -32,6 +32,24 @@ class Controller < Sinatra::Base
     def geoloqi_app
       @_geoloqi_app ||= Geoloqi::Session.new :access_token => APPLICATION_ACCESS_TOKEN
     end
+    
+    def onclick_delete(msg='Are you sure?')
+      %{ if (confirm('#{msg}')) {
+          var f = document.createElement('form');
+          f.style.display = 'none';
+          this.parentNode.appendChild(f);
+          f.method = 'POST';
+          f.action = this.href;
+          var m = document.createElement('input');
+          m.setAttribute('type', 'hidden');
+          m.setAttribute('name', '_method');
+          m.setAttribute('value', 'delete');
+          f.appendChild(m);f.submit();
+        };
+        return false;
+      }
+    end
+    
   end
 
   configure :development do

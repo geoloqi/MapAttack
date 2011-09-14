@@ -117,11 +117,11 @@ class Controller < Sinatra::Base
   end
 
   delete '/admin/games/:id' do
-    #@game = Game.get params[:id]
-    #geoloqi_app.post "layer/delete/#{@game.layer_id}"
-    ### geoloqi_app.post "group/delete/#{@game.group_token}"  NOT IMPLEMENTED YET
-    #@game.destroy
-    #redirect '/'
+    @game = Game.get params[:id]
+    geoloqi_app.post "layer/delete/#{@game.layer_id}"
+    ## geoloqi_app.post "group/delete/#{@game.group_token}"  NOT IMPLEMENTED YET
+    @game.destroy
+    redirect '/admin/games'
   end
 
   post '/game/:layer_id/join' do
