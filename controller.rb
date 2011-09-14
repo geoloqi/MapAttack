@@ -1,9 +1,6 @@
 class Controller < Sinatra::Base
 
   before do
-    puts "REQUEST URL: #{request.url}"
-    puts "PARAMS: #{params.inspect}"
-    
     if request.path =~ /^\/admin\//
       require_login
       geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
@@ -131,19 +128,28 @@ class Controller < Sinatra::Base
     content_type :json
     geoloqi = Geoloqi::Session.new :auth => {:access_token => params[:access_token]}
     game = Game.first :layer_id => params[:layer_id]
-    player = Player.first :access_token => params[:access_token]
+    player = Player.first :access_token => params[:access_token], :game => game
     unless player
       profile = geoloqi.get 'account/profile'
-      player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials], :team => game.pick_team, :geoloqi_user_id => profile.user_id
+      player = game.players.create :access_token => params[:access_token], :email => params[:email], :name => params[:initials].upcase, :team => game.pick_team, :geoloqi_user_id => profile.user_id
       geoloqi.post "group/join/#{game.group_token}"
       geoloqi.post "layer/subscribe/#{game.layer_id}"
-      geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
+      # geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
     end
     {'team_name' => player.team.name}.to_json
   end
 
+  get '/game/:layer_id/complete' do
+    @game = Game.first :layer_id => params[:layer_id]
+    erb :'complete'
+  end
+  
   get '/game/:layer_id/?' do
     @game = Game.first :layer_id => params[:layer_id]
+    @user_id = params[:user_id]
+    player = Player.first :geoloqi_user_id => params[:user_id], :game => @game
+    @user_team = player ? player.team.name : ''
+    @user_initials = player ? player.name : ''
     erb :'index'
   end
 
@@ -169,6 +175,8 @@ class Controller < Sinatra::Base
         :mapattack => {
           :place_id => body.place.place_id,
           :team => player.team.name,
+          :triggered_user_id => player.geoloqi_user_id,
+          :triggered_name => player.name,
           :points => body.place.extra.points,
           :latitude => body.place.latitude,
           :longitude => body.place.longitude,
@@ -177,15 +185,22 @@ class Controller < Sinatra::Base
         }
       }
 
-      # Notify the user that they ate the dot
-      geoloqi_app.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You ate a dot! #{body.place.extra.points} points"
+      scores = {}
+      game.players.each do |player|
+        scores[player.geoloqi_user_id] = player.points_cache
+      end
+
+      geoloqi_app.post "group/message/#{game.group_token}", :mapattack => {:scores => scores}
+
+      # Notify the user that they ate the dot (handled differently now)
+      # geoloqi_app.post 'message/send', :user_id => player.geoloqi_user_id, :text => "You ate a dot! #{body.place.extra.points} points"
     end
     true
   end
 
   get '/game/:layer_id/status.json' do
     content_type 'application/json'
-    response = geoloqi_app.get 'place/list', :layer_id => params[:layer_id], :after => params[:after]
+    response = geoloqi_app.get 'place/list', :layer_id => params[:layer_id], :after => params[:after], :limit => 0
     game = Game.first :layer_id => params[:layer_id]
 
     places = []
@@ -216,33 +231,30 @@ class Controller < Sinatra::Base
     {:places => places, :players => players}.to_json
   end
 
-  get '/player/:geoloqi_user_id' do
+  get '/game/:layer_id/player/:geoloqi_user_id' do
     content_type :json
-    player = Player.first :geoloqi_user_id => params[:geoloqi_user_id]
+    game = Game.first :layer_id => params[:layer_id]
+    player = Player.first :geoloqi_user_id => params[:geoloqi_user_id], :game => game
     return {'error' => 'player_not_found'}.to_json if player.nil?
     {:team => player.team.name.downcase, :profile_image => player.profile_image, :name => player.name}.to_json
   end
 
-  get '/player/:player_id/:team/map_icon.png' do
-    file_path = File.join Controller.root, "public", "icons", "#{params[:player_id]}_#{params[:team]}.png"
+  get '/player/:i1/:i2/:team/map_icon.png' do
+    params[:i1] = params[:i1].upcase
+    params[:i2] = params[:i2].upcase
+    file_path = File.join Controller.root, "public", "icons", "#{params[:i1]}#{params[:i2]}_#{params[:team]}.png"
     file_path_tmp = "#{file_path}tmp"
-    generic_icon_path = File.join Controller.root, "public", "img", "mini-dino-" + params[:team] + ".png"
     marker_path = File.join Controller.root, "public", "img", "player-icon-" + params[:team] + ".png"
 
     if File.exist?(file_path)
       send_file file_path
     else
-      player = Player.first :geoloqi_user_id => params[:player_id]
-      if !player.profile_image.nil? && player.profile_image != ''
-        File.open(file_path_tmp, 'w') {|f| f.write(Faraday.get(player.profile_image).body) }
-        `mogrify -resize 16x16^ -crop 16x16+0+0 -gravity north #{file_path_tmp}`
-      else
-        FileUtils.cp generic_icon_path, file_path_tmp
-      end
+      file_path_1 = File.join Controller.root, "public", "characters", params[:i1]+".png"
+      file_path_2 = File.join Controller.root, "public", "characters", params[:i2]+".png"
 
-      `composite -geometry +3+3 -compose Over #{file_path_tmp} #{marker_path} #{file_path_tmp}`
-      FileUtils.mv file_path_tmp, file_path
-      send_file file_path
+        `convert \\( #{marker_path} \\( -geometry +11+6 -compose Over \\( #{file_path_2} -resize 130% \\) \\) -composite \\) \\( -geometry +2+6 -compose Over \\( #{file_path_1} -resize 130% \\) \\) -composite #{file_path_tmp}`
+        FileUtils.mv file_path_tmp, file_path
+        send_file file_path
     end
   end
 

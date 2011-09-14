@@ -20,8 +20,8 @@ var cg = {
 	p: function(w,h) {
 		return new google.maps.Point(w,h);
 	},
-	playerImage: function(id, team) {
-		return new google.maps.MarkerImage("/player/"+id+"/"+team+"/map_icon.png", new google.maps.Size(38, 31), new google.maps.Point(0,0), new google.maps.Point(10, 30));
+	playerImage: function(name, team) {
+		return new google.maps.MarkerImage("/player/"+name[0]+"/"+name[1]+"/"+team+"/map_icon.png", new google.maps.Size(38, 31), new google.maps.Point(0,0), new google.maps.Point(10, 30));
 	}
 }
 
@@ -35,7 +35,7 @@ var coins = {
 	},
 	20: {
 		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19),  cg.p(17, 276), cg.p(19/2, 19/2)),
-		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19), cg.p(17, 300), cg.p(19/2, 19/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19), cg.p(17, 301), cg.p(19/2, 19/2)),
 		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(19,19), cg.p(17, 326), cg.p(19/2, 19/2))
 	},
 	30: {
@@ -45,7 +45,7 @@ var coins = {
 	},
 	50: {
 		red: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25),  cg.p(57, 273), cg.p(25/2, 25/2)),
-		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25), cg.p(57, 297), cg.p(25/2, 25/2)),
+		blue: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25), cg.p(57, 298), cg.p(25/2, 25/2)),
 		grey: new google.maps.MarkerImage(coinSpriteURL, cg.s(25,25), cg.p(57, 323), cg.p(25/2, 25/2))
 	}
 };
@@ -152,19 +152,18 @@ function receivePlayerLocation(data) {
 	}
 	if(!exists){
 		if(typeof player_profiles[data.id] == "undefined") {
-			$.getJSON('/player/'+data.id, function(response) {
+			$.getJSON('/game/'+$("#layer_id").val()+'/player/'+data.id, function(response) {
 				player_profiles[data.id] = response;
-				
+
 				var team = player_profiles[data.id].team;
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: data.username,
-					icon: cg.playerImage(id, team)
+					title: response.name,
+					icon: cg.playerImage(response.name, team)
 				});
 				data.marker = marker;
 				people.push(data);
-				
 			});
 		}
 	}

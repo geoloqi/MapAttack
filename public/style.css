@@ -471,3 +471,49 @@ Home Page
 	font-size: 13pt;
 }
 
+
+
+/*********************
+Player scores for the mobile devices
+*********************/
+#player-info {
+	position: absolute;
+	z-index: 2;
+	bottom: 0; 
+	width: 100%;
+}
+#player-info h3 {
+	margin: 0;
+}
+#player-info .message {
+	padding: 8px 4px;
+	width: 140px;
+	height: 20px;
+	float: right;
+	text-align: center;
+}
+#player-info.blink .message {
+	background: #F9F362;
+}
+#player-info #player-score {
+	float: left;
+}
+
+#player-info .team-red {
+	background: #88332B;
+	width: 140px;
+	height: 20px;
+	color: #E8A9A7;
+	padding: 8px 4px;
+	text-align: center;
+	text-shadow: 0 -1px 0px #8c2824;
+}
+#player-info .team-blue {
+	background: #213F6A;
+	width: 140px;
+	height: 20px;
+	color: #9bc1ef;
+	padding: 8px 4px;
+	text-align: center;
+	text-shadow: 0 -1px 0px #183c6a;
+}
