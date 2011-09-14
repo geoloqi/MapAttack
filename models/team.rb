@@ -6,4 +6,11 @@ class Team
   property :updated_at, DateTime
   belongs_to :game
   has n, :players
+
+  def score
+    points = self.class.players.collect {|player| player.points_cache}
+    total = 0
+    points.each {|p| total += p}
+    total    
+  end
 end

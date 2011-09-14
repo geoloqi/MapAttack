@@ -1,14 +1,67 @@
-<h1><%= h @game.name %></h1>
-
+<div id="final-score-wrapper">
 <h2>Game over!</h2>
-
-<h3>High scores</h3>
-
-<table>
-<% @game.players(:order => :points_cache).each do |player| %>
-	<tr>
-		<td><%= player.name %></td>
-		<td><%= player.points_cache %></td>
-	</tr>
+<h2 class="<%= @winner %>"><%= @winner %> Wins!</h2>
+<ol id="final-scores">
+<% @game.players(:order => :points_cache.desc).each do |player| %>
+	<li class="<%= player.team.name %> player-score">
+		<img src="/img/blank-profile-<%= player.team.name %>.png" />
+		<h3><%= player.name %></h3>
+		<span class="points"><%= player.points_cache %></span>
+	</li>
 <% end %>
-</table>
+</ol>
+</div>
+
+<style type="text/css">
+h2.red {
+	color: #8D342C;
+}
+h2.blue {
+	color: #21416D;
+}
+#final-score-wrapper {
+	background: url('/img/grey-pattern.png');
+	width: 200px;
+	margin: 0 auto;
+	padding: 20px 0;
+	border-left: 4px #BC7570 solid;
+	border-right: 4px #6E90BD solid;
+}
+#final-scores h3 {
+	font-size: 16px;
+	margin:-10px 0 0 0;
+	overflow: hidden;
+}
+#final-scores .points {
+	font-size: 30px;
+	font-family: 'DroidSansBold';
+	line-height: 30px;
+}
+#final-scores li {
+	clear: both;
+	height: 58px;
+	display: block;
+	margin: 15px 0 20px 0;
+}
+.player-score.blue {
+	text-align: right;
+}
+.player-score img {
+	width: 42px;
+	height: 42px;
+	background: black;
+	position: relative;
+}
+.player-score.red img {
+	background: url('/img/gameboard-sprite.png') no-repeat -199px -273px;
+	float: left;
+	padding:3px 13px 19px 3px;
+	margin:0 10px 0 -15px;
+}
+.player-score.blue img {
+	background: url('/img/gameboard-sprite.png') no-repeat -141px -273px;
+	float: right;
+	padding:3px 3px 19px 13px;
+	margin:0 -15px 0 10px;
+}
+</style>

@@ -141,6 +141,7 @@ class Controller < Sinatra::Base
 
   get '/game/:layer_id/complete' do
     @game = Game.first :layer_id => params[:layer_id]
+	@winner = (@game.points_for('red') > @game.points_for('blue') ? 'red' : 'blue')
     erb :'complete'
   end
   

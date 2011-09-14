@@ -31,6 +31,11 @@ $(document).ready(function() {
 					$("#player-info .message").html("");
 				}, 1200);
 			}
+			if(typeof push.scores != "undefined") {
+				for(var i in push.scores) {
+					$("#player-score-"+$("#user_id").val()+" .value").html($("#user_initials").val() + ": " + push.scores[i]);
+				}
+			}
 			
 		}
 	});
