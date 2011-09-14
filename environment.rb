@@ -6,8 +6,16 @@ Bundler.setup
 Bundler.require
 require 'rack/methodoverride'
 
-class Sinatra::Base
+class Controller < Sinatra::Base
   helpers do
+    def admins_only
+      unless session[:is_admin] == true
+        profile = geoloqi.get 'account/profile'
+        session[:is_admin] = true if settings.admin_usernames.include?(profile.username)
+        redirect '/' unless session[:is_admin] == true
+      end
+    end
+
     def partial(page, options={})
       erb page, options.merge!(:layout => false)
 		end
@@ -20,7 +28,7 @@ class Sinatra::Base
       geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
       redirect geoloqi.authorize_url(request.url) unless geoloqi.access_token?
     end
-    
+
     def geoloqi_app
       @_geoloqi_app ||= Geoloqi::Session.new :access_token => APPLICATION_ACCESS_TOKEN
     end
@@ -44,6 +52,8 @@ class Sinatra::Base
     set :public, File.join(root, 'public')
     set :display_errors, true
     set :method_override, true
+    set :admin_usernames, {}
+    
     mime_type :woff, 'application/octet-stream'
     Dir.glob(File.join(root, 'models', '**/*.rb')).each { |f| require f }
     config_hash = YAML.load_file(File.join(root, 'config.yml'))[environment.to_s]
@@ -59,6 +69,7 @@ class Sinatra::Base
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     # DataMapper.auto_upgrade!
     DataMapper::Model.raise_on_save_failure = true
+    settings.admin_usernames = config_hash['admin_users'].nil? ? [] : config_hash['admin_users'].split(',')
   end
 end
 
@@ -93,4 +104,4 @@ end
 
 class Array; def sum; inject( nil ) { |sum,x| sum ? sum+x : x }; end; end
 
-require File.join(Sinatra::Base.root, 'controller.rb')
+require File.join(Controller.root, 'controller.rb')

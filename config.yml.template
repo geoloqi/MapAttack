@@ -1,6 +1,8 @@
-production:
+development:
   database: "mysql://mapattack:password@localhost/mapattack"
+  oauth_token:
   client_id:
   client_secret:
   base_uri: "http://mapattack.org/"
   ga_id:
+  admin_users:

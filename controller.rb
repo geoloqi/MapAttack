@@ -3,6 +3,12 @@ class Controller < Sinatra::Base
   before do
     puts "REQUEST URL: #{request.url}"
     puts "PARAMS: #{params.inspect}"
+    
+    if request.path =~ /^\/admin\//
+      require_login
+      geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
+      admins_only
+    end
   end
 
   after do
