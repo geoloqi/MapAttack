@@ -14,15 +14,24 @@
     	  <script type="text/javascript" src="/mapattack-web.js"></script>
     	<% end %>
   	<% end %>
+  	<% if request.path =~ /\/replay\// %>
+    	  <script type="text/javascript" src="/mapattack-replay.js"></script>
+  	<% end %>
   	
   	<link rel="stylesheet" type="text/css" href="/reset.css" />
   	<link rel="stylesheet" type="text/css" href="/style.css" />
-  	
+
   	<% if Controller::GA_ID %>
       <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', '<%= Controller::GA_ID %>']);
         _gaq.push(['_trackPageview']);
+
+        <% if request.path =~ /^\/$/ %>
+		// geoloqi.com A/B Testing
+		_gaq.push(['gwo._setAccount', 'UA-25750303-7']);
+		_gaq.push(['gwo._trackPageview', '/0594274968/goal']);
+		<% end %>
 
         (function() {
           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
