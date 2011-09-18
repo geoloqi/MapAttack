@@ -1,1 +1,1 @@
-rvm use jruby-1.6.4@MapAttack --create
+rvm use ruby-1.9.2-p290@MapAttack --create

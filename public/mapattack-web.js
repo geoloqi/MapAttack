@@ -2,7 +2,7 @@
 $(document).ready(function() {
 	updateGame(true);
 	
-	var socket = io.connect("http://subscribe.geoloqi.com:81");
+	var socket = io.connect("https://subscribe.geoloqi.com");
 		socket.on('enter group token', function(data) {
 		socket.emit('token', 'group-'+$("#group_token").val());
 	});

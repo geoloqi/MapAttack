@@ -58,7 +58,7 @@ class Controller < Sinatra::Base
 
   configure do
     use Rack::MobileDetect
-    # register Sinatra::Synchrony
+    register Sinatra::Synchrony
     if test?
       set :sessions, false
     else
@@ -78,10 +78,11 @@ class Controller < Sinatra::Base
     raise "in config.yml, the \"#{environment.to_s}\" configuration is missing" if config_hash.nil?
     GA_ID = config_hash['ga_id']
     APPLICATION_ACCESS_TOKEN = config_hash['oauth_token']
-    # Faraday.default_adapter = :em_synchrony
+    Faraday.default_adapter = :em_synchrony
     Geoloqi.config :client_id => config_hash['client_id'],
                    :client_secret => config_hash['client_secret'],
-                   :use_hashie_mash => true
+                   :use_hashie_mash => true,
+                   :adapter => :em_synchrony
     DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     # DataMapper.auto_upgrade!
@@ -89,20 +90,6 @@ class Controller < Sinatra::Base
     settings.admin_usernames = config_hash['admin_users'].nil? ? [] : config_hash['admin_users'].split(',')
   end
 end
-
-# Monkey patch fix for migrations bug on JRuby
-DataMapper.repository.adapter.class.class_eval do
-  def show_variable(name)
-    select('SELECT variable_value FROM information_schema.session_variables WHERE LOWER(variable_name) = ?', name).first
-  end
-end
-
-# Quit whining about the certificate!
-require 'openssl'
-original_verbosity = $VERBOSE
-$VERBOSE = nil
-OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
-$VERBOSE = original_verbosity
 
 module Rack
   class Request

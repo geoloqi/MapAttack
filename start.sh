@@ -1,2 +1,2 @@
 #!/bin/sh
-bundle exec rackup -s Kirk
+bundle exec rackup -s thin
