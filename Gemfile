@@ -12,6 +12,7 @@ gem 'geoloqi',           '0.9.27'
 gem 'hashie',            '1.0.0'
 gem 'thin'
 gem 'rack-mobile-detect', '0.3.0', :require => 'rack/mobile-detect'
+gem 'aws-ses',                     :require => 'aws/ses'
 
 group :development do
   gem 'ruby-debug19', :require => 'ruby-debug'

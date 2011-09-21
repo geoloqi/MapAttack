@@ -78,6 +78,8 @@ class Controller < Sinatra::Base
     raise "in config.yml, the \"#{environment.to_s}\" configuration is missing" if config_hash.nil?
     GA_ID = config_hash['ga_id']
     APPLICATION_ACCESS_TOKEN = config_hash['oauth_token']
+    AWS_KEY = config_hash['aws_key']
+    AWS_SECRET = config_hash['aws_secret']
     Faraday.default_adapter = :em_synchrony
     Geoloqi.config :client_id => config_hash['client_id'],
                    :client_secret => config_hash['client_secret'],

@@ -282,7 +282,17 @@ class Controller < Sinatra::Base
   end
 
   post '/contact_submit' do
-    Faraday.post 'http://business.geoloqi.com/contact-submit.php', params
+    redirect '/' unless params[:vegancheese] == 'galaxy' # SPAM check
+
+    ses = AWS::SES::Base.new :access_key_id => Controller::AWS_KEY, :secret_access_key => Controller::AWS_SECRET
+
+    ses.send_email :to        => '"MapAttack" <play@mapattack.org>',
+                   :source    => '"MapAttack Website" <website@geoloqi.com>',
+                   :reply_to  => params[:email],
+                   :subject   => 'MapAttack Contact Form',
+                   :text_body => "Name: #{params[:name]}\nLocation: #{params[:location]}\n#{params[:message]}"
+
+
     {:result => "ok"}.to_json
   end
 
