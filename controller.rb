@@ -1,6 +1,7 @@
 class Controller < Sinatra::Base
 
   before do
+  	@current_page = request.path[/(\w|-)+/]
     if request.path =~ /^\/admin\//
       require_login
       geoloqi.get_auth(params[:code], request.url) if params[:code] && !geoloqi.access_token?
@@ -13,7 +14,7 @@ class Controller < Sinatra::Base
   end
 
   get '/?' do
-    erb :'index_stub'
+    erb :'splash', :layout => false
   end
 
   get '/admin/games' do
@@ -60,7 +61,11 @@ class Controller < Sinatra::Base
                                                       :longitude => params[:longitude],
                                                       :radius => 20,
                                                       :layer_id => params[:layer_id],
-                                                      :extra => {:active => 1, :points => (params[:post] || 10)}
+                                                      :extra => {
+                                                      	:active => 1, 
+                                                      	:points => (params[:post] || 10),
+                                                      	:text => ""
+                                                      }
     geoloqi_app.get("place/info/#{place_response.place_id}").to_json
   end
   
@@ -83,7 +88,11 @@ class Controller < Sinatra::Base
                     :longitude => location.split(',').last,
                     :radius => 20,
                     :layer_id => params[:layer_id],
-                    :extra => {:active => 1, :points => (params[:post] || 10)}}
+                    :extra => {
+                    	:active => 1, 
+                    	:points => (params[:post] || 10), 
+                    	:text => ""
+                    }}
 
       place_response = geoloqi_app.post "place/create", place_data
 
@@ -97,7 +106,12 @@ class Controller < Sinatra::Base
 
   post '/admin/games/:layer_id/set_pellet_value.json' do
     content_type :json
-    geoloqi_app.post("place/update/#{params[:place_id]}", :radius => '20', :extra => {:active => '1', :points => params[:points]}).to_json
+    geoloqi_app.post("place/update/#{params[:place_id]}", :radius => '20', :extra => {:active => '1', :text => params[:text], :points => params[:points]}).to_json
+  end
+
+  post '/admin/games/:layer_id/set_pellet_text.json' do
+    content_type :json
+    geoloqi_app.post("place/update/#{params[:place_id]}", :extra => {:active => '1', :text => params[:text]}).to_json
   end
 
   get '/admin/games/:id/edit' do
@@ -143,6 +157,14 @@ class Controller < Sinatra::Base
     @game = Game.first :layer_id => params[:layer_id]
 	@winner = (@game.points_for('red') > @game.points_for('blue') ? 'red' : 'blue')
     erb :'complete'
+  end
+
+  get '/replay/:layer_id/?' do
+    @game = Game.first :layer_id => params[:layer_id]
+    @user_id = nil
+    @user_team = ''
+    @user_initials = ''
+    erb :'index'
   end
   
   get '/game/:layer_id/?' do

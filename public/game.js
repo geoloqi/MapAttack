@@ -1,3 +1,4 @@
+var setup = false;
 
 var GameMap = {
 	fitToRadius: function(radius) {
@@ -21,6 +22,8 @@ var cg = {
 		return new google.maps.Point(w,h);
 	},
 	playerImage: function(name, team) {
+//		if(typeof name == "undefined") name = "AA";
+//		if(typeof team == "undefined") team = "red";
 		return new google.maps.MarkerImage("/player/"+name[0]+"/"+name[1]+"/"+team+"/map_icon.png", new google.maps.Size(38, 31), new google.maps.Point(0,0), new google.maps.Point(10, 30));
 	}
 }
@@ -79,7 +82,7 @@ function deleteCoin(id) {
 }
 
 function receiveCoinData(pellet) {
-	if(typeof pellet.team == "undefined" || pellet.team == null || pellet.team == "") {
+	if(setup || typeof pellet.team == "undefined" || pellet.team == null || pellet.team == "") {
 		markerIcon = coins[pellet.points].grey;
 	} else {
 		markerIcon = coins[pellet.points][pellet.team];
@@ -98,7 +101,7 @@ function receiveCoinData(pellet) {
 	} else {
 		// Coin is already on the screen, decide whether we should update it
 		var p = pellets[pellet.place_id];
-		if(pellet.team != p.team) {
+		if(true || pellet.team != p.team) {
 			p.marker.setMap(null);
 			p.marker = new google.maps.Marker({
 				position: new google.maps.LatLng(pellet.latitude, pellet.longitude),
@@ -106,6 +109,8 @@ function receiveCoinData(pellet) {
 				icon: markerIcon
 			});
 			p.team = pellet.team;
+		} else {
+			console.debug("coin already claimed");
 		}
 	}
 	
@@ -209,6 +214,8 @@ function updateGame(oneTime) {
 			lastRequestTime = Math.round((new Date()).getTime() / 1000);
 			if(!oneTime)
 				setTimeout(updateGame, 5000);
+			else
+				setup = false;
 		}
 	});
 }

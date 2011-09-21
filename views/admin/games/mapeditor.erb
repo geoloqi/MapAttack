@@ -24,6 +24,9 @@
 		.coin-50 {
 			background-position: -54px -36px;
 		}
+		.coin-10.selected {
+			background-position: 0 0;
+		}
 		.coin-20.selected {
 			background-position: -18px 0;
 		}
@@ -167,13 +170,16 @@ function addNewPellet(pellet) {
 	if(typeof pellet.extra.points == "undefined"){
 		pellet.extra.points = 10;
 	}
+	if(typeof pellet.extra.text == "undefined"){
+		pellet.extra.text = "";
+	}
 
 	var marker = new google.maps.Marker({
 		position: new google.maps.LatLng(pellet.latitude, pellet.longitude),
 		map: map,
 		draggable: true,
 		raiseOnDrag: false,
-		title: pellet.place_id,
+		title: pellet.extra.text,
 		icon: coins[parseInt(pellet.extra.points)].grey,
 	});
 	var circle = new google.maps.Circle({
@@ -186,7 +192,7 @@ function addNewPellet(pellet) {
 	
 	google.maps.event.addListener(marker, "dragend", function(event){
 		$.post("/admin/games/"+layerId+"/move_pellet.json", {
-			place_id: this.title,
+			place_id: pellet.place_id,
 			latitude: this.position.lat(),
 			longitude: this.position.lng()
 		}, function(data){
@@ -197,14 +203,14 @@ function addNewPellet(pellet) {
 		}, "json");
 	});
 	
-	var theMarkerTitle = marker.getTitle();
 	google.maps.event.addListener(marker, "click", function(event){
-		startEditingPoint(theMarkerTitle);
+		startEditingPoint(pellet.place_id);
 	});
 	
 	pellets[pellet.place_id] = {
 		id: pellet.place_id,
 		points: pellet.extra.points,
+		text: pellet.extra.text,
 		marker: marker,
 		circle: circle
 	};
@@ -223,6 +229,7 @@ function startEditingPoint(markerTitle) {
 	
 	$(".coin").removeClass("selected");
 	$(".coin-"+pellets[markerTitle].points).addClass("selected");
+	$(".coin_text").val(pellets[markerTitle].text);
 }
 
 function stopEditingPoint(markerTitle) {
@@ -238,13 +245,43 @@ function bindPointEditorTools() {
 
 		pellets[activePoint].marker.setIcon(coins[points].blue);
 		pellets[activePoint].points = points;
-		
+
 		pointEditorInfoWindow.close(); 
 		stopEditingPoint(activePoint);
 		
 		$.post("/admin/games/"+layerId+"/set_pellet_value.json", {
 			place_id: activePoint,
-			points: points
+			points: points,
+			text: $($(".coin_text")[1]).val()
+		}, function(data) {
+			if(data.result != "ok") {
+				alert("Something went wrong! :(");
+				window.location = window.location;
+			}
+		}, "json");
+	});
+
+	$(".coin_text").unbind("focus").bind("focus", function(){
+		$(".editPointSave").show();
+	});
+	$(".coin_text").unbind("blur").bind("blur", function(){
+		if($($(".coin_text")[1]).val() == pellets[activePoint].text){
+			$(".editPointSave").hide();
+		}
+	});
+
+	$(".editPointSave").unbind("click").bind("click", function(){
+		pellets[activePoint].text = $($(".coin_text")[1]).val();
+		var newText = pellets[activePoint].text;
+
+		pellets[activePoint].marker.setTitle(pellets[activePoint].text);
+		
+		pointEditorInfoWindow.close(); 
+		stopEditingPoint(activePoint);
+		
+		$.post("/admin/games/"+layerId+"/set_pellet_text.json", {
+			place_id: activePoint,
+			text: newText
 		}, function(data) {
 			if(data.result != "ok") {
 				alert("Something went wrong! :(");
@@ -453,12 +490,20 @@ $(function(){
 
 	<div style="display: none;" id="pointToolbar"><div style="width: 180px; padding-top: 10px;">
 
+		<div style="float: right;">
+			<input type="button" class="editPointDelete" style="font-size: 9pt;" value="Delete" />
+		</div>
+
 		<div class="coin coin-10 selected" id="coin-10"></div>
 		<div class="coin coin-20" id="coin-20"></div>
 		<div class="coin coin-30" id="coin-30"></div>
 		<div class="coin coin-50" id="coin-50"></div>
-		
-		<div style="float: right;"><input type="button" class="editPointDelete" style="font-size: 9pt;" value="Delete" /></div>
+
+		<div>
+			<input type="text" class="coin_text" value="" style="width: 120px;" maxlength="140" />
+			<input type="button" class="editPointSave" style="font-size: 9pt; display: none;" value="Save" />
+		</div>
+
 	</div></div>
 
 	<div id="map" style="width: 100%; height: 600px;"></div>
