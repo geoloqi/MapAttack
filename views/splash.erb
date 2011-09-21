@@ -1,0 +1,134 @@
+<html>
+  <head>
+  	<title>MapAttack</title>
+  	<meta name="viewport" content="initial-scale=1.0">
+  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  	<% if Controller::GA_ID %>
+      <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '<%= Controller::GA_ID %>']);
+        _gaq.push(['_trackPageview']);
+
+        <% if request.path =~ /^\/$/ %>
+		// geoloqi.com A/B Testing
+		_gaq.push(['gwo._setAccount', 'UA-25750303-7']);
+		_gaq.push(['gwo._trackPageview', '/0594274968/goal']);
+		<% end %>
+
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+      </script>
+    <% end %>
+    <script type="text/javascript" src="http://twitter.github.com/bootstrap/1.3.0/bootstrap-scrollspy.js"></script>
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css">
+  </head>
+  <body>
+
+
+    <div class="topbar" data-scrollspy="scrollspy">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="/">MapAttack!</a>
+          <ul class="nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+
+
+    <div class="container">
+      <div class="hero-unit">
+        <h1>MapAttack!</h1>
+        <p>MapAttack is a real-time location-based GPS game powered by the <a href="http://geoloqi.com">Geoloqi</a> platform.</p>
+        <!-- <p><a class="btn primary large">Learn more &raquo;</a></p> -->
+			<div style="margin: 0 auto; width: 640px;">
+				<object width="640" height="360"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=22818598&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=22818598&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="640" height="360"></embed></object>
+			</div>
+      </div>
+      
+          
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="span4 offset1">
+          <h2>From our Blog</h2>
+				<ul>
+					<li><a href="https://geoloqi.com/blog/2011/04/geoloqi-launches-mapattack-a-real-time-location-based-mobile-gaming-platform-of-awesomeness/">Geoloqi launches MapAttack!</a></li>
+					<li><a href="https://geoloqi.com/blog/2011/04/mapattack-at-stanford-university-plus-gps-art/">MapAttack at Stanford University</a></li>
+					<li><a href="https://geoloqi.com/blog/2011/04/mapattack-at-stanford-university-results-from-game-2/">Results from Game 2!</a></li>
+				</ul>
+          <p><a class="btn" href="https://geoloqi.com/blog/tag/mapattack/">Read More &raquo;</a></p>
+        </div>
+        <div class="span3">
+          <h2>Follow Us</h2>
+           <p><a href="http://twitter.com/geoloqi">@geoloqi</a></p>
+           <p><a href="http://twitter.com/playmapattack">@playmapattack</a></p>
+       </div>
+        <div class="span7">
+          <h2>Bring MapAttack to your city, school or company!</h2>
+          <p>Want to bring a game to your school or company? Contact us at <a href="mailto:play@mapattack.org">play@mapattack.org</a> and we'll be glad to help you out! You can also follow <a href="http://twitter.com/playmapattack">@playmapattack</a> on Twitter for the latest games and news! We'll be bringing it to more campuses and cities starting in June 2011.</p>
+          <p><a class="btn" href="#contact">Contact Us &raquo;</a></p>
+        </div>
+      </div> <!-- /row -->
+      
+      <div class="row">
+      	<div class="span9">
+      		<h2>Contact Us</h2>
+      		<form class="form-stacked">
+      			<fieldset>
+      				<div class="clearfix">
+		      			<label for="name">Name</label>
+      					<div class="input">
+			      			<input type="text" name="name" id="name" />
+      					</div>
+      				</div>
+      				<div class="clearfix">
+		      			<label for="email">Email</label>
+      					<div class="input">
+			      			<input type="text" name="email" id="email" />
+      					</div>
+      				</div>
+      				<div class="clearfix">
+      					<textarea name="message" rows="3" class="xxlarge"></textarea>
+      					<span class="help-block"></span>
+      				</div>
+      			</fieldset>
+      		</form>
+      	</div>
+      </div> <!-- /row -->
+                
+	<footer>
+		<p class="right">MapAttack is a real-time location-based GPS game powered by the <a href="http://geoloqi.com">Geoloqi</a> platform.</p>
+		<p class="left">Credits: <a href="http://aaronparecki.com">Aaron Parecki</a> // <a href="http://caseorganic.com">Amber Case</a> // <a href="http://kyledrake.net">Kyle Drake</a> // <a href="http://patrickarlt.com/">Patrick Arlt</a></p>
+	</footer>
+
+</div> <!-- /container -->
+
+<script type="text/javascript">
+$(function(){
+
+	$("#submit").click(function(){
+		$("#submit").attr("disabled", "disabled");
+		
+		var data = {};
+
+		$(".contact-form .contact").each(function(i,e){
+			data[$(e).attr("id")] = $(e).val();
+		});
+
+		$.post("/contact_submit", data, function(){
+			$(".contact-form").hide();
+			$("#thanks").show();
+		});
+	});
+});
+</script>
+
+  </body>
+</html>
