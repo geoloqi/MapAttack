@@ -24,6 +24,16 @@
   <% end %>
   <script type="text/javascript" src="http://twitter.github.com/bootstrap/1.3.0/bootstrap-scrollspy.js"></script>
   <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css">
+  <style type="text/css">
+    body {
+    }
+    .media-grid span {
+      margin: 0 20px;
+    }
+    .page-header {
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
 
@@ -33,8 +43,9 @@
       <div class="container">
         <a class="brand" href="/">MapAttack!</a>
         <ul class="nav">
-          <li class="active"><a href="#">Home</a></li>
+          <li class="active"><a href="#home">Home</a></li>
           <li><a href="#about">About</a></li>
+          <li><a href="#how-to-play">How To Play</a></li>
           <li><a href="#source-code">Source Code</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -48,13 +59,13 @@
       <div class="hero-unit">
         <h1>MapAttack!</h1>
         <p>MapAttack is a location-based game based on capturing and conquering virtual points on live city streets.</p>
-        <div style="margin: 0 auto; width: 640px;">
-          <object width="640" height="360"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=22818598&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=22818598&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="640" height="360"></embed></object>
-        </div>
+        <p><img src="https://geoloqi.com/blog/wp-content/uploads/2011/09/mapattack-stanford-full-game-900x468.jpg" width="820" style="margin: 0 auto;" /></p>
+        <p>Two teams compete to capture the most points on the gameboard. The gameboard, in this case, is the city streets of the neighborhood the players are in. To play, all you 
+                     need is a phone (Android running 2.2 or later and iPhone 3GS or later) a city street and some friends.</p>
       </div>
     </section>
 
-    <section id="about">
+    <section>
       <div class="row">
         <div class="span8">
           <h2>From our Blog</h2>
@@ -67,28 +78,89 @@
           <p><a class="btn" href="https://geoloqi.com/blog/tag/mapattack/">Read More &raquo;</a></p>
 
         </div>
-        <div class="span8">
-          <h2>Bring MapAttack to your city, school or company!</h2>
-          <p>Want to bring a game to your school or company? Contact us at <a href="mailto:play@mapattack.org">play@mapattack.org</a> and we'll be glad to help you out! You can also follow <a href="http://twitter.com/playmapattack">@playmapattack</a> on Twitter for the latest games and news! We'll be bringing it to more campuses and cities starting in June 2011.</p>
-          <p><a class="btn" href="#contact">Contact Us &raquo;</a></p>
-        </div>
       </div> <!-- /row -->
+    </section>
+    
+    <section id="about">
+      <div class="page-header"><h1>About MapAttack!</h1></div>
+      <div class="row">
+        <div class="span9">
+          <h2>Why Build a Real-Time Geofencing Game?</h2>
+          <p>We wanted to create a game that allowed people to physically interact with the real world instead of a computer console 
+             like a first person shooter or a real-time strategy game.</p>
+             
+          <p>We were inspired by playing a real-life version of Pac-Man called Pacmanhattan, invented by graduate 
+             students at the Interactive Telecommunications Program at NYU in 2004. We played it at <a href="http://www.wherecamppdx.org/">Portland WhereCamp conference</a> in 2008, and we wanted to see if we could make a 
+             GPS-based version of the game, as Pacmanhattan relied entirely on phone calls and physical maps.</p>
+          
+        </div>
+        <div class="span7">
+          <h2>Live Gameboard!</h2>
+          <iframe src="http://player.vimeo.com/video/29050789?title=0&amp;byline=0&amp;portrait=0" width="400" height="375" frameborder="0" webkitAllowFullScreen allowFullScreen></iframe>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="span16">
+        </div>
+      </div>
+    </section>
+
+    <section id="how-to-play">
+      <div class="page-header"><h1>How To Play</h1></div>
+      <div class="row">
+        <div class="span7">
+          <h2>What do you need?</h2>
+          <ul>
+            <li>iPhone 3GS or newer, or Android 2.2</li>
+            <li>A neighborhood or park</li>
+            <li>A group of 4-20 people you can play with</li>
+          </ul>
+          <h2>How long is the game?</h2>
+          <p>Games can last anywhere from 20 min to 1.5 hours depending on the size of the game board and total dots in the game.</p>
+          <h2>Why play MapAttack?</h2>
+          <p>It's a great way to run around with friends and feel like a kid again. MapAttack suddenly turns your neighborhood or city into a playground!</p>
+        </div>
+        <div class="span9">
+          <div style="margin: 0 auto; width: 520px;">
+            <object width="520" height="292"><param name="wmode" value="opaque" /><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=22818598&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=22818598&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="520" height="292"></embed></object>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="source-code">
       <div class="page-header"><h1>Source Code</h1></div>
       <div class="row">
         <div class="span16">
-          We made the source code for MapAttack available for download. You can download or fork the source code for MapAttack here.
-          If you build anything interesting with it, please let us know!
+          <p>For a look behind the technology used in MapAttack, see <a href="https://geoloqi.com/blog/2011/09/building-a-real-time-location-based-urban-geofencing-game-with-socket-io-redis-node-js-and-sinatra-synchrony/">Building a Real-Time Location-Based Urban Geofencing Game with Socket.io, Redis, Node.js and Sinatry Synchrony</a>!</p>
+          <p>You can download or fork the source code for MapAttack on Github!
+          If you build anything interesting with it, please let us know!</p>
         </div>
       </div>
       <div class="row">
-        <div class="span5">
+        <div class="span5 offset1">
+          <h2>iPhone</h2>
+          <ul class="media-grid">
+            <li><a href="https://github.com/geoloqi/MapAttack-iPhone"><img src="/img/mapattack-iphone-source-code.png" class="thumbnail" /></a></li>
+            <li><span>Objective C</span></li>
+          </ul>
         </div>
-        <div class="span6">
+        <div class="span5">
+          <h2>Android</h2>
+          <ul class="media-grid">
+            <li><a href="https://github.com/geoloqi/MapAttack-Android"><img src="/img/mapattack-android-source-code.png" class="thumbnail" /></a></li>
+            <li><span>Java</span></li>
+          </ul>
+          
         </div>
         <div class="span5">
+          <h2>Website</h2>
+          <ul class="media-grid">
+            <li><a href="https://github.com/geoloqi/MapAttack"><img src="/img/mapattack-website-source-code.png" class="thumbnail" /></a></li>
+            <li><span>Ruby, Sinatra</span></li>
+          </ul>
+          
         </div>
       </div>
     </section>
@@ -97,7 +169,19 @@
     <section id="contact">
       <div class="page-header"><h1>Contact Us</h1></div>
       <div class="row">
-        <div class="span12">
+        <div class="span16">
+          <h2>Bring MapAttack to your city, school or company!</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span10">
+
+          <p>Want to bring a game to your school or company? Contact us at <a href="mailto:play@mapattack.org">play@mapattack.org</a> and we'll be glad to help you out! You can also follow <a href="http://twitter.com/playmapattack">@playmapattack</a> on Twitter for the latest games and news! We'll be bringing it to more campuses and cities starting in June 2011.</p>
+          <p><a href="http://twitter.com/playmapattack" class="twitter-follow-button">Follow @playmapattack</a></p>
+          <p><a href="http://twitter.com/geoloqi" class="twitter-follow-button">Follow @geoloqi</a></p>
+
+        </div>
+        <div class="span6">
           <form class="form-stacked">
             <fieldset>
               <div class="clearfix">
@@ -113,22 +197,24 @@
                 </div>
               </div>
               <div class="clearfix">
-                <textarea name="message" rows="3" class="xxlarge"></textarea>
+                <label for="email">Location</label>
+                <div class="input">
+                  <input type="text" name="location" id="location" />
+                </div>
+              </div>
+              <div class="clearfix">
+                <label for="message">Message</label>
+                <textarea name="message" rows="3" class="xlarge"></textarea>
                 <span class="help-block"></span>
               </div>
             </fieldset>
           </form>
         </div>
-        <div class="span4">
-          <p><a href="http://twitter.com/playmapattack" class="twitter-follow-button">Follow @playmapattack</a></p>
-          <p><a href="http://twitter.com/geoloqi" class="twitter-follow-button">Follow @geoloqi</a></p>
-        </div>
       </div> <!-- /row -->
     </section>
 
   <footer>
-    <p class="right">MapAttack is a real-time location-based GPS game powered by the <a href="http://geoloqi.com">Geoloqi</a> platform.</p>
-    <p class="left">Credits: <a href="http://aaronparecki.com">Aaron Parecki</a> // <a href="http://caseorganic.com">Amber Case</a> // <a href="http://kyledrake.net">Kyle Drake</a> // <a href="http://patrickarlt.com/">Patrick Arlt</a></p>
+    <p class="right">MapAttack is a real-time location-based GPS game powered by the <a href="http://geoloqi.com">Geoloqi platform</a>.</p>
   </footer>
 
 </div> <!-- /container -->
