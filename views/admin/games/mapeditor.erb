@@ -338,9 +338,10 @@ $(function(){
 			$("#editingCancel").removeAttr("disabled");
 			$("#editingCancel").bind("click", function(){
 				removeLineAndMarkers();
+				editingMode = false;
 				$("#editingCancel").unbind("click");
 				$("#editingCancel").attr({disabled: "disabled"});
-				$("#newLine").val("Line");
+				$("#newLine").val("New Line");
 			});
 			
 			lineMapClickListener = google.maps.event.addListener(map, "click", function(event) {
@@ -450,7 +451,7 @@ $(function(){
 			removeLineAndMarkers();
 			$("#editingCancel").attr({disabled: "disabled"});
 			$("#editingCancel").unbind("click");
-			$("#newLine").val("Line");
+			$("#newLine").val("New Line");
 		}
 	});
 	
@@ -482,9 +483,9 @@ $(function(){
 
 	<div id="lineToolbar">
 		<div style="padding: 3px;">
-			<input type="button" id="newLine" value="Line" />
-			<input type="button" id="editingCancel" value="Cancel" disabled="disabled" />
-		  <input type="button" value="Done Editing Points!" onclick="window.location = '/admin/games';"/>
+			<input type="button" value="New Line" id="newLine" />
+			<input type="button" value="Cancel Line" id="editingCancel" disabled="disabled" />
+		  <input type="button" value="Close" onclick="window.location = '/admin/games';"/>
 		</div>
 	</div>
 
