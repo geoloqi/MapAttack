@@ -53,6 +53,24 @@ class Controller < Sinatra::Base
     content_type :json
     geoloqi_app.get('place/list', :layer_id => params[:layer_id], :limit => 0).to_json
   end
+  
+  put '/admin/games/:id/reset' do
+    game = Game.get params[:id]
+    result = geoloqi_app.get 'place/list', :layer_id => game.layer_id, :limit => 0
+    
+    places = []
+    
+    result.places.each do |place|
+      place.extra.active = 1
+      place.extra.team = ''
+      places << place
+    end
+    
+    query = {:access_token => geoloqi_app.access_token, :batch => places.collect!{|place| {:relative_url => "place/update/#{place.place_id}", :body => {:extra => place.extra}}}}
+
+    result = geoloqi_app.execute :post, 'batch/run', query
+    redirect '/admin/games'
+  end
 
   post '/admin/games/:layer_id/new_pellet.json' do
     content_type :json
