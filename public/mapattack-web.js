@@ -3,8 +3,8 @@ $(document).ready(function() {
 	updateGame(true);
 	
 	var socket = io.connect("https://subscribe.geoloqi.com");
-		socket.on('enter group token', function(data) {
-		socket.emit('token', 'group-'+$("#group_token").val());
+		socket.on('enter authentication', function(data) {
+		socket.emit('group', $("#group_token").val());
 	});
 	socket.on('group', function(location) {
 		var data = eval("("+location+")");
