@@ -34,20 +34,37 @@ class Controller < Sinatra::Base
     end
     
     def onclick_delete(msg='Are you sure?')
+      return onclick_form(:delete) if msg.nil?
       %{ if (confirm('#{msg}')) {
-          var f = document.createElement('form');
-          f.style.display = 'none';
-          this.parentNode.appendChild(f);
-          f.method = 'POST';
-          f.action = this.href;
-          var m = document.createElement('input');
-          m.setAttribute('type', 'hidden');
-          m.setAttribute('name', '_method');
-          m.setAttribute('value', 'delete');
-          f.appendChild(m);f.submit();
-        };
-        return false;
-      }
+          #{onclick_form(:delete)}
+         };
+         return false;
+       }
+    end
+
+    def onclick_put(msg=nil)
+      return onclick_form(:put) if msg.nil?
+      %{ if (confirm('#{msg}')) {
+          #{onclick_form(:put)}
+         };
+         return false;
+       }
+    end
+
+    def onclick_form(meth)
+      %{ var f = document.createElement('form');
+         f.style.display = 'none';
+         this.parentNode.appendChild(f);
+         f.method = 'POST';
+         f.action = this.href;
+         var m = document.createElement('input');
+         m.setAttribute('type', 'hidden');
+         m.setAttribute('name', '_method');
+         m.setAttribute('value', '#{meth.to_s.upcase}');
+         f.appendChild(m);
+         f.submit();
+         return false;
+        }
     end
     
   end
