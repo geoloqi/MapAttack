@@ -27,8 +27,8 @@
         <td><%= h game.is_active? ? 'On' : 'Off' %></td>
         <td><%= h game.players.count %></td>
         <td><%= h game.total_points %></td>
-        <td><a href="/admin/games/<%= game.id %>/edit">Edit</a></td>
-        <td><a href="/admin/games/<%= game.id %>/mapeditor">Points</a></td>
+        <td><a href="/admin/games/<%= game.id %>/edit">Setup</a></td>
+        <td><a href="/admin/games/<%= game.id %>/mapeditor">Edit Map</a></td>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/admin/games/<%= game.id %>" onclick="<%= onclick_delete %>">Delete</a></td>
       </tr>
     <% end %>
