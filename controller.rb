@@ -139,7 +139,7 @@ class Controller < Sinatra::Base
 
   put '/admin/games/:id/end_game' do
     @game = Game.get params[:id]
-    geoloqi.post "group/message/#{@game.group_token}", :mapattack => {:gamestate => 'done'}
+    geoloqi_app.post "group/message/#{@game.group_token}", :mapattack => {:gamestate => 'done'}
     redirect '/admin/games'
   end
 
