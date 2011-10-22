@@ -137,6 +137,12 @@ class Controller < Sinatra::Base
     erb :'admin/games/edit', :layout => :'admin/layout'
   end
 
+  put '/admin/games/:id/end_game' do
+    @game = Game.get params[:id]
+    geoloqi.post "group/message/#{@game.group_token}", :mapattack => {:gamestate => 'done'}
+    redirect '/admin/games'
+  end
+
   put '/admin/games/:id' do
     @game = Game.get params[:id]
     @game.update params[:game]
