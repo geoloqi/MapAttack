@@ -194,37 +194,41 @@
 
         </div>
         <div class="span6">
-          <form class="form-stacked contact-form">
+          <form class="form-stacked contact-form" id="contact-form" action="https://community.geoloqi.com/contact/post.php" method="post">
             <fieldset>
               <div class="clearfix">
                 <label for="name">Name</label>
                 <div class="input">
-                  <input type="text" name="name" id="name" />
+                  <input type="text" name="person[Name]" id="name" />
                 </div>
               </div>
               <div class="clearfix">
                 <label for="email">Email</label>
                 <div class="input">
-                  <input type="text" name="email" id="email" />
+                  <input type="text" name="person[Email]" id="email" />
                 </div>
               </div>
               <div class="clearfix">
                 <label for="email">Location</label>
                 <div class="input">
-                  <input type="text" name="location" id="location" />
+                  <input type="text" name="person[Location]" id="location" />
                 </div>
               </div>
               <div class="clearfix">
                 <label for="message">Message</label>
-                <textarea name="message" id="message" rows="3" class="xlarge"></textarea>
+                <textarea name="body[Message]" id="message" rows="3" class="xlarge"></textarea>
                 <span class="help-block"></span>
               </div>
               <div class="clearfix">
                 <input class="btn primary" type="submit" id="submit" value="Send" />
               </div>
             </fieldset>
+            <input type="hidden" name="email[Subject]" value="MapAttack Contact Form" />
+            <input type="hidden" name="email[Recipient Group]" value="Sales" />
+            <input type="hidden" name="person[Lead Source]" value="MapAttack" />
+            <input type="hidden" name="redirect" value="http://mapattack.org/contact_thanks" />
+            <input type="hidden" name="mode" id="contact-mode" value="20" />
           </form>
-          <div id="thanks" style="display:none;">Thanks! We got your message.</div>
         </div>
       </div> <!-- /row -->
     </section>
@@ -246,22 +250,11 @@
 <script type="text/javascript">
 $(function(){
 
-  $("#submit").click(function(){
-    $("#submit").attr("disabled", "disabled");
+	$("#submit").click(function(){
+		$("#contact-mode").val(50);
+    $("#contact-form").submit();
+	});
 
-    $.post("/contact_submit", {
-      vegancheese: "galaxy",
-      message: $("#message").val(),
-      email: $("#email").val(),
-      name: $("#name").val(),
-      location: $("#location").val()
-    }, function(){
-      $(".contact-form").hide();
-      $("#thanks").show();
-    });
-    
-    return false;
-  });
 });
 </script>
 </body>

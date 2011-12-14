@@ -174,7 +174,7 @@ class Controller < Sinatra::Base
       geoloqi.post "layer/subscribe/#{game.layer_id}"
       # geoloqi.post 'message/send', :text => "You're on the #{player.team.name} team!"
     end
-    {'team_name' => player.team.name, 'user_id' => profile.user_id}.to_json
+    {'team_name' => player.team.name, 'user_id' => player.geoloqi_user_id}.to_json
   end
 
   get '/game/:layer_id/complete' do
@@ -318,6 +318,10 @@ class Controller < Sinatra::Base
 
 
     {:result => "ok"}.to_json
+  end
+  
+  get '/contact_thanks' do
+    erb :'thanks'
   end
 
   get '/authorize' do
