@@ -10,7 +10,7 @@ gem 'rack-cache',        '1.0.1', :require => 'rack/cache'
 gem 'rake',              '0.8.7',  :require => nil
 gem 'geoloqi',           '0.9.27'
 gem 'hashie',            '1.0.0'
-gem 'thin'
+gem 'rainbows',          '4.3.1'
 gem 'rack-mobile-detect', '0.3.0', :require => 'rack/mobile-detect'
 gem 'aws-ses',                     :require => 'aws/ses'
 
@@ -20,7 +20,6 @@ end
 
 group :test do
   gem 'rack-test',         '0.5.7', :require => 'rack/test'
-  gem 'dm-sqlite-adapter', '1.1.0'
   gem 'rspec',             '2.5.0'
   gem 'webmock',           '1.6.2', :require => 'webmock/rspec'
 end
