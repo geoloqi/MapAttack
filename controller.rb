@@ -40,6 +40,7 @@ class Controller < Sinatra::Base
                                                       :longitude => game.longitude,
                                                       :radius => game.radius,
                                                       :public => 1,
+                                                      :trigger_rate_limit => 0,
                                                       :is_app => 1
     geoloqi_app.post "group/join/#{group_response.group_token}"
     geoloqi_app.post 'trigger/create', :layer_id => layer_response.layer_id, :type => 'callback', :callback => "http://mapattack.org/trigger", :one_time => 0
