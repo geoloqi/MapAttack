@@ -22,7 +22,7 @@ class Controller < Sinatra::Base
   end
 
   get '/admin/games' do
-    @games = Game.all
+    @games = Game.all :admin => @admin
     erb :'admin/games/index', :layout => :'admin/layout'
   end
 
@@ -32,12 +32,13 @@ class Controller < Sinatra::Base
   end
 
   get '/admin/games/:id/mapeditor' do
-    @game = Game.get params[:id]
+    @game = Game.first :id => params[:id], :admin => @admin
     erb :'admin/games/mapeditor', :layout => false
   end
 
   post '/admin/games' do
     game = Game.new params[:game]
+    game.admin = @admin
     group_response = geoloqi_app.post 'group/create', :visibility => 'open', :publish_access => 'open'
     layer_response = geoloqi_app.post 'layer/create', :name => game.name,
                                                       :latitude => game.latitude,
@@ -60,7 +61,7 @@ class Controller < Sinatra::Base
   end
   
   put '/admin/games/:id/reset' do
-    game = Game.get params[:id]
+    game = Game.first(:id => params[:id], :admin => @admin)
     result = geoloqi_app.get 'place/list', :layer_id => game.layer_id, :limit => 0
     
     places = []
@@ -95,6 +96,7 @@ class Controller < Sinatra::Base
   post '/admin/games/:layer_id/move_pellet.json' do
     content_type :json
     place_response = geoloqi_app.post("place/update/#{params[:place_id]}", :latitude => params[:latitude], :longitude => params[:longitude]).to_json
+    'ok'
   end
   
   post '/admin/games/:layer_id/delete_pellet.json' do
@@ -130,26 +132,28 @@ class Controller < Sinatra::Base
   post '/admin/games/:layer_id/set_pellet_value.json' do
     content_type :json
     geoloqi_app.post("place/update/#{params[:place_id]}", :radius => '20', :extra => {:active => '1', :text => params[:text], :points => params[:points]}).to_json
+    'ok'
   end
 
   post '/admin/games/:layer_id/set_pellet_text.json' do
     content_type :json
     geoloqi_app.post("place/update/#{params[:place_id]}", :extra => {:active => '1', :text => params[:text]}).to_json
+    'ok'
   end
 
   get '/admin/games/:id/edit' do
-    @game = Game.get params[:id]
+    @game = Game.first(:id => params[:id], :admin => @admin)
     erb :'admin/games/edit', :layout => :'admin/layout'
   end
 
   put '/admin/games/:id/end_game' do
-    @game = Game.get params[:id]
+    @game = Game.first(:id => params[:id], :admin => @admin)
     geoloqi_app.post "group/message/#{@game.group_token}", :mapattack => {:gamestate => 'done'}
     redirect '/admin/games'
   end
 
   put '/admin/games/:id' do
-    @game = Game.get params[:id]
+    @game = Game.first(:id => params[:id], :admin => @admin)
     @game.update params[:game]
 
     layer_response = geoloqi_app.post "layer/update/#{@game.layer_id}", :name => @game.name,
@@ -160,7 +164,7 @@ class Controller < Sinatra::Base
   end
 
   delete '/admin/games/:id' do
-    @game = Game.get params[:id]
+    @game = Game.first(:id => params[:id], :admin => @admin)
     geoloqi_app.post "layer/delete/#{@game.layer_id}"
     ## geoloqi_app.post "group/delete/#{@game.group_token}"  NOT IMPLEMENTED YET
     @game.destroy

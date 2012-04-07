@@ -4,15 +4,16 @@ require "rubygems"
 require "bundler"
 Bundler.setup
 Bundler.require
+Bundler.require :development if Sinatra::Base.development?
 require 'rack/methodoverride'
 
 class Controller < Sinatra::Base
   helpers do
     def admins_only
       unless session[:is_admin] == true
-        profile = geoloqi.get 'account/profile'
-        session[:is_admin] = true if settings.admin_usernames.include?(profile.username)
-        redirect '/' unless session[:is_admin] == true
+        session[:admin_id] ||= geoloqi.get('account/profile').user_id
+
+        @admin = Admin.first_or_create :geoloqi_user_id => session[:admin_id]
       end
     end
 

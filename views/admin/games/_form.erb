@@ -37,9 +37,13 @@
 
 </script>
 
-Name of the Game: <input name="game[name]" type="text" value="<%= h @game.name %>">
+Name of the Game:
+<br>
+<input name="game[name]" type="text" value="<%= h @game.name %>">
+<br>
 <br>
 Where is it (go to where you want the game to be centered, and zoom to the zoom level you want):
+<br>
 <div id="map_canvas" style="width:50%; height:50%"></div>
 
 <input id="latitude" name="game[latitude]" type="hidden" value="<%= h @game.latitude %>">

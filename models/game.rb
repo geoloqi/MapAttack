@@ -13,6 +13,7 @@ class Game
   property :updated_at, DateTime
   has n, :teams
   has n, :players
+  belongs_to :admin
 
   def self.team_names
     %w{red blue}

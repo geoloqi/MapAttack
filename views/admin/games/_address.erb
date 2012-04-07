@@ -1,3 +1,5 @@
-<form onsubmit="GameMap.goToAddress($('#google_maps_address').val()); $('#game_address').val($('#google_maps_address').val()); return false;">
-Address: <input id="google_maps_address" value="<%= h @game.address %>">
+<form id="address_form" onsubmit="GameMap.goToAddress($('#google_maps_address').val()); $('#game_address').val($('#google_maps_address').val()); return false;">
+Address (not required: used to find a location quickly):
+<br><input id="google_maps_address" value="<%= h @game.address %>">
+<input type="submit" value="Find">
 </form>

@@ -16,7 +16,8 @@ gem 'aws-ses',                     :require => 'aws/ses'
 gem 'thin'
 
 group :development do
-  gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'pry'
+  gem 'pry-nav'
 end
 
 group :test do
