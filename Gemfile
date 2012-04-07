@@ -13,6 +13,7 @@ gem 'hashie',            '1.0.0'
 gem 'rainbows',          '4.3.1'
 gem 'rack-mobile-detect', '0.3.0', :require => 'rack/mobile-detect'
 gem 'aws-ses',                     :require => 'aws/ses'
+gem 'thin'
 
 group :development do
   gem 'ruby-debug19', :require => 'ruby-debug'

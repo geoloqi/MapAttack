@@ -17,6 +17,10 @@ class Controller < Sinatra::Base
     erb :'splash', :layout => false
   end
 
+  get '/admin' do
+    redirect '/admin/games'
+  end
+
   get '/admin/games' do
     @games = Game.all
     erb :'admin/games/index', :layout => :'admin/layout'
