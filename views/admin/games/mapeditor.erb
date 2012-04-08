@@ -196,10 +196,12 @@ function addNewPellet(pellet) {
 			latitude: this.position.lat(),
 			longitude: this.position.lng()
 		}, function(data){
+			/*
 			if(data.result != "ok") {
 				alert("Something went wrong! :(");
 				window.location = window.location;
 			}
+			*/
 		}, "json");
 	});
 	
@@ -254,10 +256,12 @@ function bindPointEditorTools() {
 			points: points,
 			text: $($(".coin_text")[1]).val()
 		}, function(data) {
+			/*
 			if(data.result != "ok") {
 				alert("Something went wrong! :(");
 				window.location = window.location;
 			}
+			*/
 		}, "json");
 	});
 
@@ -284,8 +288,8 @@ function bindPointEditorTools() {
 			text: newText
 		}, function(data) {
 			if(data.result != "ok") {
-				alert("Something went wrong! :(");
-				window.location = window.location;
+				//alert("Something went wrong! :(");
+				//window.location = window.location;
 			}
 		}, "json");
 	});
@@ -301,8 +305,8 @@ function bindPointEditorTools() {
 			place_id: activePoint
 		}, function(data) {
 			if(data.result != "ok") {
-				alert("Something went wrong! :(");
-				window.location = window.location;
+				//alert("Something went wrong! :(");
+				//window.location = window.location;
 			}
 		}, "json");
 	});
@@ -443,8 +447,8 @@ $(function(){
 						addNewPellet(p);
 					});
 				} else {
-					alert("Something went wrong! :(");
-					window.location = window.location;
+					//alert("Something went wrong! :(");
+					//window.location = window.location;
 				}
 			});
 				
