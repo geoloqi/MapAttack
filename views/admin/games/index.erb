@@ -18,6 +18,7 @@
       <th>Status</th>
       <th>Players</th>
       <th>Points</th>
+      <th colspan="5">&nbsp;</th>
     </tr>
     <% @games.each do |game| %>
       <tr>
@@ -28,7 +29,7 @@
         <td><%= h game.players.count %></td>
         <td><%= h game.total_points %></td>
         <td><a href="/admin/games/<%= game.id %>/edit">Setup</a></td>
-        <td><a href="/admin/games/<%= game.id %>/mapeditor">Edit Points</a></td>
+        <td><a href="/admin/games/<%= game.id %>/mapeditor">Edit Game</a></td>
         <td>&nbsp;&nbsp;&nbsp;<a href="/admin/games/<%= game.id %>/end_game" onclick="<%= onclick_put 'This will END THE GAME. Are you sure?' %>">End Game</a></td>
         <td>&nbsp;&nbsp;&nbsp;<a href="/admin/games/<%= game.id %>/reset" onclick="<%= onclick_put 'This will RESET ALL THE POINTS for this game. Are you -really- sure?' %>">Reset Points</a></td>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/admin/games/<%= game.id %>" onclick="<%= onclick_delete %>">Delete</a></td>
@@ -38,4 +39,4 @@
 <% end %>
 <br><br>
 
-<a href="/admin/games/new">Create New Game</a>
+<a href="/admin/games/new" class="btn">Create New Game</a>

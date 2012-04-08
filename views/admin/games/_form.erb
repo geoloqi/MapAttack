@@ -37,13 +37,14 @@
 
 </script>
 
-Name of the Game:
+<h3>Name of the Game</h3>
+<p><input name="game[name]" type="text" value="<%= h @game.name %>"></p>
+
 <br>
-<input name="game[name]" type="text" value="<%= h @game.name %>">
 <br>
-<br>
-Where is it (go to where you want the game to be centered, and zoom to the zoom level you want):
-<br>
+<h3>Where is it?</h3>
+<p>Move the map to where you want the game to be centered, and zoom to the zoom level you want. This will set the initial position of the game board when viewing the game.</p>
+
 <div id="map_canvas" style="width:50%; height:50%"></div>
 
 <input id="latitude" name="game[latitude]" type="hidden" value="<%= h @game.latitude %>">

@@ -481,22 +481,24 @@ $(function(){
 });
 
 </script>
+<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css">
 </head>
 
 <body>
 
 	<div id="lineToolbar">
 		<div style="padding: 3px;">
-			<input type="button" value="New Line" id="newLine" />
-			<input type="button" value="Cancel Line" id="editingCancel" disabled="disabled" />
-		  <input type="button" value="Close" onclick="window.location = '/admin/games';"/>
+			<input type="button" value="New Line" id="newLine" class="btn" />
+			<input type="button" value="Cancel Line" id="editingCancel" disabled="disabled" class="btn" />
+		  <input type="button" value="Done" onclick="window.location = '/admin/games';" class="btn" />
+		  <p>Right-click anywhere to place a point, or use the above tools.</p>
 		</div>
 	</div>
 
 	<div style="display: none;" id="pointToolbar"><div style="width: 180px; padding-top: 10px;">
 
 		<div style="float: right;">
-			<input type="button" class="editPointDelete" style="font-size: 9pt;" value="Delete" />
+			<input type="button" class="editPointDelete btn" style="font-size: 9pt;" value="Delete" />
 		</div>
 
 		<div class="coin coin-10 selected" id="coin-10"></div>
@@ -504,11 +506,11 @@ $(function(){
 		<div class="coin coin-30" id="coin-30"></div>
 		<div class="coin coin-50" id="coin-50"></div>
 
-		<div><br><br>
+<!-- 		<div><br><br>
 			<small>Coin text (optional):</small><input type="text" class="coin_text" value="" style="width: 120px;" maxlength="140" />
-			<input type="button" class="editPointSave" style="font-size: 9pt; display: none;" value="Save" />
+			<input type="button" class="editPointSave btn" style="font-size: 9pt; display: none;" value="Save" />
 		</div>
-
+ -->
 	</div></div>
 
 	<div id="map" style="width: 100%; height: 600px;"></div>

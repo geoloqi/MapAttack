@@ -1,5 +1,6 @@
 <form id="address_form" onsubmit="GameMap.goToAddress($('#google_maps_address').val()); $('#game_address').val($('#google_maps_address').val()); return false;">
-Address (not required: used to find a location quickly):
-<br><input id="google_maps_address" value="<%= h @game.address %>">
-<input type="submit" value="Find">
+<h3>Choose your City</h3>
+Address or City (not required, used to quickly center the map)
+<br><input id="google_maps_address" value="<%= h @game.address %>" type="text">
+<input type="submit" value="Find" class="btn">
 </form>
