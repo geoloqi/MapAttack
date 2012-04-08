@@ -27,12 +27,6 @@
         _gaq.push(['_setAccount', '<%= Controller::GA_ID %>']);
         _gaq.push(['_trackPageview']);
 
-        <% if request.path =~ /^\/$/ %>
-		// geoloqi.com A/B Testing
-		_gaq.push(['gwo._setAccount', 'UA-25750303-7']);
-		_gaq.push(['gwo._trackPageview', '/0594274968/goal']);
-		<% end %>
-
         (function() {
           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
