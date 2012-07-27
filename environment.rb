@@ -76,7 +76,6 @@ class Controller < Sinatra::Base
 
   configure do
     use Rack::MobileDetect
-    register Sinatra::Synchrony
     if test?
       set :sessions, false
     else
@@ -98,11 +97,9 @@ class Controller < Sinatra::Base
     APPLICATION_ACCESS_TOKEN = config_hash['oauth_token']
     AWS_KEY = config_hash['aws_key']
     AWS_SECRET = config_hash['aws_secret']
-    Faraday.default_adapter = :em_synchrony
     Geoloqi.config :client_id => config_hash['client_id'],
                    :client_secret => config_hash['client_secret'],
-                   :use_hashie_mash => true,
-                   :adapter => :em_synchrony
+                   :use_hashie_mash => true
     DataMapper.finalize
     DataMapper.setup :default, ENV['DATABASE_URL'] || config_hash['database']
     # DataMapper.auto_upgrade!
